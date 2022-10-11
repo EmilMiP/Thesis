@@ -1,0 +1,100 @@
+\documentclass[a4paper, twoside]{report}
+
+% Packages
+\usepackage[a4paper]{geometry}				% a4 paper formatting
+\usepackage[toc, page]{appendix}			% handles appendix
+\usepackage[utf8]{inputenc}					% improves character compatability
+
+
+
+
+
+% import bib file
+\usepackage[backend=bibtex8]{biblatex}		% bibliography package (bibtex)
+\addbibresource{references.bib}
+
+
+
+\begin{document}
+
+
+\chapter*{Acknowledgements}
+Tak alle sammen.
+Også Ole
+
+\chapter*{List of papers}
+
+The dissertation is based on the following papers. They are presented in the order of publication.
+
+\textbf{\textit{Study 1:}} LT-FH++
+
+\textbf{\textit{Study 2:}} ADuLT
+
+\textbf{\textit{Study 3:}} fGRS and fGRS multi trait
+
+% outline of the thesis ? do I want / need this ?
+
+% do I need a section with abbreviations ?
+\tableofcontents
+\newpage
+
+%it seems from other phd dissertations that the introduction should just be a single page, and what I had imagined to be the introduction, is instead called background
+\chapter{Introduction}
+\input{intro/introduction_main.tex}
+
+\chapter{Background}
+\input{background/background_main.tex}
+
+\chapter{Study aims}
+\input{aims.tex}
+
+\chapter{Materials and methods}
+\input{methods/materials_and_methods_main.tex}
+
+
+\chapter{Results}
+\input{results/results_main.tex}
+
+
+\chapter{Discussion}
+\input{discussion/dicsussion_main.tex}
+
+\chapter{Conclusion}
+\input{conclusion/conclusion_main.tex}
+
+\chapter{Future directions}
+
+
+\chapter{English abstract}
+
+
+\chapter{Danish abstract}
+
+
+
+
+
+
+%\begin{appendices}
+
+%\chapter{Study 1}
+%study 1 goes here. \cite{pedersen2022accounting}
+%\include{�}
+
+%\chapter{Study 2}
+%study 2 goes here.
+%\include{�}
+
+%\chapter{Study 3}
+%study 3 goes here.
+%\include{�}
+
+%\end{appendices}
+
+%\nocite{*}
+\newpage
+\printbibliography[heading=bibintoc,
+title={References}]
+\newpage
+
+\end{document}

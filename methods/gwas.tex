@@ -1,0 +1,30 @@
+This section will briefly go over what a genome-wide association study is, some common considerations and models. A GWAS is usually performed on a single SNP at a time, rather than all SNPs at the same time. This is due to the computational cost of analysing data sets of the sizes that are usually present in biobanks and due to there being more SNPs than individuals. There are several potential models that can be used to analyse genotypes. One method is the Cochran-Armitage test \cite{cochran1954some,armitageTest}, which tests for independence in a $ 2\times3 $ contingency table. However, this test is not able to incorporate covariates to account for, e.g. population stratification. A regression based method is usually preferred, as it allows for covariates to be included. However, one downside of using regression models is the assumption that the SNP effects will be additive, which is not the case in the Cochran-Armitage test. The input data for regression is coded as $ AA = 0 $, $ Aa = 1 $, and $ aa = 2 $, where $ A $ is the major allele and $ a $ is the minor allele\cite{zeng2015statistical}. When restricting to only additive genetic effects, there is no difference between logistic or linear regression and the Cochran-Armitage test. The regression methods are then preferred over the Cochran-Armitage test and linear regression is preferred over logistic regression, since it is more computationally efficient \cite{sikorska2013gwas,prive2019making}.
+
+
+\subsection{Linear regression}
+The simplest and most efficient way to test association between a SNP and an outcome, even when the outcome is binary, is with linear regression. If we have $ N $ individuals where we observe a set of $ M $ SNPs, then the analysis of a single SNP can be denoted in the following way.
+
+Let $ y $ denote the $ N\times1 $ vector of phenotypes for each individual, either binary or quantitative, $ X $ be the $ N \times (k+1) $ matrix containing $ k $ covariates and the intercept, $ G_j $ is a $ N\times 1 $ vector containing the $ j^{th} $ SNP, then the model is given by:
+
+\begin{equation}\label{eq:baseGWAS}
+y = \beta G_{j} + \gamma^{T} X + \epsilon
+\end{equation}
+Where $ \beta $ denotes the genetic effect size, $ \gamma $ denotes a $ (k + 1) \times 1$ vector of coefficients for the intercept and covariates, $ \epsilon $ is a $ N \times 1 $ vector of normally distributed noise. When performing the regression, both $ y $ and $ G_j $ must be scaled to have mean $ 0 $ and variance $ 1 $. The most efficient way to account for the covariates is to project them out of the predictor and the response in eq. \eqref{eq:baseGWAS}. Once we have standardised and projected the covariates out of the response and predictor, we can denote them $ \bar{y} $ and $ \bar{G_j} $. This results in the following univariate expression:
+
+\begin{equation}\label{eq:univarGWAS}
+\bar{y} = \beta \bar{G_j} + \epsilon
+\end{equation}
+The hypothesis being tested is then $ H_0: \beta = 0 $ against $ H_A: \beta \neq 0 $. 
+
+% tutorial paper \cite{balding2006tutorial}
+\subsection{Dealing with population structure}
+Population structure is a term that covers several types of potential bias in a GWAS. These biases can result in spurious associations between SNPs and phenotypes, when there is no true association. The most common reasons for population structure in genotype data is due to \textit{population stratification}, \textit{related individuals}, and two or more \textit{ancestries} in the data. These sources of bias all result in the same underlying problem, namely that artificial differences or similarities may occur between a case and control group. 
+
+\subsubsection{Population stratification}
+
+
+\subsubsection{Relatedness}
+
+
+\subsubsection{ancestries}   
+

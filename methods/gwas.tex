@@ -18,13 +18,23 @@ The hypothesis being tested is then $ H_0: \beta = 0 $ against $ H_A: \beta \neq
 
 % tutorial paper \cite{balding2006tutorial}
 \subsection{Dealing with population structure}
-Population structure is a term that covers several types of potential bias in a GWAS. These biases can result in spurious associations between SNPs and phenotypes, when there is no true association. The most common reasons for population structure in genotype data is due to \textit{population stratification}, \textit{related individuals}, and two or more \textit{ancestries} in the data. These sources of bias all result in the same underlying problem, namely that artificial differences or similarities may occur between a case and control group. 
+Population structure is a term that covers several types of potential biases in a GWAS. These biases can result in spurious associations between SNPs and phenotypes, when there is no true association. The most common reasons for population structure in genotype data is due to \textit{population stratification}, \textit{related individuals}, and two or more \textit{ancestries} in the data. These sources of bias all result in the same underlying problem, namely artificial differences or similarities between a case and control group, which either creates a spurious or masks a true association. 
 
 \subsubsection{Population stratification}
+Within a population of individuals, it has been shown that there can be subpopulations where allele frequencies differ between subpopulations. As mentioned above, it can cause artificial differences or similarities between the subpopulations when performing associations tests. One example of a spurious association driven by population stratification is the chopstick gene, which allegedly accounted for half of the variance in being able to eat with chopsticks.\cite{marees2018tutorial} 
 
+A common and simple solution to account for population structure is by performing a PCA on the genotypes and including the first, e.g. 20 PCs, as covariates in the association analysis. 
 
 \subsubsection{Relatedness}
+Similar to population structure, relatedness is a common reason to spurious associations. The mechanism behind why relatedness leads to these spurious associations is a little different. If related individuals are in the same analysis, then some individuals are alike than one would expect if they were drawn at random. Due to this, variances are likely biased downwards, which leads to inflated test statistics, since many associations tests are score tests and score tests are calculated as the effect estimate divided by the standard error. 
+
+There are two common ways to deal with relatedness in a GWAS setting. The first and simplest way is to identify the related individuals and removing them from the analysis. This is effective, but has the downside of reducing the sample size, and it is likely to not work if the analysed data consist of genotyped families. The second and more involved way is to include it in the model being used for association. In a regression setting, the most common way to account for the relatedness is by using a linear mixed model, where a random effect is added.
+
+There are several ways to identify the related individuals, with the two most common ways being the genetic relatedness matrix and identity by descent. The GRM is simply the correlation between two individual's (scaled) genotypes, where a value of $ 1 $ means monozygotic twins, $ 0.5 $ is a parent-offspring relationship, etc.. If filtering is performed prior to the association test, the relatedness threshold is usually set to $ 2^{-2.5} \approx 0.177 $ when removing $ 2^{nd} $ degree relatives or closer, or $ 2^{-3.5} \approx 0.088 $ when removing $ 3^{rd} $ degree relatives, etc. The method for filtering for relatedness is similar when using IBD, however the values are between $ 0.5 $ and $ 0 $ instead of $ 1 $ and $ 0 $. To get the same level of relatedness filtering with IBD as one would get with the GRM, the thresholds should be shifted by a factor of $ 2^{-0.5} $ and will have thresholds $ 2^{-3.5} $ and $ 2^{-4.5} $, respectively. 
+%% Cite the KING software, https://onlinelibrary.wiley.com/doi/full/10.1002/mpr.1608
 
 
-\subsubsection{ancestries}   
+\subsubsection{Ancestries}   
+Analysing different ancestries together in the same association analysis is rarely done. This is due to different ancestries may be different minor allele frequencies for certain SNPs, altogether different variants on certain positions, etc., which complicates a combined analysis. Therefore, they most common way to deal with different ancestries in a genotyped data set is to identify a genetically homogenous subset and perform the association analysis in the desired subpopulation. 
 
+A homogenous subpopulation is most commonly identified by performing a PCA on all the available individuals and calculating the Mahalanobis distance on the first, e.g. 20 PCs, and removing anyone above a certain threshold\cite{prive2020efficient}. 

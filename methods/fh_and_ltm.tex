@@ -1,14 +1,56 @@
 
-This section is deal with how to account for family history in a GWAS setting on a phenotypic level rather than a genetic one, where the main focus has been attempting to eliminate any potential problems with including related samples. The research into accounting for family history on a phenotypic level has been very limited. This is likely due to the relatively low occurrence of family history variables in conjunction with genotype data. There have been some biobanks, such as UK biobank, DeCODE, iPSYCH, and FinnGen, where some level of family history information have been linked with genotypes.
+This section is deal with how to account for family history in a GWAS setting on a phenotypic level rather than a genetic one, where the main focus has been attempting to eliminate any potential problems with including related samples and eliminating population structure. The research into accounting for family history on a phenotypic level has been very limited. This is likely due to the relatively low occurrence of family history variables in conjunction with genotype data. There have been some biobanks, such as UK biobank, DeCODE, iPSYCH, and FinnGen, where \textit{some} level of family history information have been linked with genotypes. 
 
-% The main methods that account for FH is GWAX, LT-FH, and our method, LT-FH++. GWAX is not a model based approach, but rather a heuristic way to account for family history. LT-FH and LT-FH++ are both model based approaches that can account for family history. They build on the same ideas of extending the liability threshold model...[now make a section on the model, math, and how we estimate the (genetic) liability of an individual]
+The first method we will introduce that accounts for FH is genome-wide Association study by proxy (GWAX). GWAX is not a model based approach, but rather a heuristic way to account for family history. Next, we will present the liability threshold model originally introduced by falconer\cite{falconer1965inheritance} and extensions of this model. There are two extensions, the first is called liability threshold model conditional on family history (LT-FH)\cite{hujoel2020liability} and LT-FH++. LT-FH++ is the method this dissertation is focused on, and is a further extension of the LT-FH method that is also able to account for age-of-onset or age, sex, and cohort effects. 
+
+\subsubsection{GWAX}
 % GWAX
+The first method that accounts for family history information is called GWAX. The method was developed and applied for Alzheimer's disease in UK biobank, in an attempt to increase power for a phenotype that had a low prevalence in the UK biobank participants. GWAX is a heuristic method, i.e. not set in a statistical model, and the nature of the method reflects the overall lack of detailed family history information. GWAX still uses a binary variable, but instead of only measuring case status in the UK biobank participant, it measured the status in the UK biobank participants \textit{and} relatives. This means an individual without Alzheimer's disease, but with a parent who did have Alzheimer's disease, would be considered a case under GWAX. This approach is simple and easy to use, acts as a drop-in replacement for any previous binary or quantitative phenotype, and achieved the desired result of increasing power in a GWAS setting. In short, GWAX was a big success and a proof of concept for other family history methods. There have been developments in family history methods since GWAX was published. In order to properly explain it, we will present the liability threshold model and expand it.
+
+
+\subsubsection{The liability threshold model}
+The liability threshold model was a way to explain and model why some disorders do not behave as a Mendelian disease. Under the liability threshold model an individual will have a latent variable (\textit{a liability}), $ \ell \sim N(0,1)$. A phenotype is observed, if the liability $ \ell $ is above a given threshold and the threshold $ T $ is determined by the prevalence of the phenotype $ k $, then the threshold is determined by $ P(\ell > T) = k $. The status $ z $ is then given by 
+
+\begin{align*}
+z = 
+\begin{cases}
+1 & \ell \geq T \\
+0 & \text{otherwise}
+\end{cases}
+\end{align*}
+
+The LTM allows for modelling of non-Mendelian diseases, since the latent liability can be the result of more complex mechanisms than Mendelian diseases, which often depend on only 1-2 genes. 
+
 
 % LT-FH
+\subsubsection{LT-FH}
+The extension proposed for LT-FH allows for a dependency between family members and the index person. There is no theoretical limitation on the family members to include in the model, however the original implementation only allows for both parents, the number of siblings, and a binary variable of whether any sibling has the phenotype being analysed. This is unfortunately a limitation of the data available to the authors when LT-FH was developed. In UKBB, sibling information is limited and it is only coded as present or not in \textit{any} of the siblings, so we do not know \textit{which} sibling(s) are affected. 
 
-% 
+The first part of the extension proposed by Hujoel et al. is to split the liability $ \ell_o $ in a genetic component $ \ell_g \sim N(0,h^2) $, where $ h^2 $ denotes the heritability of the phenotype on the liability scale, and an environmental component $ \ell_e \sim N(0, 1-h^2) $. Then, $ \ell_o = \ell_g + \ell_e \sim N(0,1) $ and the genetic and environmental components are independent. The second is to consider a multivariate normal distribution instead of a univariate one. For illustrative purposes, we will only show the model when both parents are present, but no siblings. 
 
+\begin{align*}
+\ell = \left( \ell_g, \ell_o, \ell_{p_1}, \ell_{p_2} \right) \sim N(\mathbf{0}, \Sigma)^T & & &\Sigma = \begin{bmatrix}
+h^2	&	h^2	&	0.5h^2	&	0.5h^2	\\
+h^2 &	h^2 &	0.5h^2	&	0.5h^2	\\
+0.5h^2	&	0.5h^2	&	1	&	0	\\
+0.5h^2	&	0.5h^2	&	0	&	1	\\
+\end{bmatrix}
+\end{align*}
+LT-FH does not distinguish between mother and father and the parents are coded as $ p_1 $ and $ p_2 $. If available, siblings can be included in the model as well by extending the dimension of the normal distribution with the number of siblings to include. Siblings would also have a variance of $ 1 $ and a covariance of $ 0.5h^2 $ with the other family members, reflecting the liability scale heritability of the phenotype and the expected genetic overlap.
 
+With this framework, the expected genetic liability can be estimated given the family member's case-control status. Estimating the expected genetic liability $ \hat{\ell_g} $ means estimating 
+
+\begin{equation*}
+\hat{\ell_g} = E\left[ \ell_g | \mathbf{Z} \right]
+\end{equation*}
+where $ \mathbf{Z} $ is the vector of the considered family member's case-control status. The condition on $ \mathbf{Z} $ means the liabilities for each family member is restricted to an interval. For a case, the full liability would be restricted to $ (T, \infty) $, while a control's full liability would be restricted to $ (-\infty, T) $. If all individuals have a unique threshold $ T_i $, with $ i $ indicating a given family member, e.g. $ o, p_1, p_2 $ and $ n $ denotes the size of the family under consideration, then the possible liabilities for a family of all cases can be described as $ \{ \ell \in \mathbb{R}^n | \ell_i \geq T_i \text{ for all } i\} $. If instead a family of all controls was considered, it would be $ \{ \ell \in \mathbb{R}^n | \ell_i < T_i \text{ for all } i\} $. Commonly, the area of interest would be some combination of the two sets. The restrictions on the liabilities leads to a truncated multivariate normal distribution, and estimating the expected genetic liability $ \hat{\ell_g} $ does not have an analytical solution. 
+
+A practical consideration for LT-FH is the choice of thresholds. LT-FH consider two thresholds, one for the parents and one for the children. The thresholds should reflect the prevalence for these groups, and a common strategy is to use the in-sample prevalences from UKBB. The prevalences work well enough, as UKBB has a large sample size, has not sampled for any specific phenotypes, and the LT-FH model is very robust to misspecification of its parameters.
+% The implementation of LT-FH adopted the same coding of status in siblings as UKBB provide.
+% mention how the gen liab is estimated
+
+\subsubsection{LT-FH++}
+describe LT-FH++
 
 
 

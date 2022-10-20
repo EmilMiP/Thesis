@@ -6,9 +6,16 @@
 \usepackage[utf8]{inputenc}					% improves character compatability
 \usepackage{textgreek}						% greek letters in text (references)
 \usepackage{amsmath, amsfonts}				% math
+\usepackage{algorithm, algcompatible}		% algorithm environment for pseudocode examples
+% 
+% algorithm commands
+\algnewcommand\INPUT{\item[\textbf{Input:}]}% 			% renames require to input
+\algnewcommand\OUTPUT{\item[\textbf{Output:}]}%			% renames ensure to output
+\algnewcommand\GIBBS{\item[\textbf{Gibbs Sampler:}]}%	% add gibbs sampler tag
+\renewcommand{\algorithmiccomment}[1]{// #1}			% changes comments to //
 
-
-
+% math sign commands
+\newcommand\given[1][]{\:#1\vert\:}			% scalable conditional sign (\given)
 % import bib file
 \usepackage[backend=bibtex8]{biblatex}		% bibliography package (bibtex)
 \addbibresource{references.bib}

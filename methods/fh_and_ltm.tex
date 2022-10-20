@@ -3,12 +3,12 @@ This section is deal with how to account for family history in a GWAS setting on
 
 The first method we will introduce that accounts for FH is genome-wide Association study by proxy (GWAX). GWAX is not a model based approach, but rather a heuristic way to account for family history. Next, we will present the liability threshold model originally introduced by falconer\cite{falconer1965inheritance} and extensions of this model. There are two extensions, the first is called liability threshold model conditional on family history (LT-FH)\cite{hujoel2020liability} and LT-FH++. LT-FH++ is the method this dissertation is focused on, and is a further extension of the LT-FH method that is also able to account for age-of-onset or age, sex, and cohort effects. 
 
-\subsubsection{GWAX}
+\subsection{GWAX}
 % GWAX
 The first method that accounts for family history information is called GWAX. The method was developed and applied for Alzheimer's disease in UK biobank, in an attempt to increase power for a phenotype that had a low prevalence in the UK biobank participants. GWAX is a heuristic method, i.e. not set in a statistical model, and the nature of the method reflects the overall lack of detailed family history information. GWAX still uses a binary variable, but instead of only measuring case status in the UK biobank participant, it measured the status in the UK biobank participants \textit{and} relatives. This means an individual without Alzheimer's disease, but with a parent who did have Alzheimer's disease, would be considered a case under GWAX. This approach is simple and easy to use, acts as a drop-in replacement for any previous binary or quantitative phenotype, and achieved the desired result of increasing power in a GWAS setting. In short, GWAX was a big success and a proof of concept for other family history methods. There have been developments in family history methods since GWAX was published. In order to properly explain it, we will present the liability threshold model and expand it.
 
 
-\subsubsection{The liability threshold model}
+\subsection{The liability threshold model}
 The liability threshold model was a way to explain and model why some disorders do not behave as a Mendelian disease. Under the liability threshold model an individual will have a latent variable (\textit{a liability}), $ \ell \sim N(0,1)$. A phenotype is observed, if the liability $ \ell $ is above a given threshold and the threshold $ T $ is determined by the prevalence of the phenotype $ k $, then the threshold is determined by $ P(\ell > T) = k $. The status $ z $ is then given by 
 
 \begin{align*}
@@ -23,34 +23,110 @@ The LTM allows for modelling of non-Mendelian diseases, since the latent liabili
 
 
 % LT-FH
-\subsubsection{LT-FH}
+\subsection{LT-FH}
 The extension proposed for LT-FH allows for a dependency between family members and the index person. There is no theoretical limitation on the family members to include in the model, however the original implementation only allows for both parents, the number of siblings, and a binary variable of whether any sibling has the phenotype being analysed. This is unfortunately a limitation of the data available to the authors when LT-FH was developed. In UKBB, sibling information is limited and it is only coded as present or not in \textit{any} of the siblings, so we do not know \textit{which} sibling(s) are affected. 
 
-The first part of the extension proposed by Hujoel et al. is to split the liability $ \ell_o $ in a genetic component $ \ell_g \sim N(0,h^2) $, where $ h^2 $ denotes the heritability of the phenotype on the liability scale, and an environmental component $ \ell_e \sim N(0, 1-h^2) $. Then, $ \ell_o = \ell_g + \ell_e \sim N(0,1) $ and the genetic and environmental components are independent. The second is to consider a multivariate normal distribution instead of a univariate one. For illustrative purposes, we will only show the model when both parents are present, but no siblings. 
+\subsubsection{The model}
 
-\begin{align*}
+The first part of the extension proposed by Hujoel et al. is to split the full liability $ \ell_o $ in a genetic component $ \ell_g \sim N(0,h^2) $, where $ h^2 $ denotes the heritability of the phenotype on the liability scale, and an environmental component $ \ell_e \sim N(0, 1-h^2) $. Then, $ \ell_o = \ell_g + \ell_e \sim N(0,1) $ and the genetic and environmental components are independent. The second extension is to consider a multivariate normal distribution instead of a univariate one. For illustrative purposes, we will only show the model when both parents are present, but no siblings. 
+
+\begin{align}\label{eq:LTFH_model}
 \ell = \left( \ell_g, \ell_o, \ell_{p_1}, \ell_{p_2} \right) \sim N(\mathbf{0}, \Sigma)^T & & &\Sigma = \begin{bmatrix}
 h^2	&	h^2	&	0.5h^2	&	0.5h^2	\\
 h^2 &	h^2 &	0.5h^2	&	0.5h^2	\\
 0.5h^2	&	0.5h^2	&	1	&	0	\\
 0.5h^2	&	0.5h^2	&	0	&	1	\\
 \end{bmatrix}
-\end{align*}
+\end{align}
 LT-FH does not distinguish between mother and father and the parents are coded as $ p_1 $ and $ p_2 $. If available, siblings can be included in the model as well by extending the dimension of the normal distribution with the number of siblings to include. Siblings would also have a variance of $ 1 $ and a covariance of $ 0.5h^2 $ with the other family members, reflecting the liability scale heritability of the phenotype and the expected genetic overlap.
+
+\subsubsection{Input}
 
 With this framework, the expected genetic liability can be estimated given the family member's case-control status. Estimating the expected genetic liability $ \hat{\ell_g} $ means estimating 
 
-\begin{equation*}
-\hat{\ell_g} = E\left[ \ell_g | \mathbf{Z} \right]
-\end{equation*}
-where $ \mathbf{Z} $ is the vector of the considered family member's case-control status. The condition on $ \mathbf{Z} $ means the liabilities for each family member is restricted to an interval. For a case, the full liability would be restricted to $ (T, \infty) $, while a control's full liability would be restricted to $ (-\infty, T) $. If all individuals have a unique threshold $ T_i $, with $ i $ indicating a given family member, e.g. $ o, p_1, p_2 $ and $ n $ denotes the size of the family under consideration, then the possible liabilities for a family of all cases can be described as $ \{ \ell \in \mathbb{R}^n | \ell_i \geq T_i \text{ for all } i\} $. If instead a family of all controls was considered, it would be $ \{ \ell \in \mathbb{R}^n | \ell_i < T_i \text{ for all } i\} $. Commonly, the area of interest would be some combination of the two sets. The restrictions on the liabilities leads to a truncated multivariate normal distribution, and estimating the expected genetic liability $ \hat{\ell_g} $ does not have an analytical solution. 
+\begin{align*}
+\hat{\ell_g} = E\left[ \ell_g | \mathbf{Z} \right] & & & \mathbf{Z} = \left(z_o, z_{p_1}, z_{p_2} \right)^T
+\end{align*}
+where $ \mathbf{Z} $ is the vector of the considered family member's case-control status. The condition on $ \mathbf{Z} $ means the liabilities for each family member is restricted to an interval. For a case, the full liability would be restricted to $ (T, \infty) $, while a control's full liability would be restricted to $ (-\infty, T) $. If all individuals have a unique threshold $ T_i $, with $ i $ indicating a given family member, e.g. $ o, p_1, p_2 $ and $ n $ denotes the size of the family under consideration, then the possible liabilities for a family of all cases can be described as $ \{ \ell \in \mathbb{R}^n | \ell_i \geq T_i \text{ for all } i\} $. If instead a family of all controls was considered, it would be $ \{ \ell \in \mathbb{R}^n | \ell_i < T_i \text{ for all } i\} $. Commonly, the area of interest would be some combination of the two sets. The restrictions on the liabilities leads to a truncated multivariate normal distribution, and calculating the expected genetic liability $ \hat{\ell_g} $ does not have an analytical solution. 
 
-A practical consideration for LT-FH is the choice of thresholds. LT-FH consider two thresholds, one for the parents and one for the children. The thresholds should reflect the prevalence for these groups, and a common strategy is to use the in-sample prevalences from UKBB. The prevalences work well enough, as UKBB has a large sample size, has not sampled for any specific phenotypes, and the LT-FH model is very robust to misspecification of its parameters.
+A practical consideration for LT-FH is the choice of thresholds. LT-FH considers two thresholds, one for the parents, $ T_p $ and one for the children $ T_c $. The thresholds should reflect the prevalence for these groups, and a common strategy is to use the in-sample prevalences from UKBB. The prevalences work well enough, as UKBB has a large sample size, has not sampled for any specific phenotypes, and the LT-FH model is very robust to misspecification of its parameters.
+
+\subsubsection{Sampling strategy}
+
+The sampling strategy used in the original implementation of LT-FH is mainly sampling a large number of observations from the multivariate normal distribution, then splitting the samples into each of the possible configurations of $ \mathbb{Z} $, and calculating the $ \hat{\ell_g} $ within each group. Resampling will be preformed if the standard error of mean (sem) is larger than $ 0.1 $ in any of the configurations of $ \mathbf{Z} $. A pseudocode overview of the sampling strategy can be found in Algorithm \ref{alg:LTFH}.
+
+%need to mention the possible configurations. highlight they are disjoint by design
+
+\begin{algorithm}[h] \label{alg:LTFH}
+	\caption{LT-FH sampling strategy}
+\begin{algorithmic}[1]
+\INPUT $ h^2,$  $n_{sib},$  $\mathbf{Z},$  $T_p,$  $T_c$ 
+\OUTPUT $ \hat{\ell_g} $ for all configurations
+\STATE Sample $ \ell \sim N(\mathbf{0}, \Sigma) $ 
+\STATE split into disjoint sets from $ \mathbf{Z} $
+\STATE calculate $ \hat{\ell_g} $ in each configuration 
+\WHILE{sem$(\hat{\ell_g}) \geq 0.1 $}
+	\IF{$ z_{p_1} = 1 \text{ or } z_{p_2} = 1$}
+		\STATE sample  $ \ell \given \left(z_{p_1}, z_{p_2} \right)^T \sim N_{n-2}(\mu^*, \Sigma^*) $
+	\ELSIF{$ z_o = 1 \text{ or } z_\mathbf{s} \neq \mathbf{0} $} 
+		\STATE sample $ \ell \given \left(z_{o}, z_{\mathbf{s}} \right)^T \sim N_{n-(n_{sib} - 1)}(\mu^*, \Sigma^*) $
+	\ENDIF	
+	\STATE Update $ \hat{\ell_g} $
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
 % The implementation of LT-FH adopted the same coding of status in siblings as UKBB provide.
 % mention how the gen liab is estimated
 
-\subsubsection{LT-FH++}
-describe LT-FH++
+\subsection{LT-FH++}
+
+The model underlying LT-FH and LT-FH++ is fundamentally the same, however LT-FH++ does make a few modifications to account for age of onset or, sex, and cohort effects. The addition of this extra information allows for a more fine-tuned estimate of the genetic liability $ \hat{\ell_g} $, further increasing the predictive power of the liability. The modifications that allow for the additional information has an impact on the input and choice of sampling strategy. Therefore, this section will primarily focus on how these key points differ from LT-FH, since the fundamental model is the same, it will not be repeated. 
+
+\subsubsection{The model}
+
+The model underlying LT-FH++ is very similar to LT-FH and does not differ in a major way from what is shown in eq. \ref{eq:LTFH_model}. The main difference in terms of the model is the family members that can be accounted for, and what information is used for each family member. In short, LT-FH considers the index person and siblings the same, since the thresholds used for each of these will be the same $ T_c $, and the parents are also treated the same and share the threshold $ T_p $. LT-FH++ allows for each individual to have their own unique threshold $ T_i $, for all $ i $ in the family. The individual thresholds are based on population representative cumulative incidence proportions (CIPs). The CIPs have the interpretation of \textit{"being the proportion of individuals born in year $ y $ that have experienced a phenotype before age $ t $"}. We let $ S(i) $ denote the sex of individual $ i $, which means $ k_{y}^{S(i)}(t) $ is the CIP for individual $ i $'s sex born in year $ y $ at time $ t $.
+
+\begin{align*}
+P\left( \ell_i > T_i \right) = k_{y}^{S(i)}(t) \Rightarrow T_i = \Phi \left(1 - k_{y}^{S(i)}(t) \right)
+\end{align*}
+Where $ \Phi $ denotes the CDF of the standard normal distribution. An individual's current age for control or age-of-onset for cases, their sex, and birth year will be accounted for through the choice of threshold. See \textbf{REQUIRE REFERENCE TO CIPs} for details. If the CIPs are stratified by birth year and sex, a very accurate estimate of an individual's full liability is provided. This allows for a case's full liability to be fixed to $ T_i $, rather than the interval $ (T_i, \infty) $. Furthermore, for controls the threshold will decrease as the population ages, which narrows the potential liabilities, since they have lived through a period of risk.
+
+Next, the LT-FH++ allows for more than just the mother, father, and any siblings to be included. In the initial implementation of LT-FH++, only these roles were supported. However, even if no extension to the family members was introduced, it was still possible to increase power in GWAS and prediction by accounting for the current age of control or age-of-onset of cases, sex, and birth year. After the initial publication of LT-FH++, it has been extended to also allow for a more varied family. Currently, children, paternal and maternal grandparents, half-siblings, aunts, and uncles are supported on top of the parents and siblings. This change allows for a far higher accuracy when estimating $ \hat{\ell_g} $. 
+
+
+\subsubsection{Input}
+The input for LT-FH++ is similar to the input for LT-FH, but with two notable differences. The first difference is that LT-FH++ relies on CIPs for the threshold for each individual, while LT-FH utilise a general but separate threshold for parents and offspring. The second difference is that each family should have a unique identifier and a string identifying each family member's relationship to the index person. The sex and birth year stratified CIPs are used to assign thresholds to each individual in a family. Each person will therefore have a lower $ T_i^l $ and upper $ T_i^u $ threshold, which leads to an interval of possible liabilities defined as $ I_i = (T_i^l, T_i^u) $. For controls, the interval will be $ I_i = (T_i^l,T_i^u) = (-\infty, T_i) $, while for cases $ I_i = (T_i^l,T_i^u) = [T_i,T_i] $. If a user does not have CIPs that are stratified by sex and birth year, then $ I_i = (T_i, \infty) $. When the thresholds have been assigned, the intervals that the truncated multivariate normal distribution have been defined and the genetic liability can be estimated. 
+
+The CIPs are estimated as the aalen-johansen estimator with death and immigration as competing risk, and will simply act as a look up table for assigning thresholds. Once the thresholds have been assigned to each individual, the CIPs are no longer needed and as such, LT-FH++ only requires the upper and lower limit and each person's role in the family as well as a family and individual ID to identify families, their members, . 
+
+\subsubsection{Sampling strategy}
+
+Due to the unlikeliness that two families will consist of the exact same sex, age of onset, etc., and fixing the upper and lower limit for cases, the truncated normal distributions will be unique to each family. The straight forward sampling approach employed by LT-FH is therefore not computationally tractable. Instead LT-FH++ employs a gibbs sampler to sample directly from a truncated multivariate normal distribution with predefined limits. 
+
+% pseudo code for the Gibbs sampler
+
+\begin{algorithm}
+\caption{LT-FH++ sampling strategy}
+\begin{algorithmic}[1]
+\INPUT $ h^2,$ $T_{i}^l,$ $T_{i}^u$ and each family member's role 
+\OUTPUT $ \hat{\ell_g} $ for all index persons
+\GIBBS
+\STATE \textbf{Initialize} $\ell^{(0)}$ as $ \mathbf{0} $ and pre-compute $ \Sigma_{12} \Sigma_{22}^{-1} $ and $ \Sigma_{12} \Sigma_{22}^{-1} \Sigma_{21} $ for $ \mu_i^{(s)} $ and $ \sigma^2_i $
+\FOR{$ s = 1, \ldots, S$}
+	\FOR{$ j = 1, \ldots, n+1 $}  \COMMENT{n+1 is family size + genetic liability}
+	%% should include uniform draw transformed to possible range of liabilities
+	\STATE $ U \sim \text{Unif}(I_i) = \text{Unif}(T_i^l, T_i^u) $ \COMMENT{Ensures truncation}
+	\STATE $ \ell_j^{(s)} = F^{-1}_{N(\mu_i^{(s)}, \sigma_i^2)}(U) $
+%	$\ell_j^{(s)} \sim N(\mu_i^{(s)}, \sigma_i^2)$
+	\ENDFOR
+\ENDFOR
+\IF{sem$(\hat{\ell_g}) \geq 0.1 $}
+\STATE rerun Gibbs Sampler
+\ELSE
+\STATE return  $ \hat{\ell_g} $
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
 
 
 

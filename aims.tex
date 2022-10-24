@@ -1,1 +1,10 @@
-study aims
+The aim of the dissertation is to improve power in a GWAS setting with a refined phenotype and improve the predictive value of family history as a covariate. This was achieved by estimating a liability with from modified liability threshold model that depends on information such as age of onset and family history. The thresholds used in the modified model are based on population representative cumulative incidence proportions stratified by sex and birth year. The following papers highlight different applications of the model.
+
+
+\subsubsection{Paper 1: LT-FH++}
+The first paper is the flagship paper of the dissertation. During the development of this paper, most of the implementation work was done, such that estimating the desired liability was possible. The result was the method titled LT-FH++, which was based on the previously published method LT-FH. In short, LT-FH++ allows one to estimate a liability for an individual based on information such as age or age of onset, sex, birth year, and family history. Sex, birth year, and age or age of onset information can also be accounted for in each of the family members included. We found that the additional information did improve power, however in most cases it is only a modest improvement, since most of the power gain is driven by family history.
+
+\subsubsection{Paper 2: ADuLT}
+The second paper focused on the model underlying LT-FH++, called the Age-dependent liability threshold (ADuLT) model, and its ability to increase power in GWAS compared to the more common Cox proportional hazards model. In this setting, the estimated liability depends on the same information as in the first paper, except for the family history. We only saw a notable difference between ADuLT and the CoxPH model when case ascertainment was present, but in such a case, the CoxPH had a significantly lower power than ADuLT.
+
+\subsubsection{Paper 3: fGRS}

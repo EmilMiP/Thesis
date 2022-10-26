@@ -8,6 +8,9 @@
 \usepackage{amsmath, amsfonts}				% math
 \usepackage{algorithm, algcompatible}		% algorithm environment for pseudocode examples
 \usepackage{graphicx, wrapfig}				% include pictures 
+\usepackage{hyperref}						% active links in pdf
+\usepackage{cleveref}						% automatic type of ref \cref{label}
+
 % 
 % algorithm commands
 \algnewcommand\INPUT{\item[\textbf{Input:}]}% 			% renames require to input
@@ -17,6 +20,12 @@
 
 % math sign commands
 \newcommand\given[1][]{\:#1\vert\:}			% scalable conditional sign (\given)
+
+% redefinition of caption. Bold highlight and regular text
+\let\oldcaption\caption
+\renewcommand\caption[2][]{\oldcaption[#1]{\textbf{#1:} #2}}
+
+
 % import bib file
 \usepackage[backend=bibtex8]{biblatex}		% bibliography package (bibtex)
 \addbibresource{references.bib}

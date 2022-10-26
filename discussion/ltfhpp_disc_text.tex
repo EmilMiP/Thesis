@@ -1,0 +1,22 @@
+ltfh++ discussion goes here
+
+\begin{enumerate}
+	\item more EHR means we need a better way to include that information. LT-FH++ does this for FH and AOO.
+	\item most power gain when in-sample prevalence is high or when fh prev is high for the sample
+	\item can easily handle missing information
+	\item CIP and FH are not currently common to include
+	\item CIPs can be estimated in a similar external population and used with the internal population.
+	\item UKBB and iPSYCH result summary
+	\item discussion reasons for why the performance is different between UKBB an iPSYCH
+	\item LT-FH++'s relationship to survival analysis?
+	\item LT-FH++ combines two different types of model
+\end{enumerate}
+
+
+Few places in the world have as detailed, curated, and complete register information linked to genetic data as iPSYCH does. Recently, there have been a trend where biobanks such as UK biobank, DeCODE, and FinnGen have started linking to registers or supplement their genetic data with questionnaires. As a result, we strongly believe that the information stored in this supplementary information can be leveraged to increase statistical power to identify causal SNPs in a GWAS setting. Family history has previously been used to generate risk scores or been included as a covariate in epidemiological analysis, and as such, is a parameter many researchers are familiar with and know is important. Similarly, an entire branch of statistics is focused on modelling time-to-event, which means many researchers are also familiar with age of onset or recognise its potential. Here, we proposed LT-FH++ as a way to combine family history and age of onset distributions with the ordinary case-control status to increase power, thereby combining two previously separated types of analysis.
+
+Simulations show that LT-FH++ does increase statistical power in a GWAS setting over LT-FH and case-control status. The increased power provided by LT-FH++ over LT-FH depends on the exact situation the method is applied to and varies from roughly $ 4\% $ to $ 18\% $, with the highest increase when case ascertainment is present. Through supplemental simulations we found that one can expect the highest increase in power with LT-FH++ compared to LT-FH, when cases are ascertained in the sample or in the sample's family members. The simulations have also provided valuable insight into the real-world data analysis of UKBB and iPSYCH.
+
+The mortality GWAS in UKBB highlights a near perfect example of LT-FH++'s potential. Death is the only guarantee in life, unlike many disorders that can be quite rare. This means the age difference between the UKBB participants and their parents make it more likely that the parents have died, thus increasing the family history prevalence in the UKBB participants. On top of this, death is a rather common occurrence among the UKBB participants. Therefore, mortality satisfy both of the criteria for best case scenario for LT-FH++ that we identified from the simulations. 
+
+In iPSYCH, the conditions for both LT-FH and LT-FH++ are not nearly as favourable. The power increase provided by LT-FH and LT-FH++ are from the family history information, where LT-FH++ further refines this information with the age of onset distributions. Due to psychiatric disorders such as ADHD not being present in ICD-8, it limits the opportunity to diagnose many of the parents of the iPSYCH participants. This is true even though the iPSYCH participants are young compared to UKBB.

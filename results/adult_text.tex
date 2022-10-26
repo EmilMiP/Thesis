@@ -1,23 +1,31 @@
-The second paper utilised the age-dependent liability threshold (ADuLT) model, which is the model underlying LT-FH++. The purpose of the project was to examine the performance of the ADuLT outcome with established time-to-event GWAS methods that are based on the Cox proportional hazards model. It is two fundamentally different ways to approach time-to-event analysis in a GWAS setting. The adoption of Cox PH models in a GWAS setting has been limited, which has also been evident in the relative lack of method developments for Cox PH models compared to linear regression models. One of the main limitations for Cox PH is the computational cost of such a model, which has limited GWASs to less than $ 20,000 $ individuals with these models. Recently, a method called SPACox \cite{bi2020fast} has been proposed that allows for far better scaling, and allowing for analysis of UKBB sized biobanks. 
+The second paper utilised the age-dependent liability threshold (ADuLT) model, which is the model underlying LT-FH++. The name change is in large part due to the focus on only the age-dependency and not family history, even though it is the same model. The purpose of the project was to examine the performance of the ADuLT outcome with established time-to-event GWAS methods that are based on the Cox proportional hazards model. It is two fundamentally different ways to approach time-to-event analysis in a GWAS setting. The adoption of Cox PH models in a GWAS setting has been limited, which has also been evident in the relative lack of method developments for Cox PH models compared to linear regression models. Since one of the main limitations for Cox PH is the computational cost of such a model, GWASs with these model have been limited to less than $ 20,000 $ individuals. Recently, a method called SPACox \cite{bi2020fast} has been proposed that allows for far better scaling, and allowing for analysis of UKBB sized biobanks. We will use SPACox as a representative of Cox PH models in this paper.
 
 
-\subsubsection{Simulation results}
+\subsection{Simulation results}
 
-Similar to the first paper, we assessed the models in simulations first. In this project, we simulated the genotypes and assigned phenotypes with two generative models. The first model was the liability threshold model and the second model was the proportional hazards model. Notably, one would expect a method based on the liability threshold model to perform the best under this model, and subpar under other generative models. The simulation results shown in Figure \ref{fig:adult_simulations} show the power for $ 10 $ replications under two different generative models and for different population prevalences. For Figure \ref{fig:adult_simulations}A, we observe the expected ranking between methods, since the ADuLT or case-control status methods perform slightly better than the Cox PH model and vice versa. Notably, there is no case ascertainment in those simulations. In results shown in Figure \ref{fig:adult_simulations}B are with case ascertainment and we observe a large shift in power between methods and generative models. In short, the simulation results with case ascertainment show that the Cox PH based method has a far lower power than the LTM based methods under \textit{both} generative models. Even after performing inverse probability weighing Cox PH on a select subset of null SNPs, we observed the same result. This indicates that the Cox PH models with the current implementation suffers from a significant power loss when case ascertainment is present in a GWAS setting.
-\begin{wrapfigure}{L}{10cm}
-	\label{fig:adult_simulations}
-	\caption{ADuLT simulations}
+Similar to the first paper, we assessed the models in simulations first. We simulated the genotypes and assigned phenotypes with two generative models. The first model was the liability threshold model and the second model was the proportional hazards model. Notably, one would expect a method based on the liability threshold model to perform the best under this model, and subpar under other generative models. The simulation results shown in \cref{fig:adult_simulations} show the power for $ 10 $ replications under two different generative models and for different population prevalences. For \cref{fig:adult_simulations}A, we observe the expected ranking between methods, since the ADuLT or case-control status methods perform slightly better than the Cox PH model under the liability threshold model and vice versa. Notably, there is no case ascertainment in those simulations. In results shown in \cref{fig:adult_simulations}B are with case ascertainment and we observe a large shift in power between methods under both generative models. In short, the simulation results with case ascertainment show that the Cox PH based method has a far lower power than the LTM based methods under \textit{both} generative models. Even after performing inverse probability weighing Cox PH on a select subset of null SNPs and all causal SNPs, we observed the same result. This indicates that the Cox PH models with the current implementation suffers from a significant power loss when case ascertainment is present in a GWAS setting.
+
+%\begin{wrapfigure}{O}{10cm}
+\begin{figure}[h]
+	\centering
 	\includegraphics[width=10cm]{results/adult_combined_C250_power}
-\end{wrapfigure}
+	\caption[Power simulation results with $ 250 $ causal SNPs under both generative models and varying prevalences.]{The power is shown for different population prevalence, varying from $ 1\% $ to $ 20\% $. \textbf{A)} The power, i.e. the fraction of causal SNPs detected for each method, \textbf{without downsampling}. \textbf{B)} The power \textbf{with downsampling}, i.e. the number of individuals is subsampled to 10k cases and 10k controls.}
+	\label{fig:adult_simulations}
+%\end{wrapfigure}
+\end{figure}
 
 
-\subsubsection{Real-world analysis}
-Next, we applied the same analysis to real-world data to assess whether we observed the same with case ascertainment present in the data. iPSYCH is particularly useful for this, as all cases in a given time period have been sampled and sequenced, meaning the iPSYCH data has the highest possible case ascertainment in real-world data. 
+\subsection{Real-world analysis}
+Next, we applied the same analysis to real-world data to assess whether we observed the same behaviour with case ascertainment present in the data. iPSYCH is particularly useful for this, as all cases in a given time period have been sampled and sequenced, meaning the iPSYCH data has the highest possible case ascertainment in real-world data. We highlight the ADHD analysis here for illustrative purposes.
 
-\begin{wrapfigure}{L}{9cm}
+We found that the Cox PH model had a rather large loss of power compared to ADuLT and case-control status. Across the four analysed psychiatric disorders, ADuLT found $ 20 $ independent associations, case-control status found $ 17 $, and SPACox found $ 8 $. The ADHD Manhattan plots for the three methods compared in paper 2 can be found in \cref{fig:adult_ADHD}. In no circumstances did the Cox PH model outperform a LTM based method, showing that the currently implementation of Cox PH model do not perform as well as simpler models such as linear regression, which are also far more computationally efficient.
+
+%\begin{wrapfigure}{O}{10cm}
+\begin{figure}[h] 
+	\centering
+	\includegraphics[width=10cm]{results/adult_manhattanPlot_ADHD}
+	\caption[Manhattan plots from GWAS with the ADuLT phenotype, SPACox, and case-control status for ADHD]{Manhattan plots for ADHD for all three methods. Case-control GWAS uses the age of individuals as a covariate, whereas the ADuLT GWAS and SPACox do not. The orange dots indicate suggestive SNPs with a p-value threshold of $ 5 \times 10^{-6} $. The red dots correspond to genome-wide significant SNPs with a p-value threshold of $ 5 \times 10^{-8} $. The diamonds correspond to the lowest p-value LD clumped SNP in a 500k base pair window with an $ r^2 = 0.1 $ threshold.}
 	\label{fig:adult_ADHD}
-	\caption{ADuLT manhattan plot}
-	\includegraphics[width=9cm]{results/adult_manhattanPlot_ADHD}
-\end{wrapfigure}
-We found that ADuLT and case-control status performed better than the Cox PH model by a rather significant margin. In no circumstances did the Cox PH model outperform a LTM based method, showing that the currently implementation of Cox PH model do not perform as well as simpler models such as linear regression, which are also far more computationally efficient.
+%\end{wrapfigure}
+\end{figure}
 

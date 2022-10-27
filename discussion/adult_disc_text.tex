@@ -1,1 +1,6 @@
 adult discussion goes here
+
+
+The purpose of this paper was to examine the best way to include the age of onset information in a GWAS setting. The gold standard when modelling time to event is some kind of survival analysis. However the adoption of such methods such as Cox regression have been limited for GWAS. One of the main limiting factors for Cox regressions, such as the proportional hazards model, is the computational cost associated with the analysis. Recent advances have allowed for Cox proportional hazards models and frailty models to be used on UKBB-sized biobanks. Both methods utilise a saddle point approximation, as it provides a computationally efficient way to calculate p values. The implementation of the proportional hazards model is called SPACox and is available as an R package. The frailty model has been implemented in a R and Rcpp, which is a R-wrapper around C++. 
+
+

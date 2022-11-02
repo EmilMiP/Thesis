@@ -91,11 +91,23 @@ P\left( \ell_i > T_i \right) = k_{y}^{S(i)}(t) \Rightarrow T_i = \Phi \left(1 - 
 \end{align*}
 Where $ \Phi $ denotes the CDF of the standard normal distribution. An individual's current age for control or age-of-onset for cases, their sex, and birth year will be accounted for through the choice of threshold. See \textbf{REQUIRE REFERENCE TO CIPs} for details. If the CIPs are stratified by birth year and sex, a very accurate estimate of an individual's full liability is provided. This allows for a case's full liability to be fixed to $ T_i $, rather than the interval $ (T_i, \infty) $. Furthermore, for controls the threshold will decrease as the population ages, which narrows the potential liabilities, since they have lived through a period of risk.
 
-Next, the LT-FH++ allows for more than just the mother, father, and any siblings to be included. In the initial implementation of LT-FH++, only these roles were supported. However, even if no extension to the family members was introduced, it was still possible to increase power in GWAS and prediction by accounting for the current age of control or age-of-onset of cases, sex, and birth year. After the initial publication of LT-FH++, it has been extended to also allow for a more varied family. Currently, children, paternal and maternal grandparents, half-siblings, aunts, and uncles are supported on top of the parents and siblings. This change allows for a far higher accuracy when estimating $ \hat{\ell_g} $. 
+Next, the LT-FH++ allows for more than just the mother, father, and any siblings to be included. In the initial implementation of LT-FH++, only these roles were supported. However, even if no extension to the family members was introduced, it was still possible to increase power in GWAS and prediction by accounting for the current age of controls or age-of-onset of cases, sex, and birth year. After the initial publication of LT-FH++, it has been extended to also allow for a more varied family. Currently, children, paternal and maternal grandparents, half-siblings, aunts, and uncles are supported on top of the parents and siblings. This change allows for a far higher accuracy when estimating $ \hat{\ell_g} $. If we let $ K_{ij} $ denote the expected genetic overlap between two individuals $ i $ and $ j $, then we can construct the covariance matrix entry-wise with 
 
+\begin{equation*}
+\Sigma_{ij} = h^2K_{ij}, \qquad K_{ij} = 
+\begin{cases} 
+1 		& \text{if } i \text{ and } j \text{ the same} \\
+0.5 	& \text{if } i \text{ and } j \text{ $1^{st}$ degree} \\
+0.25 	& \text{if } i \text{ and } j \text{ $2^{nd}$ degree} \\ 
+0.125 	& \text{if } i \text{ and } j \text{ $3^{rd}$ degree}  \\
+0 		& \text{otherwise}
+\end{cases}
+\end{equation*}
+
+With this construction of the covariance matrix, any supported family role can be used. The input for LT-FH++ therefore requires the role of each included individual and the covariance matrix is constructed at run-time. 
 
 \subsubsection{Input}
-The input for LT-FH++ is similar to the input for LT-FH, but with two notable differences. The first difference is that LT-FH++ relies on CIPs for the threshold for each individual, while LT-FH utilise a general but separate threshold for parents and offspring. The second difference is that each family should have a unique identifier and a string identifying each family member's relationship to the index person. The sex and birth year stratified CIPs are used to assign thresholds to each individual in a family. Each person will therefore have a lower $ T_i^l $ and upper $ T_i^u $ threshold, which leads to an interval of possible liabilities defined as $ I_i = (T_i^l, T_i^u) $. For controls, the interval will be $ I_i = (T_i^l,T_i^u) = (-\infty, T_i) $, while for cases $ I_i = (T_i^l,T_i^u) = [T_i,T_i] $. If a user does not have CIPs that are stratified by sex and birth year, then $ I_i = (T_i, \infty) $. When the thresholds have been assigned, the intervals that the truncated multivariate normal distribution have been defined and the genetic liability can be estimated. 
+The input for LT-FH++ is similar to the input for LT-FH, but with two notable differences. The first difference is that LT-FH++ relies on CIPs for the threshold for each individual, while LT-FH utilise a general but separate threshold for parents and offspring. The second difference is that each family should have a unique identifier and a string identifying each family member's relationship to the index person. The sex and birth year stratified CIPs are used to assign thresholds to each individual in a family. Each person will therefore have a lower $ T_i^l $ and upper $ T_i^u $ threshold, which leads to an interval of possible liabilities defined as $ I_i = (T_i^l, T_i^u) $. For controls, the interval will be $ I_i = (T_i^l,T_i^u) = (-\infty, T_i) $, while for cases $ I_i = (T_i^l,T_i^u) = [T_i,T_i] $. If a user does not have CIPs that are stratified by sex and birth year, then a case's interval should be given as $ I_i = (T_i, \infty) $. When the thresholds have been assigned, the intervals that the truncated multivariate normal distribution have been defined and the genetic liability can be estimated. 
 
 The CIPs are estimated as the aalen-johansen estimator with death and immigration as competing risk, and will simply act as a look up table for assigning thresholds. Once the thresholds have been assigned to each individual, the CIPs are no longer needed and as such, LT-FH++ only requires the upper and lower limit and each person's role in the family as well as a family and individual ID to identify families, their members, . 
 
@@ -130,12 +142,58 @@ Due to the unlikeliness that two families will consist of the exact same sex, ag
 
 
 \subsection{LT-FH++ with correlated traits}
+The LT-FH++ can also be extended to include correlated traits. Many disorder pairs have a non-zero genetic correlation, which is often not used. There exists methods that can account for correlated traits, with the most well-known method being MTAG. However, MTAG requires a GWAS to be run on two correlated phenotypes and can then account for some of the genetic signal between the two phenotype's summary statistics. Both MTAG and LT-FH++ can account for multiple correlated phenotypes at a time. LT-FH++ deals with correlated traits on a phenotype-level, while MTAG deal with it on a summary statistics level. This means a GWAS with LT-FH++ accounting for correlated phenotypes is performed with a phenotype that accounts for the effect of the correlated phenotype(s), rather than separate GWASs being run for each phenotype. 
 
-\textbf{STILL NEED TO BE DONE}
+If two phenotypes are genetically correlated, the LT-FH++ model can account for the correlated phenotype by extending the covariance matrix. The simplest way to account for correlated phenotypes need the same information as a single trait analysis, so age and sex stratified CIPs and family history for each phenotype, as well as the pairwise genetic correlation. The thresholds for each individual will be determined in the exact same way with the disorder specific CIPs
+
+
+If we consider $ \ell_1 $ and $ \ell_2 $ as the vectors of liabilities for some family for two genetically correlated disorders, each of the vectors can be modelled as seen above for a single trait. However, the interaction between the two disorders would be ignored. Setting $ h_1^2 $ and $ h_2^2 $ to be the liability-scale heritability for the two disorders and setting  $ \Sigma^{(1)} $ and $ \Sigma^{(2)} $ to be the covariance matrices for the two genetically correlated disorders, we can model the interaction with the following model
+
+\begin{equation*}
+	\ell = \left(\ell_1, \ell_2\right)^T \sim N(\mathbf{0}, \Sigma), \quad \Sigma = 
+	\begin{pmatrix} 
+		\Sigma^{(1)} & \Sigma^{(12)} \\
+		\Sigma^{(12)} & \Sigma^{(2)} 
+	\end{pmatrix}, \quad \Sigma^{(12)}_{ij} = K_{ij}\rho_{12}\sqrt{h_1^2 h_2^2}
+\end{equation*}
+Where $ \Sigma_{ij}^{(12)} $ is the expected genetic overlap between two individuals and genetic covariance between the disorders, expressed by the genetic correlation $ \rho_{12} $ and the heritabilities.
+
+There are not changes to the sampling strategy, as the Gibbs sampler proposed is scalable to high dimensions.
+
 
 \subsection{Connection to survival analysis}
 
+
+In this section we will introduce the most common model for analysing time to event phenotypes, such as age of onset of a disorder. The model is based on a hazard rate, which is given by 
+\begin{equation}
+\lambda(t | x) = \lambda_0(t)\exp(\beta x)
+\end{equation}
+where $ \lambda_0(t) $ is the baseline hazard, $ x $ is the genotype, and $ \beta $ is the effect size. We note that the risk of becoming a case in a given time interval depends on the model's covariates, which will either lower, leave it unchanged, or increase the rate of events.
+
+The hazard rate can be approximated by the probability of observing an event in an infinitesimally small jump in time\cite{kragh2021analysis}. If we let $ T(t) $ be the threshold for an individual to be a case at time $ t $, $ \ell $ is a person's full liability, then the approximation is given by
+
+\begin{equation}
+\lambda(t|x) \approx 
+P(T(t + dt) < \ell | T(t) > \ell, x) / dt
+\end{equation}
+where $ dt $ denotes a small change in time. This means the hazard rate is proportional to the probability of an event occurring in a time interval $ (t, t + dt) $ given no event has occurred before time $ t $.
+
+\begin{equation}
+\lambda(t | g_i) = \lambda_0(t) \exp(g_i) = \lambda_0(t) \exp(\beta x_i)
+\end{equation}
+In layman's terms, this means individuals with a higher than average genetic liability, $ g_i > 0 $, will have a higher risk of becoming a case throughout their lives independent of age. The higher risk individuals will also on average have an earlier age of onset.
+
 \textbf{STILL NEED TO BE DONE}
 
 
+
+\begin{align}
+P(T(t + dt) \leq \ell_i | T(t) >& \ell_i, g_i)  \\
+&=P(T(t + dt) \leq \ell_i < T(t)|g_i) \times P(T(t) > \ell_i | g_i)^{-1}  \\
+&=
+\left[\Phi\left( \dfrac{T(t) - g_i}{\sqrt{1 - h^2}}\right) - \Phi\left( \dfrac{T(t + dt) - g_i}{\sqrt{1 - h^2}}\right)\right] \times
+\Phi \left( \dfrac{T(t) - g_i}{\sqrt{1 - h^2}}\right)^{-1} \\
+&=
+1 - \Phi\left( \dfrac{T(t + dt) - g_i}{\sqrt{1 - h^2}}\right) \times \Phi\left( \dfrac{T(t) - g_i}{\sqrt{1 - h^2}}\right)^{-1}
+\end{align}
 

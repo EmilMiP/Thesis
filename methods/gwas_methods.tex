@@ -1,16 +1,44 @@
 This section should deal with ways of improving power in the base GWAS method described above.
 
-I imagine that an overview of shorts should be here, where computational cost, type of model, type of phenotype it accepts, what it is able to account for (relatedness, pop strats, ancestries) etc.. I believe it would be useful to also include some binary only methods (logistic reg-based methods), and survival models.
+I imagine that an overview of sorts should be here, where computational cost, type of model, type of phenotype it accepts, what it is able to account for (relatedness, pop strats, ancestries) etc.. I believe it would be useful to also include some binary only methods (logistic reg-based methods), and survival models.
 
 
 \subsubsection{Notable methodological advancements}
+This section provides a non-exhaustive list of methodological advances proposed for GWAS. The list aims to highlight key advances that have been made by either providing computational feasibility for a certain type of analysis, use of a more complex model, or both. Notable GWAS methods are presented in \cref{table:GWASoverview}. 
 
-\begin{enumerate}
-	\item PLINK - linear and logistic regression
-	\item BOLT - linear mixed models - handles pop strat and relatedness
-	\item SPA-based methods - unbalanced case-control status
-	\item Cox PH methods, SPACox
-	\item GATE - frailty model
-\end{enumerate}
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l X l}
+\hline
+Software	&	Notable advancement		&	Model \\
+\hline
+PLINK\cite{chang2015second,purcell2007plink}	&
+Highly scalable linear and logistic regression \& Data management and standardized a binary storage format	&
+Linear \& logistic regression	\\
+BOLT\cite{loh2015efficient}	&
+Efficient linear mixed model for UKBB sized data that accounts for cryptic relatedness	&
+Linear mixed model	\\
+SPACox\cite{bi2020fast}	&	
+Saddle point approximation based proportional hazards model for UKBB sized data &
+Cox proportional hazards model \\
+GATE\cite{dey2022efficient}	&
+Saddle point approximation based frailty model for UKBB sized data	&
+Frailty model \\
+\hline
+\end{tabularx}
+\caption{Overview of notable GWAS methods}
+\label{table:GWASoverview}
+\end{table}
+Other methods that are based on the saddle point approximation\cite{daniels1954saddlepoint,kuonen1999miscellanea} have been proposed by methods such as SAIGE\cite{zhou2018efficiently} and Regenie\cite{mbatchou2021computationally}. One of the advantages of using SPA is how well-calibrated methods based on it are for unbalanced case-control phenotypes. While BOLT provided an efficient implementation for linear mixed models, further study of the software have revealed that it suffers from inflated test statistics when case-control ratio is $ 1:50 $ or higher. SPA-based methods do not suffer from inflation in such cases\cite{mbatchou2021computationally}.
+
+
+
+%\begin{enumerate}
+%	\item PLINK - linear and logistic regression
+%	\item BOLT - linear mixed models - handles pop strat and relatedness
+%	\item SPA-based methods - unbalanced case-control status
+%	\item Cox PH methods, SPACox
+%	\item GATE - frailty model
+%\end{enumerate}
 
 

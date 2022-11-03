@@ -11,7 +11,24 @@ y = \beta G_{j} +  X\gamma + \varepsilon
 \end{equation}
 Where $ \beta $ denotes the genetic effect size, $ \gamma $ denotes a $ (k + 1) \times 1$ vector of coefficients for the intercept and covariates, $ \varepsilon $ is a $ N \times 1 $ vector of independent normally distributed noise. When performing the regression, both $ y $ and $ G_j $ must be scaled to have mean $ 0 $ and variance $ 1 $. There is a computational cost involved in estimating the effect of the covariates, and they are not of any interest when performing GWAS. Therefore, the most efficient way to account for the covariates without directly calculating their effect in each regression is to project them out of the predictor and the response of interest in \cref{eq:baseGWAS} \cite{sikorska2013gwas}.
 
-The least squares solution to \cref{eq:baseGWAS} is given by 
+If we consider the residual sum of squares for \cref{eq:baseGWAS}, we get 
+
+\begin{align}
+RSS = \left( y - \beta G_j - X\gamma \right)^T\left( y - \beta G_j - X\gamma \right) = &y^T y - 2\beta y^T G_j - 2y^TX\gamma \\
+&- \beta^2 G_j^TG_j + 2\beta G_j^T X + \gamma^T X^T X \gamma
+\end{align}
+Differentiating the residual sum of squares with respect to $ \beta $ and $ \gamma $ yields
+
+\begin{align}
+\dfrac{\partial}{\partial \beta} (RSS) = -2y^TG + 2\beta G_j^TG_j + 2G_j^T X\gamma \\
+\dfrac{\partial}{\partial \gamma} (RSS)  = -2y^TX + 2\beta G^T_j X + 2X^TX\gamma  \\ 
+\end{align}
+Setting these expressions equal to $ 0 $, we get
+\begin{align}
+G_j^T G_j \beta +  G_j^T X \gamma =  G_j^T y  \label{eq:covregress1}\\ 
+X^T G_j \beta + X^T X \gamma =  X^Ty \label{eq:covregress2}
+\end{align}
+This means the matrix notation of the least squares solution to \cref{eq:baseGWAS} is given by 
 \begin{equation}
 \begin{pmatrix}
 G_j^T G_j & G_j^T X \\
@@ -26,13 +43,7 @@ G_j^T y \\
 X^T y
 \end{pmatrix}
 \end{equation}
-where $ \hat{\beta} $ and $ \hat{\gamma} $ are solutions. The least squares equations represent the following equations
-
-\begin{align}
-G_j^T G_j\hat{\beta} +  G_j^T X \hat{\gamma} =&  G_j^T y  \label{eq:covregress1}\\ 
-X^T G_j \hat{\beta} + X^T X \hat{\gamma} =&  X^Ty \label{eq:covregress2}
-\end{align}
-From here we isolate $ \hat{\gamma} $ in \cref{eq:covregress2} and get $ \hat{\gamma} = (X^TX)^{-1}(X^Ty - \hat{\beta} X^TG_j) $, which is then inserted in to \cref{eq:covregress1} 
+where $ \hat{\beta} $ and $ \hat{\gamma} $ are solutions. However, we are interested in an expression that does not depend on the covariates. From here we isolate $ \hat{\gamma} $ in \cref{eq:covregress2} and get $ \hat{\gamma} = (X^TX)^{-1}(X^Ty - \hat{\beta} X^TG_j) $, which is then inserted in to \cref{eq:covregress1} 
 
 \begin{equation}
 G^T_j y = G_j^TG_j + G_j^TX (X^TX)^{-1}(X^Ty - \hat{\beta} X^TG_j)

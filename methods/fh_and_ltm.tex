@@ -109,7 +109,7 @@ With this construction of the covariance matrix, any supported family role can b
 \subsubsection{Input}
 The input for LT-FH++ is similar to the input for LT-FH, but with two notable differences. The first difference is that LT-FH++ relies on CIPs for the threshold for each individual, while LT-FH utilise a general but separate threshold for parents and offspring. The second difference is that each family should have a unique identifier and a string identifying each family member's relationship to the index person. The sex and birth year stratified CIPs are used to assign thresholds to each individual in a family. Each person will therefore have a lower $ T_i^l $ and upper $ T_i^u $ threshold, which leads to an interval of possible liabilities defined as $ I_i = (T_i^l, T_i^u) $. For controls, the interval will be $ I_i = (T_i^l,T_i^u) = (-\infty, T_i) $, while for cases $ I_i = (T_i^l,T_i^u) = [T_i,T_i] $. If a user does not have CIPs that are stratified by sex and birth year, then a case's interval should be given as $ I_i = (T_i, \infty) $. When the thresholds have been assigned, the intervals that the truncated multivariate normal distribution have been defined and the genetic liability can be estimated. 
 
-The CIPs are estimated as the aalen-johansen estimator with death and immigration as competing risk, and will simply act as a look up table for assigning thresholds. Once the thresholds have been assigned to each individual, the CIPs are no longer needed and as such, LT-FH++ only requires the upper and lower limit and each person's role in the family as well as a family and individual ID to identify families, their members, . 
+The CIPs are estimated as the aalen-johansen estimator with death and immigration as competing risk, and will simply act as a look up table for assigning thresholds. Once the thresholds have been assigned to each individual, the CIPs are no longer needed and as such, LT-FH++ only requires the upper and lower limit and each person's role in the family as well as a family and individual ID to identify families, their members. 
 
 \subsubsection{Sampling strategy}
 
@@ -160,40 +160,4 @@ Where $ \Sigma_{ij}^{(12)} $ is the expected genetic overlap between two individ
 
 There are not changes to the sampling strategy, as the Gibbs sampler proposed is scalable to high dimensions.
 
-
-\subsection{Connection to survival analysis}
-
-
-In this section we will introduce the most common model for analysing time to event phenotypes, such as age of onset of a disorder. The model is based on a hazard rate, which is given by 
-\begin{equation}
-\lambda(t | x) = \lambda_0(t)\exp(\beta x)
-\end{equation}
-where $ \lambda_0(t) $ is the baseline hazard, $ x $ is the genotype, and $ \beta $ is the effect size. We note that the risk of becoming a case in a given time interval depends on the model's covariates, which will either lower, leave it unchanged, or increase the rate of events.
-
-The hazard rate can be approximated by the probability of observing an event in an infinitesimally small jump in time\cite{kragh2021analysis}. If we let $ T(t) $ be the threshold for an individual to be a case at time $ t $, $ \ell $ is a person's full liability, then the approximation is given by
-
-\begin{equation}
-\lambda(t|x) \approx 
-P(T(t + dt) < \ell | T(t) > \ell, x) / dt
-\end{equation}
-where $ dt $ denotes a small change in time. This means the hazard rate is proportional to the probability of an event occurring in a time interval $ (t, t + dt) $ given no event has occurred before time $ t $.
-
-\begin{equation}
-\lambda(t | g_i) = \lambda_0(t) \exp(g_i) = \lambda_0(t) \exp(\beta x_i)
-\end{equation}
-In layman's terms, this means individuals with a higher than average genetic liability, $ g_i > 0 $, will have a higher risk of becoming a case throughout their lives independent of age. The higher risk individuals will also on average have an earlier age of onset.
-
-\textbf{STILL NEED TO BE DONE}
-
-
-
-\begin{align}
-P(T(t + dt) \leq \ell_i | T(t) >& \ell_i, g_i)  \\
-&=P(T(t + dt) \leq \ell_i < T(t)|g_i) \times P(T(t) > \ell_i | g_i)^{-1}  \\
-&=
-\left[\Phi\left( \dfrac{T(t) - g_i}{\sqrt{1 - h^2}}\right) - \Phi\left( \dfrac{T(t + dt) - g_i}{\sqrt{1 - h^2}}\right)\right] \times
-\Phi \left( \dfrac{T(t) - g_i}{\sqrt{1 - h^2}}\right)^{-1} \\
-&=
-1 - \Phi\left( \dfrac{T(t + dt) - g_i}{\sqrt{1 - h^2}}\right) \times \Phi\left( \dfrac{T(t) - g_i}{\sqrt{1 - h^2}}\right)^{-1}
-\end{align}
 

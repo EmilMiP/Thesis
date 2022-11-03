@@ -1,0 +1,38 @@
+\textbf{STILL NEED TO BE DONE}
+In this section we will introduce the most common model for analysing time to event phenotypes, such as age of onset of a disorder. The model is based on a hazard rate, which is given by 
+\begin{equation}
+	\lambda(t | x) = \lambda_0(t)\exp(\beta x + G_j\gamma)
+\end{equation}
+where $ \lambda_0(t) $ is the baseline hazard, $ x $ is the covariates, and $ \beta $ is the covariates effect size, and $ G_j $ is the genotype, $ \gamma $ is the SNP effect. We note that the risk of becoming a case in a given time interval depends on the model's covariates. The association test of interest is then $ H_0: \gamma = 0 $ vs $ H_A: \gamma \neq 0 $.
+\textbf{SHOULD I ELABORATE ON HOW THE TEST IS PERFORMED?}
+
+
+\subsection{LT-FH++ and survival analysis}
+The hazard rate can be approximated by the probability of observing an event in an infinitesimally small jump in time\cite{kragh2021analysis}. We can express such a probability in a liability threshold setup. Let $ T(t) $ be the threshold for an individual to be a case at time $ t $, $ \ell $ is a person's full liability, then the approximation is given by the following conditional probability
+
+\begin{equation}\label{eq:ltm_case_prob_approx}
+	\lambda(t|x) \approx 
+	P(T(t + dt) < \ell | T(t) > \ell, x) / dt
+\end{equation}.
+Here $ dt $ denotes a small change in time. This means the hazard rate is proportional to the probability of an event occurring in a time interval $ (t, t + dt) $ given no event has occurred before time $ t $.
+
+We will simplify notation slightly and let $ g_i $ denote the genetic liability $ \ell_{g_i} $ of individual $ i $ under the extended liability threshold model used by LT-FH++. The hazard rate given the genetic liability is given by
+\begin{equation}
+	\lambda(t | g_i) = \lambda_0(t) \exp(g_i).
+\end{equation}
+In layman's terms, this means individuals with a higher than average genetic liability, $ g_i > 0 $, will have a higher risk of becoming a case throughout their lives independent of age. Therefore, we would expect to see the individuals with a higher than average genetic risk will also on average have an earlier age of onset.
+
+Under the age-dependent liability threshold model, we can derive the probability of becoming a case in an interval $ (t, t+ dt) $ shown in \cref{eq:ltm_case_prob_approx}. Recall that the threshold $ T(t) $ used to determine case status is monotonic decreasing with age, as the cumulative incidence proportion for a given sex and birth year is monotonic increasing with age. The ADuLT model assumes that an individual's full liability is given by the genetic and environmental components, $ \ell_i = g_i + e_i $. Notably, $ g_i $ and $ e_i $ are independent, normally distributed with variances $ h^2 $ and $ 1 - h^2 $, respectively. This means we get
+
+
+\begin{align}
+	P(T(t + dt) \leq \ell_i | T(t) >& \ell_i, g_i)  \\
+	&=P(T(t + dt) \leq \ell_i < T(t)|g_i) \times P(T(t) > \ell_i | g_i)^{-1}  \\
+	&=
+	\left[\Phi\left( \dfrac{T(t) - g_i}{\sqrt{1 - h^2}}\right) - \Phi\left( \dfrac{T(t + dt) - g_i}{\sqrt{1 - h^2}}\right)\right] \times
+	\Phi \left( \dfrac{T(t) - g_i}{\sqrt{1 - h^2}}\right)^{-1} \\
+	&=
+	1 - \Phi\left( \dfrac{T(t + dt) - g_i}{\sqrt{1 - h^2}}\right) \times \Phi\left( \dfrac{T(t) - g_i}{\sqrt{1 - h^2}}\right)^{-1} \label{eq:derived_adult_case_prob}
+\end{align}
+
+With \cref{eq:derived_adult_case_prob} note the fraction will always be less than $ 1 $ due to the monotonic decreasing property of the threshold. Furthermore, 

@@ -1,31 +1,3 @@
-
-\begin{enumerate}
-	\item What data are we using and how are phenotypes defined?
-		\begin{enumerate}
-			\item Registers
-			\begin{enumerate}
-				\item Where do we get the diagnosis from? 
-				\item How do we define disorders, age-of-onset, the study population
-				\item \textbf{ How do we estimate the CIPs? Why do we need the population CIPs vs the in-sample prevalence/CIP.}
-			\end{enumerate}
-			\item Genetic Data (describe iPSYCH and how it was sampled)
-			\item Should I describe UKBB ?
-		\end{enumerate}
-	\item What methods are we using?
-	\begin{enumerate}
-		\item Were there any FH methods available when we started? (GWAX, LT-FH, other?)
-		\item How do we simulate genotypes?
-		\item The liability threshold model \& extensions
-		\begin{enumerate}
-			\item Describe the truncated normal distribution, how the covariance is determined, etc.
-			\item How we estimate the liability (Gibbs sampler)
-		\end{enumerate}
-	\end{enumerate} 
-	\item Should any genetics or GWAS be explained? e.g. SNPs, LD, etc... 
-	\item Should there be a section on mixed models and its benefits ? e.g. accounts for cryptic relatedness
-\end{enumerate}
-
-
 \section{Data sources}
 
 % danish registers
@@ -35,7 +7,7 @@
 \section{Genome-wide association study}
 \input{methods/gwas.tex}
 
-\section{Improving GWAS power}
+\section{GWAS: Controlling type-1 errors and improving power}
 \input{methods/gwas_methods.tex}
 
 \section{Family history \& the liability threshold model}

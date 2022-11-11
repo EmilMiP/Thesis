@@ -29,38 +29,44 @@ A linear mixed model is an extension of a linear regression model. The linear mi
 \begin{equation}\label{eq:baseMixedModelGWAS}
 y = \beta G_{j} +  X\gamma + u + \varepsilon \qquad u \sim N(\mathbf{0}, \Sigma)
 \end{equation}
-The random term $ u $ and the noise $ \varepsilon $ are independent. Here $ \Sigma $ is a covariance structure that describes the observations $ y $. In a GWAS setting, the covariance structure is often estimated by the genetic relatedness matrix, which measures the correlation between all pairs of genotypes. Computationally, linear mixed models are far more intensive than linear regression, but the benefit of these models is their ability to boost power over simple linear regression.
+The random term $ u $ and the noise $ \varepsilon $ are independent. Here $ u $ is modelled in a manner similar to $ X\gamma $, as $ u $ can be defined as $ Zu^{'} $, where $ Z $ is a design matrix, like $ X $, but one that helps model the covariance structure. Then $ u^{'} $ is a random vector, and we can define the covariance structure of $ u $ as $ \Sigma $. With the additional covariance structure added, the covariance of the vector $ y $ is therefore
+
+\begin{equation}
+cov(y) = \Sigma + \sigma^2_e I_N.
+\end{equation}
+Where $ \sigma^2_e $ is the environmental variance component and $ I_N $ is the $ N $-dimensional identity matrix. In a GWAS setting, the covariance structure is often estimated by the genetic relatedness matrix, which measures the correlation between all pairs of genotypes. This means setting $ \Sigma = \sigma^2_g G^TG/M$, where $ \sigma_g^2 $ is the variance component for the genotypes and $ G^TG/M $ is the GRM matrix. Computationally, linear mixed models are far more intensive than linear regression, but the benefit of these models is their ability to boost power over simple linear regression.
 
 
 \subsection{Controlling type-1 errors}
-A common cause of type-1 errors is population structure. It is a term that covers several types of potential biases in a GWAS. These biases can result in spurious associations between SNPs and phenotypes, when there is no true association. The most common reasons for population structure in genotype data is due to \textit{population stratification} and \textit{related individuals}. Population stratification can have many causes. Every population will have some local structure, which may be problematic if not accounted for\textbf{REF?}, but having two or more \textit{genetic ancestries} in the data in particular is important to highlight. Genetic ancestries could severely bias a GWAS\textbf{REF?} and it is easy to account for. Regardless of the source of bias, they all result in the same underlying problem, namely artificial differences or similarities between a case and control group, which either creates a spurious association or masks a true association. \textbf{RFEFERENCE TO POP STRAT PROBLEMS?}
-For example, if there is some kind of population structure in the data, common reasons are genetic ancestry or local variations within a population. A spurious association may occur if a subpopulation is particularly enriched with one type of variant and the rest of the population is not. Similarly, if the effect of a SNP in one subpopulation increases the risk, while it decreases the risk in a different subpopulation, then the effect of the given SNP would be hidden to us.
+A common cause of type-1 errors (also called a false positive) is population structure. It is a term that covers several types of potential biases in a GWAS. These biases can result in spurious associations between SNPs and phenotypes, when there is no true association. The most common reasons for population structure in genotype data is due to \textit{population stratification} and \textit{related individuals}. Population stratification can have many causes. Every population will have some local structure, which may be problematic if not accounted for\textbf{REF?}. However, having two or more \textit{genetic ancestries} in the data in particular could severely bias a GWAS\textbf{REF?} and it is easy to account for. Regardless of the source of bias, they all result in the same underlying problem, namely artificial differences or similarities between a case and control group, which either creates a spurious association or masks a true association. \textbf{RFEFERENCE TO POP STRAT PROBLEMS?}
+For example, if there is some kind of population structure in the data, common reasons are genetic ancestry or local variations within a population. A spurious association may occur if a subpopulation is particularly enriched with one type of variant and the rest of the population is not. Similarly, if the effect of a SNP in one genetic ancestry increases the risk, while it decreases the risk in a different genetic ancestry, then the effect of the given SNP would be hidden to us.
 
 \subsubsection{Population stratification}
-Within a population of individuals, it has been shown that there can be subpopulations where allele frequencies differ between subpopulations\cite{abdellaoui2013association,genome2014whole}. As mentioned above, it can cause artificial differences or similarities between the subpopulations when performing associations tests. One example of a spurious association driven by population stratification is the chopstick gene, which allegedly accounted for half of the variance in being able to eat with chopsticks \cite{marees2018tutorial,hamer2000beware}. A common and simple solution to account for local population stratification is by performing a PCA on the genotypes and including the first PCs as covariates in the association analysis \cite{price2006principal,price2010new,prive2020efficient}.
+Within a population of individuals, it has been shown that there can be subpopulations where allele frequencies differ between subpopulations\cite{abdellaoui2013association,genome2014whole}. As mentioned above, it can cause artificial differences or similarities between the subpopulations when performing associations tests. One example of a spurious association driven by population stratification is the chopstick gene, which allegedly accounted for half of the variance in being able to eat with chopsticks \cite{marees2018tutorial,hamer2000beware}. A common and simple solution to account for local population stratification is to perform a PCA on the genotypes and including the first PCs as covariates in the association analysis \cite{price2006principal,price2010new,prive2020efficient}.
 
 \textbf{SHOULD I GO OVER HOW A PCA IS PERFORMED IN GENOTYPE DATA? PCA IS MENTIONED HERE AND IN ANCESTRY}
 
-Population stratification can have many sources, and the above solution works if only local subpopulations are present in an otherwise homogeneous population. A problem arises if there are two or more genetic ancestries, as the PCs will not be able to properly account for such stratification. As a results, it seems prudent to highlight this particular cause of population stratification. Analysing different ancestries together in a GWAS is not commonly done. This is due to different ancestries having different minor allele frequencies for certain SNPs, altogether different variants on certain positions, etc.\cite{helgason2005icelandic}. Therefore, the most common way to deal with different ancestries in a genotyped data set is to identify a genetically homogenous subset and perform the association analysis in the desired homogeneous subpopulation. There have been methods proposed that can account for ancestry such as tractor\cite{atkinson2021tractor}, but they have not been widely adopted yet. 
+Population stratification can have many sources, and the above solution works if only local subpopulations are present in an otherwise homogeneous population. The problem arise if there are two or more genetic ancestries, as the PCs will not be able to properly account for such stratification. As a results, it seems prudent to highlight this particular cause of population stratification. Analysing different ancestries together in a GWAS is not commonly done. This is due to different ancestries having different minor allele frequencies for certain SNPs, altogether different variants on certain positions, etc.\cite{helgason2005icelandic}. Therefore, the most common way to deal with different ancestries in a genotyped data set is to identify a genetically homogenous subset and perform the association analysis in the homogeneous subpopulation. There have been methods proposed that can account for ancestry such as tractor\cite{atkinson2021tractor}, but they have not been widely adopted yet. 
 
 A homogenous subpopulation can be identified by performing a PCA on all the available individuals and calculating a robust Mahalanobis distance on the first, e.g.\ 20 PCs, and removing anyone above a certain threshold\cite{prive2020efficient}. 
 \textbf{TODO: insert PC plot with ancestries colours to illustrate feasibility}
 
 \subsubsection{Relatedness}
-Similar to population stratification, relatedness is a common cause of spurious associations. The mechanism behind why relatedness leads to these spurious associations is a little different. If related individuals are in the same analysis, then some individuals are more alike than one would expect if they were drawn at random. Due to this, deviations from the null distribution are likely to occur, but not due to the effect of the SNP's effect, but rather the sampling. For a Wald test, this would lead to downwardly biased variance estimates, which leads to inflated test statistics, as the the test statistics is the effect estimate divided by the standard error. \textbf{REF?}
+Similar to population stratification, relatedness is a common cause of spurious associations. The mechanism behind why relatedness leads to these spurious associations is a little different. If related individuals are in the same analysis, then some individuals are more alike than one would expect if they were drawn at random. Due to this, deviations from the null distribution are likely to occur, not due to the SNP's effect, but rather the sampling. For a Wald test deviation could be expressed as a downwardly biased variance estimate, which leads to inflated test statistics, as the test statistics is the effect estimate divided by the standard error. \textbf{REF?}
 
-There are two common ways to deal with relatedness in a GWAS setting. The first and simplest way is to identify the related individuals and removing them from the analysis. This is effective, but has the downside of reducing the sample size. The second and more involved way is to include the in-sample relatedness (sometimes also called cryptic relatedness) in the model being used for association. In a linear regression setting, the most common way to account for the in-sample relatedness is by using a linear mixed model, where a random effect that models the genotype correlation is added. \textbf{TODO: Should I write more about the linear mixed models? such as a section under GWAS I can refer to here} The random effect is able to account for the covariance structure of the individuals, which is how relatedness affects associations with higher than expected observations\cite{yu2006unified, kang2008efficient}. The in-sample relatedness is accounted for by having the covariance structure of the random effect follow the GRM.
+There are two common ways to deal with relatedness in a GWAS setting. The first and simplest way is to identify the related individuals and removing them from the analysis. This is effective, but has the downside of reducing the sample size. The second and more involved way is to include the in-sample relatedness (sometimes also called cryptic relatedness) in the model being used for association. In a linear regression setting, the most common way to account for the in-sample relatedness is by using a linear mixed model, where a random effect that models the genotype correlation is added. \textbf{TODO: reference the mixed model section} The random effect is able to account for the covariance structure of the individuals, which is how relatedness affects associations with higher than expected observations\cite{yu2006unified, kang2008efficient}. The in-sample relatedness is accounted for by having the covariance structure of the random effect follow the GRM.
 
-There are several ways to identify the related individuals, with the two most common ways being the genetic relatedness matrix(GRM) and identity by descent(IBD)\textbf{REF TO HOW THESE ARE DONE?}. The GRM consists of the correlation between individuals genotypes, where a value of $ 1 $ means monozygotic twins, $ 0.5 $ is a parent-offspring relationship, etc.. If filtering is performed prior to the association test, the relatedness threshold is usually set to $ 2^{-2.5} \approx 0.177 $ when removing $ 2^{nd} $ degree relatives or closer, or $ 2^{-3.5} \approx 0.088 $ when removing $ 3^{rd} $ degree relatives, etc. Filtering for relatedness with IBD is very similar to how it is done with the GRM, however the values are between $ 0 $ and $ 0.5 $ instead of $ 0 $ and $ 1 $ \textbf{TODO: are the values always between 0 and 0.5 for all IBD methods?}. To get the same level of relatedness filtering with IBD as one would get with the GRM, the thresholds should be shifted by a factor of $ 2^{-1} $ and will instead have thresholds $ 2^{-3.5} $ and $ 2^{-4.5} $, respectively. An IBD approach for identifying relatedness is provided by the KING software\cite{manichaikul2010robust}, and a GRM based approach is provided by the GCTA software \cite{yang2011gcta}. Both ways of estimating relatedness is also implemented in the PLINK software\cite{chang2015second,purcell2007plink}
+If one decides to remove the related individuals instead, then there are several ways to identify the related individuals, with the two most common ways being the genetic relatedness matrix(GRM) and identity by descent(IBD)\textbf{REF TO HOW THESE ARE DONE?}. The GRM consists of the correlation between individual's genotypes, where a value of $ 1 $ means monozygotic twins, $ 0.5 $ is a parent-offspring relationship, etc.. If filtering is performed prior to the association test, the relatedness threshold is usually set to $ 2^{-2.5} \approx 0.177 $ when removing $ 2^{nd} $ degree relatives or closer, or $ 2^{-3.5} \approx 0.088 $ when removing $ 3^{rd} $ degree relatives, etc. Filtering for relatedness with IBD is very similar to how it is done with the GRM, however the values are between $ 0 $ and $ 0.5 $ instead of $ 0 $ and $ 1 $ \textbf{TODO: are the values always between 0 and 0.5 for all IBD methods?}. To get the same level of relatedness filtering with IBD as one would get with the GRM, the thresholds should be shifted by a factor of $ 2^{-1} $ and will instead have thresholds $ 2^{-3.5} $ and $ 2^{-4.5} $, respectively. An IBD approach for identifying relatedness is provided by the KING software\cite{manichaikul2010robust}, and a GRM based approach is provided by the GCTA software \cite{yang2011gcta}. Both ways of estimating relatedness is also implemented in the PLINK software\cite{chang2015second,purcell2007plink}
 
 
 \subsubsection{Multiple testing correction}
-A GWAS consists of testing each available SNP for an association with the phenotype of interest. This means several million tests are often performed. A classical statical approach to hypothesis testing means a test has a significance threshold denoted by $ \alpha $, which is most commonly $ 5\% $. If the p-value is below $ \alpha $, the null hypothesis is rejected and the alternative hypothesis is accepted. Due to the p-values being uniformly distributed under the null hypothesis, we will expect to have $ (100\times \alpha) \%$ of the tests performed rejects the null hypothesis purely by chance. There are ways to account for this. The most common multiple testing correction method used in GWAS is the Bonferroni correction\textbf{REF}. As a motivation for the Bonferroni correction, let $ n $ independent tests be given, then the likelihood of seeing at least one false positive is given by
+A GWAS consists of testing each available SNP for an association with the phenotype of interest. This means several million tests are often performed. A classical statical approach to hypothesis testing means a test has a significance threshold denoted by $ \alpha $, which is most commonly $ 5\% $. If the p-value is below $ \alpha $, the null hypothesis is rejected and the alternative hypothesis is accepted. Due to the p-values being uniformly distributed under the null hypothesis, we will expect to have $ (100\times \alpha) \%$ of the tests performed rejects the null hypothesis purely by chance. There are ways to account for this. The most common multiple testing correction method used in GWAS is the Bonferroni correction\textbf{REF}. As a motivation for the Bonferroni correction, let $ n $ independent tests be given, then the family-wide error rate $ \bar{\alpha} $, meaning the probability of seeing at least one false positive across all $ n $ tests, is given by
 
 \begin{equation} \label{eq:bonferroni}
-1 - (1-\alpha)^n 
+\bar{\alpha} = 1 - (1-\alpha)^n 
 \end{equation}
-which leads to the Bonferroni correction $ \alpha_{bf} \approx \alpha/n $. By comparing the repeated tests against $ \alpha_{bf} $ the expected number of false positives will remain $ \alpha $ across all tests performed, instead of $ \alpha $ for each individual test. In a GWAS setting, it is common to assume 1 million independent tests are performed \textbf{REF?}, which leads to a genome-wide significance threshold of $ 5 \times 10^{-8} $.
+$ \alpha$ is the per-test significance level. This leads to the Bonferroni correction $ \alpha_{bf} =  \alpha/n $. By comparing the repeated tests against $ \alpha_{bf} $ instead of $ \alpha $, the expected number of false positives will remain $ \alpha $ across all tests performed, thereby controlling the number of type-1 errors. In a GWAS setting, it is common to assume 1 million independent tests are performed \textbf{REF?}, which leads to a genome-wide significance threshold of $ 5 \times 10^{-8} $.
+
 
 
 \subsubsection{Saddle point approximation}
@@ -70,7 +76,7 @@ which leads to the Bonferroni correction $ \alpha_{bf} \approx \alpha/n $. By co
 
 
 \subsection{Computational efficiency}
-This section will cover some of the common computational and mathematical tricks used to speed up GWAS. 
+This section will cover some of the common computational or mathematical tricks used to speed up GWAS. We will briefly describe how one can avoid estimating the effect sizes of covariates that we included in the model and common tricks on how to avoid inverting matrices. 
 
 There is a computational cost involved in estimating the effects of the covariates. Therefore, the most efficient way to account for the covariates without directly calculating their effect in each regression is to project them out of the predictor and the response of interest in \cref{eq:baseGWAS} \cite{sikorska2013gwas}. We will briefly go over how this projection is performed \textbf{TODO:add ref to where this is done}.
 
@@ -78,10 +84,10 @@ There is a computational cost involved in estimating the effects of the covariat
 For the sake of completeness, we will present how to regress out the covariates as they were presented by Sikorska et al.\cite{sikorska2013gwas}. If we consider the residual sum of squares(RSS) for \cref{eq:baseGWAS}, we get 
 
 \begin{align}
-	RSS = \left( y - \beta G_j - X\gamma \right)^T\left( y - \beta G_j - X\gamma \right) = &y^T y - 2\beta y^T G_j - 2y^TX\gamma \\
-	&- \beta^2 G_j^TG_j + 2\beta G_j^T X + \gamma^T X^T X \gamma.
+	RSS =& \left( y - \beta G_j - X\gamma \right)^T\left( y - \beta G_j - X\gamma \right) \\
+	=& y^T y - 2\beta y^T G_j - 2y^TX\gamma - \beta^2 G_j^TG_j + 2\beta G_j^T X + \gamma^T X^T X \gamma.
 \end{align}
-Recall that $ X\gamma $ is a vector of dimension $ N \times 1 $, which means $ y_T X \gamma $ is an inner product and inner products are symmetric. Differentiating the residual sum of squares with respect to $ \beta $ and $ \gamma $ yields
+Recall that $ X\gamma $ is a vector of dimension $ N \times 1 $, which means $ y^T X \gamma $ is an inner product and inner products are symmetric. Differentiating the residual sum of squares with respect to $ \beta $ and $ \gamma $ yields
 
 \begin{align}
 	\dfrac{\partial}{\partial \beta} (RSS) = -2y^TG + 2\beta G_j^TG_j + 2G_j^T X\gamma \\
@@ -135,12 +141,97 @@ With the projection, the effect of the covariates have been removed from the out
 \textbf{TODO: Florian's thesis deals with speeding up computations even further, mention this too?}
 
 
-\subsection{Power improvement}
+\subsubsection{Avoiding inversions}
+
+In this section, we will focus on ways of improving the computational efficiency of linear mixed models. We will use the mixed model implementation in BOLT-LMM as an example. First, a short introduction to which calculations are the most computationally intensive will be provided. Secondly, the solution BOLT-LMM use to circumvent the naive, direct calculations. 
+
+Note, BOLT-LMM utilise several tricks and it is beyond the scope of this dissertation to go over all of them in detail. We will mainly consider how the variance components are estimated, as an integral part of using a linear mixed model is estimating the variance components. The linear mixed model used by BOLT-LMM has a variance given by
+
+\begin{equation}
+var(y) = \sigma_g^2 \dfrac{G^TG}{M} + \sigma_e^2 P
+\end{equation}
+where $ \sigma_g^2 $ and $ \sigma_e^2 $ are the genetic and environmental variance components respectively. In particular, $ G^TG/M $ is the GRM and models the covariance structure present in the genotypes, and $ P $ is a projection on a covariance spanned subspace (See \textbf{TODO: reference the projection section}). The variance components are estimated by a Monte Carlo restricted maximum likelihood (REML) approach\textbf{REF}. Note, the approach becomes REML due to the projection. Following the Monto Carlo REML approach touches on several computational challenges, but one of the most important ones is inverting a large matrix. Notably, they rephrase the problem of estimating the variance components, and it therefore boils down to solving a system of equations that depend on the following values.
+
+\begin{align}
+\delta = \dfrac{\sigma_e^2}{\sigma_g^2} & & & H = \dfrac{G^T G}{M} + \delta I_N
+\end{align}
+From here, the BLUP estimates are given by
+\begin{align}
+\hat{\beta} = \dfrac{G^T H^{-1}}{M} y & & & \hat{e} = \delta H^{-1}y
+\end{align}
+With a fixed $ \delta $, the BLUP estimates are constant. 
+
+
+In particular, this means calculating $ H^{-1}$, which requires inverting a $ N \times N $ matrix. Naive matrix inversion requires $ O(N^3) $ operations, which can be restrictive for large $ N $. Computational tricks can be applied, which lower the computational complexity to $ O(NM^2) $ or $ O(N^2M) $. The BOLT-LMM solves this with conjugate gradient iteration, which has computational complexity $ O(NM) $.\textbf{REF}
+More precisely, it is possible to calculate expression of the form $ H^{-1}y $ with only products of $ H $ with some vector. \textbf{REF} These calculations only work because $ H $ is positive semidefinite.
+
+\textbf{TODO: should I give some details on the conjugate gradient iteration used?}
+
+
+%BOLT-LMM utilise a mixed linear model with a Gaussian mixture prior, which allows for a non-infinitesimal model. 
+%BOLT steps
+%(1a) estimation of variance parameters; 
+%circumvents spectral decomposition with stochastic approximation algorithm instead. it requires finding a solution to a linear systems of mixed-model equations instead, which is done by conjugate gradient iteration.
+%(1b) computation of infinitesimal mixed-model association statistics (BOLT-LMM-inf); 
+%circumvents spectral decomposition by introducing a new retrospective mixed-model association statistic similar to GRAMMAR-Gamma10 and MASTOR23, which we compute—up to a calibration constant—using only the solutions to linear systems of equations. We estimate the calibration constant by computing the new statistic and comparing it to the standard prospective mixed-model statistic at a random subset of SNPs; this step can likewise be accomplished efficiently using conjugate gradient iteration. This procedure is similar in spirit to GRAMMAR-Gamma calibration but requires only O(MN) time iterations.
+%(2a) estimation of Gaussian mixture-model parameters; 
+%
+%(2b) computation of Gaussian mixture-model association statistics (BOLT-LMM)
+
+\subsection{Model driven power improvement}
 \textbf{TODO: refine phenotype reduces residual var -> increases power}
 
+Increasing power to detect the true associations has been another primary focus of GWAS method developments. The leap from linear regression to a linear mixed model is expected to provide a power increase \textbf{REF?}. The increase comes from modelling the covariance structure present in the data, which is not possible for linear regression. As the covariance structure is modelled, it is no longer necessary to remove individuals due to relatedness or population stratification. This has the additional benefit that the sample size increase, which in turn increases power. 
 
+Another source of power improvement is accounting for the effect of other SNPs. When one accounts for other SNPs in this manner, it essentially means a reduction in the residual variance of the phenotype, which is also why it has been referred to as \textit{denoising} the phenotype\textbf{REF}. Reducing the residual variance of the phenotype has proven to be an effect way to increase power in a GWAS, and we will briefly present how it can be done. Again, we will use BOLT-LMM as an example.
 
+In BOLT-LMM, they utilise an infinitesimal model and a Bayesian model with mixture Gaussian priors. This mixture model allows for a non-infinitesimal model to be used, as some SNPs will be set to $ 0 $ and the variance for groups of SNPs can vary.  In a linear mixed model setup, as seen in \textbf{REF: to mixed model section} and with the covariance of $ y $ given as $V = \sigma_g^2G^TG/M + \sigma_e^2I_N $, the test statistic is given by
 
+\begin{equation}\label{eq:boltLMMchisq}
+\chi^2_{LMM} = \dfrac{(G_j^TV^{-1}y)^2}{G_j^TV^{-1}G_j}
+\end{equation}
+with $ \sigma_g^2 $ and $ \sigma_e^2 $ estimates under the null hypothesis $ H_0: \beta = 0 $. However, performing a test in this way means accounting for the same SNPs more than once, as the SNP of interest will also be present in the GRM. We can avoid it by removing the chromosome that the $ j^{th} $ SNP belongs to from the GRM calculations. This is called leave-one-chromosome-out (LOCO). We will denote the LOCO GRM as $ V_{LOCO} = (G_{LOCO})^TG_{LOCO}/M_{LOCO}$, where $ G_{LOCO} $ is the SNP that remain after removing the $ j^{th} $ SNP's chromosome and $ M_{LOCO} $ is the number of SNPs after removing the same chromosome. We get the LOCO test statistic to be
+
+\begin{equation}\label{eq:boltLMMchisqLOCO}
+\chi^2_{LOCO} = \dfrac{(G_j^TV_{LOCO}^{-1}y)^2}{G_j^TV_{LOCO}^{-1}G_j}
+\end{equation}
+Notably, this means calculating a $ V_{LOCO} $ for each chromosome. The BOLT-LMM infinitesimal model has a test statistic that is given by
+
+\begin{align}\label{eq:boltLMMinfchisq}
+\chi^2_{BOLT-INF} = \dfrac{(G_j^TV_{LOCO}^{-1}y)^2}{c_{inf}} & &c_{inf} = \dfrac{\text{mean}((G_j^TV_{LOCO}^{-1}y)^2)}{\text{mean}(\chi^2_{LOCO})}
+\end{align}
+Where $ c_{inf} $ is chosen such that $ \text{mean}(\chi^2_{BOLT-INF}) = \text{mean}(\chi^2_{LOCO})$. The constant $ c_{inf} is $ estimated from $ 30 $ pseudorandom SNPs.
+
+When introducing the Gaussian mixture prior, they generalise the test statistic as
+
+\begin{equation}\label{eq:boltMixturePriorTestChisq}
+\chi^2_{BOLT-LMM} = \dfrac{\left( G_j^T y_{residual}\right)^2}{c}
+\end{equation}
+where $ y_{residual} $ is a residual phenotype vector obtained after fitting a Gaussian mixture extension of the standard LMM. The LMM model to fit the phenotype is still using LOCO, but to ease notation, the notation has been suppressed. The calibration factor $ c $ is chosen such that the intercept of $ \chi^2_{BOLT-LMM} $ with the LD score regression model\textbf{REF LDSC} matches the intercept of the properly calibrated $ \chi^2_{BOLT-INF} $.
+
+The test statistic for the non-infinitesimal model require calculating the residualised phenotype $ y_{residual} $. Next we will describe how those are obtained. Under a Bayesian framework, the null model associated with \cref{eq:boltLMMchisqLOCO} is given as
+
+\begin{equation}\label{eq:boltBayesLMMWithPrior}
+y = G_{LOCO} \beta_{LOCO} + \varepsilon \qquad \beta_j \sim N(0, \sigma^2_g /M_{LOCO}), \qquad \varepsilon \sim N(\mathbf{0},\sigma_e^2I_N)
+\end{equation}
+Note that the model is infinitesimal as all SNPs $ \beta_j $ follow the same distribution. The generalisation to a Gaussian mixture prior means replacing the prior for $ \beta_j $ with 
+
+\begin{equation}
+\beta_j \sim
+\begin{cases}
+N(0, \sigma^2_{g1}) & \text{with probability } p \\
+N(0, \sigma^2_{g2}) & \text{with probability } 1-p
+\end{cases}
+\end{equation}
+This prior is sometimes called a spike-and-slab prior, since one of the variances $ \sigma^2_{g1} $ or $  \sigma^2_{g2} $ may be very large while the other may be very small. This results in two normal distributions, one very concentrated around $ 0 $, and another that allows for large variations in effect sizes. If illustrated, this looks like a spike around $ 0 $, and a slab covering a large area, hence the name.
+
+The effect sizes, $ \beta_j $, are estimated from \cref{eq:boltBayesLMMWithPrior}, and the residualised phenotype under the Gaussian mixture prior vector is calculated as
+
+\begin{equation}
+y_{residual} = y - G_{LOCO}\beta_{LOCO}
+\end{equation}
+The residualised pheotype vector, $ y_{residual} $, is then used in \cref{eq:boltMixturePriorTestChisq}. By using the mixture prior, BOLT-LMM has a $ 25\% $ increase in effective sample size compared to the infinitesimal model.
+\textbf{TODO: Should I make a summary paragraph?}
 
 
 \subsection{Notable methodological advancements}
@@ -156,7 +247,7 @@ This section provides a non-exhaustive list of methodological advances proposed 
 		Highly scalable linear and logistic regression \& Data management and standardized a binary storage format	&
 		Linear \& logistic regression	\\
 		BOLT\cite{loh2015efficient}	&
-		Efficient linear mixed model for UKBB sized data that accounts for cryptic relatedness	&
+		Efficient linear mixed model for UKBB sized data that accounts for cryptic relatedness \& increases power	&
 		Linear mixed model	\\
 		SPACox\cite{bi2020fast}	&	
 		Saddle point approximation based proportional hazards model for UKBB sized data &

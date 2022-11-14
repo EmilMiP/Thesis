@@ -10,7 +10,7 @@ In short, regression methods are preferred over the Cochran-Armitage test as cov
 
 First, the simplest and most common way to perform a GWAS will be introduced. Then each of the three important topics will be described and solutions to the problems will be presented.
 
-\subsection{Linear regression GWAS}
+\subsection{Linear regression GWAS} \label{sec:GWAS:LinReg}
 The simplest and most computationally efficient way to test association between a SNP and an outcome, even when the outcome is binary, is with linear regression. If we have $ N $ individuals where we observe a set of $ M $ SNPs, then a linear regression GWAS of a single SNP can be described in the following way.
 
 Let $ y $ denote the $ N\times1 $ vector of phenotypes for each individual, either binary or quantitative, $ X $ be the $ N \times (k+1) $ matrix containing $ k $ covariates and the intercept, $ G_j $ is a $ N\times 1 $ vector containing the $ j^{th} $ SNP, then the model is given by:
@@ -18,23 +18,41 @@ Let $ y $ denote the $ N\times1 $ vector of phenotypes for each individual, eith
 \begin{equation}\label{eq:baseGWAS}
 y = \beta G_{j} +  X\gamma + \varepsilon.
 \end{equation}
-Where $ \beta $ denotes the genetic effect size, $ \gamma $ denotes a $ (k + 1) \times 1$ vector of coefficients for the intercept and covariates, $ \varepsilon $ is a $ N \times 1 $ vector of independent normally distributed noise. Going forward, we will assume that both $ y $ and $ G_j $ are scaled to have mean $ 0 $ and variance $ 1 $. The hypothesis being tested is $ H_0: \beta = 0 $ against $ H_A: \beta \neq 0 $. One of the most common ways to perform the test is with a Wald test $ Z = \hat{\beta}/\text{se}(\hat{\beta}) \sim N(0,1)$. 
+Where $ \beta $ denotes the genetic effect size, $ \gamma $ denotes a $ (k + 1) 
+\times 1$ vector of coefficients for the intercept and covariates, $ 
+\varepsilon $ is a $ N \times 1 $ vector of independent normally distributed 
+noise. Going forward, we will assume that both $ y $ and $ G_j $ are scaled to 
+have mean $ 0 $ and variance $ 1 $. The hypothesis being tested is $ H_0: \beta 
+= 0 $ against $ H_A: \beta \neq 0 $. One of the most common ways to perform the 
+test is with a Wald test $ Z = \hat{\beta}/\text{se}(\hat{\beta}) \sim N(0,1)$. 
+\textbf{TODO: what is se(beta)} 
 
 
 
-\subsubsection{Linear mixed model GWAS}
+\subsubsection{Linear mixed model GWAS} 
 A linear mixed model is an extension of a linear regression model. The linear mixed model adds a random effect to the model given in \cref{eq:baseGWAS}. With all other parameters being the same, we get
 
 
 \begin{equation}\label{eq:baseMixedModelGWAS}
-y = \beta G_{j} +  X\gamma + u + \varepsilon \qquad u \sim N(\mathbf{0}, \Sigma)
+y = \beta G_{j} +  X\gamma + Zu + \varepsilon \qquad u \sim N(\mathbf{0}, \Sigma)
 \end{equation}
-The random term $ u $ and the noise $ \varepsilon $ are independent. Here $ u $ is modelled in a manner similar to $ X\gamma $, as $ u $ can be defined as $ Zu^{'} $, where $ Z $ is a design matrix, like $ X $, but one that helps model the covariance structure. Then $ u^{'} $ is a random vector, and we can define the covariance structure of $ u $ as $ \Sigma $. With the additional covariance structure added, the covariance of the vector $ y $ is therefore
+The random term $ u $ and the noise $ \varepsilon $ are independent. Here $ Zu $ has an interpretation similar to $ X\gamma $, as $ 
+Z $ is a design matrix for $ u $, but one that helps model the covariance structure. Then $ u $ is a random 
+vector, and we can define the covariance structure of $ u $ by $ \Sigma $. In a GWAS setting, the covariance structure that one would 
+like to model is some subset of SNPs. It can be achieved by letting $ Z = Z^{'}/\sqrt{M} $, where $ Z^{'} $ denotes the matrix 
+with the desired subset of SNPs. Therefore, $ \Sigma $ will be a GRM calculated based on a preselected subset of SNPs. If 
+we let $ K = ZZ^{T} $ denote the GRM on the subset of SNPs, we can express the covariance of the vector $ y $ in the following way
 
-\begin{equation}
-cov(y) = \Sigma + \sigma^2_e I_N.
+\begin{equation} \label{eq:MixedModelGWASCovariance}
+cov(y) = \sigma_g^2K + \sigma^2_e I_N.
 \end{equation}
-Where $ \sigma^2_e $ is the environmental variance component and $ I_N $ is the $ N $-dimensional identity matrix. In a GWAS setting, the covariance structure is often estimated by the genetic relatedness matrix, which measures the correlation between all pairs of genotypes. This means setting $ \Sigma = \sigma^2_g G^TG/M$, where $ \sigma_g^2 $ is the variance component for the genotypes and $ G^TG/M $ is the GRM matrix. Computationally, linear mixed models are far more intensive than linear regression, but the benefit of these models is their ability to boost power over simple linear regression.
+Where $ \sigma^2_e $ is the environmental variance component, $ I_N $ is the $ N \times N $ dimensional identity matrix, $ \sigma_g^2 
+$ is the genetic variance component, and $ K $ is the GRM on a subset of SNPs. With the choice of $ I_N $ for the environmental 
+covariance structure, an independent environment is implicitly assumed for all individuals. Similarly, $ K $ allows individuals with a 
+high correlation to be accounted for. The mixed model requires estimates of $ \sigma_e^2 $ and $ \sigma_g^2 $. Computationally, linear 
+mixed models are far more intensive than linear regression, but the benefit of these models is their ability to boost power over 
+simple linear regression. See \textbf{TODO: ref computational efficiency section} for details on computational and mathematical tricks 
+that can speed up the computations.
 
 
 \subsection{Controlling type-1 errors}
@@ -44,19 +62,61 @@ For example, if there is some kind of population structure in the data, common r
 \subsubsection{Population stratification}
 Within a population of individuals, it has been shown that there can be subpopulations where allele frequencies differ between subpopulations\cite{abdellaoui2013association,genome2014whole}. As mentioned above, it can cause artificial differences or similarities between the subpopulations when performing associations tests. One example of a spurious association driven by population stratification is the chopstick gene, which allegedly accounted for half of the variance in being able to eat with chopsticks \cite{marees2018tutorial,hamer2000beware}. A common and simple solution to account for local population stratification is to perform a PCA on the genotypes and including the first PCs as covariates in the association analysis \cite{price2006principal,price2010new,prive2020efficient}.
 
-\textbf{SHOULD I GO OVER HOW A PCA IS PERFORMED IN GENOTYPE DATA? PCA IS MENTIONED HERE AND IN ANCESTRY}
+\begin{wrapfigure}{O}{10cm}
+	\includegraphics[width=10cm]{methods/iPSYCH_PCPlot.png}
+	\caption[Scatter plot of the first two principal components of iPSYCH 
+	participants coloured by parental country of birth]{The plot is provided without modification from the original paper describing 
+	iPSYCH \cite{pedersen2018ipsych2012} \textbf{TODO:is it okay 
+	to use a plot like this?}. The first two principal components have been 
+	plotted for the iPSYCH participants and coloured according to the parent's 
+	country of birth. The large circles indicate the mean values of a given 
+	genetic ancestry group. The circles with a cross represent the individuals 
+	where both parents are born in the region indicated by the colour, and no 
+	cross means only one parent was.}
+	\label{fig:ipsych_PCPlot}
+\end{wrapfigure}
+
 
 Population stratification can have many sources, and the above solution works if only local subpopulations are present in an otherwise homogeneous population. The problem arise if there are two or more genetic ancestries, as the PCs will not be able to properly account for such stratification. As a results, it seems prudent to highlight this particular cause of population stratification. Analysing different ancestries together in a GWAS is not commonly done. This is due to different ancestries having different minor allele frequencies for certain SNPs, altogether different variants on certain positions, etc.\cite{helgason2005icelandic}. Therefore, the most common way to deal with different ancestries in a genotyped data set is to identify a genetically homogenous subset and perform the association analysis in the homogeneous subpopulation. There have been methods proposed that can account for ancestry such as tractor\cite{atkinson2021tractor}, but they have not been widely adopted yet. 
 
-A homogenous subpopulation can be identified by performing a PCA on all the available individuals and calculating a robust Mahalanobis distance on the first, e.g.\ 20 PCs, and removing anyone above a certain threshold\cite{prive2020efficient}. 
-\textbf{TODO: insert PC plot with ancestries colours to illustrate feasibility}
+A homogenous subpopulation can be identified by performing a PCA on all the 
+available individuals and calculating a robust Mahalanobis distance on the 
+first, e.g.\ 20 PCs, and removing anyone above a certain 
+threshold\cite{prive2020efficient}. An illustration of the feasibility of 
+identifying the genetic ancestry for the iPSYCH participants can be seen in 
+\cref{fig:ipsych_PCPlot}.
 
 \subsubsection{Relatedness}
 Similar to population stratification, relatedness is a common cause of spurious associations. The mechanism behind why relatedness leads to these spurious associations is a little different. If related individuals are in the same analysis, then some individuals are more alike than one would expect if they were drawn at random. Due to this, deviations from the null distribution are likely to occur, not due to the SNP's effect, but rather the sampling. For a Wald test deviation could be expressed as a downwardly biased variance estimate, which leads to inflated test statistics, as the test statistics is the effect estimate divided by the standard error. \textbf{REF?}
 
-There are two common ways to deal with relatedness in a GWAS setting. The first and simplest way is to identify the related individuals and removing them from the analysis. This is effective, but has the downside of reducing the sample size. The second and more involved way is to include the in-sample relatedness (sometimes also called cryptic relatedness) in the model being used for association. In a linear regression setting, the most common way to account for the in-sample relatedness is by using a linear mixed model, where a random effect that models the genotype correlation is added. \textbf{TODO: reference the mixed model section} The random effect is able to account for the covariance structure of the individuals, which is how relatedness affects associations with higher than expected observations\cite{yu2006unified, kang2008efficient}. The in-sample relatedness is accounted for by having the covariance structure of the random effect follow the GRM.
+There are two common ways to deal with relatedness in a GWAS setting. The first 
+and simplest way is to identify the related individuals and removing them from 
+the analysis. This is effective, but has the downside of reducing the sample 
+size. The second and more involved way is to include the in-sample relatedness 
+(sometimes also called cryptic relatedness) in the model being used for 
+association. In a linear regression setting, the most common way to account for 
+the in-sample relatedness is by using a linear mixed model, where a random 
+effect that models the genotype correlation is added (see 
+\cref{sec:GWAS:LinReg} 
+for details). The random 
+effect is able to account for the covariance structure of the individuals, 
+which is how relatedness affects associations with higher than expected 
+observations\cite{yu2006unified, kang2008efficient}. The in-sample relatedness 
+is accounted for by having the covariance structure of the random effect follow 
+the GRM.
 
-If one decides to remove the related individuals instead, then there are several ways to identify the related individuals, with the two most common ways being the genetic relatedness matrix(GRM) and identity by descent(IBD)\textbf{REF TO HOW THESE ARE DONE?}. The GRM consists of the correlation between individual's genotypes, where a value of $ 1 $ means monozygotic twins, $ 0.5 $ is a parent-offspring relationship, etc.. If filtering is performed prior to the association test, the relatedness threshold is usually set to $ 2^{-2.5} \approx 0.177 $ when removing $ 2^{nd} $ degree relatives or closer, or $ 2^{-3.5} \approx 0.088 $ when removing $ 3^{rd} $ degree relatives, etc. Filtering for relatedness with IBD is very similar to how it is done with the GRM, however the values are between $ 0 $ and $ 0.5 $ instead of $ 0 $ and $ 1 $ \textbf{TODO: are the values always between 0 and 0.5 for all IBD methods?}. To get the same level of relatedness filtering with IBD as one would get with the GRM, the thresholds should be shifted by a factor of $ 2^{-1} $ and will instead have thresholds $ 2^{-3.5} $ and $ 2^{-4.5} $, respectively. An IBD approach for identifying relatedness is provided by the KING software\cite{manichaikul2010robust}, and a GRM based approach is provided by the GCTA software \cite{yang2011gcta}. Both ways of estimating relatedness is also implemented in the PLINK software\cite{chang2015second,purcell2007plink}
+If one decides to remove the related individuals instead, then there are several ways to identify the related individuals, with the 
+two most common ways being the genetic relatedness matrix(GRM) and identity by descent(IBD)\textbf{TODO: REF TO HOW THESE ARE DONE?}. 
+The GRM consists of the correlation between individual's genotypes, where a value of $ 1 $ means monozygotic twins, $ 0.5 $ is a 
+parent-offspring relationship, etc.. If filtering is performed prior to the association test, the relatedness threshold is usually set 
+to $ 2^{-2.5} \approx 0.177 $ when removing $ 2^{nd} $ degree relatives or closer, or $ 2^{-3.5} \approx 0.088 $ when removing $ 
+3^{rd} $ degree relatives, etc. Filtering for relatedness with IBD is very similar to how it is done with the GRM, however the values 
+are between $ 0 $ and $ 0.5 $ instead of $ 0 $ and $ 1 $ \textbf{TODO: are the values always between 0 and 0.5 for all IBD methods?}. 
+To get the same level of relatedness filtering with IBD as one would get with the GRM, the thresholds should be shifted by a factor of 
+$ 2^{-1} $ and will instead have thresholds $ 2^{-3.5} $ and $ 2^{-4.5} $, respectively. An IBD approach for identifying relatedness 
+is provided by the KING software\cite{manichaikul2010robust}, and a GRM based approach is provided by the GCTA software 
+\cite{yang2011gcta}. Both ways of estimating relatedness is also implemented in the PLINK 
+software\cite{chang2015second,purcell2007plink}
 
 
 \subsubsection{Multiple testing correction}
@@ -76,12 +136,19 @@ $ \alpha$ is the per-test significance level. This leads to the Bonferroni corre
 
 
 \subsection{Computational efficiency}
-This section will cover some of the common computational or mathematical tricks used to speed up GWAS. We will briefly describe how one can avoid estimating the effect sizes of covariates that we included in the model and common tricks on how to avoid inverting matrices. 
+This section will cover some of the common computational or mathematical tricks used to speed up GWAS. We will briefly describe how 
+one can avoid estimating the effect sizes of covariates that have been included in the model and tricks on how to avoid 
+inverting matrices. 
 
-There is a computational cost involved in estimating the effects of the covariates. Therefore, the most efficient way to account for the covariates without directly calculating their effect in each regression is to project them out of the predictor and the response of interest in \cref{eq:baseGWAS} \cite{sikorska2013gwas}. We will briefly go over how this projection is performed \textbf{TODO:add ref to where this is done}.
+
 
 \subsubsection{Projecting covariates}
-For the sake of completeness, we will present how to regress out the covariates as they were presented by Sikorska et al.\cite{sikorska2013gwas}. If we consider the residual sum of squares(RSS) for \cref{eq:baseGWAS}, we get 
+There is a computational cost involved in estimating the effects of the covariates. Therefore, the most efficient way to account for 
+the covariates without directly calculating their effect in each regression is to project them out of the predictor and the response 
+of interest in \cref{eq:baseGWAS} \cite{sikorska2013gwas}. For the sake of completeness, we will present how to regress out the 
+covariates as they were presented by Sikorska et al.\cite{sikorska2013gwas}. 
+
+Considering the residual sum of squares(RSS) for \cref{eq:baseGWAS}, we get 
 
 \begin{align}
 	RSS =& \left( y - \beta G_j - X\gamma \right)^T\left( y - \beta G_j - X\gamma \right) \\
@@ -143,30 +210,154 @@ With the projection, the effect of the covariates have been removed from the out
 
 \subsubsection{Avoiding inversions}
 
-In this section, we will focus on ways of improving the computational efficiency of linear mixed models. We will use the mixed model implementation in BOLT-LMM as an example. First, a short introduction to which calculations are the most computationally intensive will be provided. Secondly, the solution BOLT-LMM use to circumvent the naive, direct calculations. 
+In this section, we will focus on ways of improving the computational efficiency of linear mixed models. First, a short introduction 
+to which calculations are the most computationally intensive will be provided. Secondly, a way to circumvent the direct 
+calculations will be provided. We will use the mixed model implementation in BOLT-LMM as an example. \textbf{TODO: does REGENIE and 
+other methods use similar tricks ? if so, reference and highlight that here}
 
-Note, BOLT-LMM utilise several tricks and it is beyond the scope of this dissertation to go over all of them in detail. We will mainly consider how the variance components are estimated, as an integral part of using a linear mixed model is estimating the variance components. The linear mixed model used by BOLT-LMM has a variance given by
+BOLT-LMM utilise a stochastic restricted maximum likelihood (REML) approach to estimate the variance components from 
+\cref{eq:baseMixedModelGWAS}. The approach is called stochastic, since it utilise Monte Carlo sampling. The estimate acquired is a 
+REML estimate, as all covariates have already been projected out of the phenotype vector, $ y $, the genotypes, $ G_j $, and the 
+environment, $ \varepsilon $. This means degrees of freedom been reduced by $ C $, which is the rank of the design matrix $ X $. On 
+top of this, all observations will now belong to an $ N-C $ dimensional subspace of $ \mathbb{R}^{N} $, and the distribution of the 
+environmental term is now changed to $ \varepsilon \sim N(\mathbf{0}, \sigma_e^2 P)$, where $ P $ denotes the projection matrix on the 
+space spanned by $ X $. Recall that a projection is symmetric and idempotent, hence only $ P $ is left in the covariance matrix of $ 
+\varepsilon $. 
 
-\begin{equation}
-var(y) = \sigma_g^2 \dfrac{G^TG}{M} + \sigma_e^2 P
+In this reduced setup, we will present how the variance components are estimated in an efficient manner under the infinitesimal model. 
+First, we will reframe the problem in terms of a Bayesian setting where all of the covariates have been projected out. In the notation 
+of \cref{eq:baseMixedModelGWAS}, we have
+
+\begin{equation}\label{eq:bolt:infinitesimalModel}
+y = Z\beta + \varepsilon, \qquad cov(y) = \sigma_g^2 K + \sigma_e^2 P
 \end{equation}
-where $ \sigma_g^2 $ and $ \sigma_e^2 $ are the genetic and environmental variance components respectively. In particular, $ G^TG/M $ is the GRM and models the covariance structure present in the genotypes, and $ P $ is a projection on a covariance spanned subspace (See \textbf{TODO: reference the projection section}). The variance components are estimated by a Monte Carlo restricted maximum likelihood (REML) approach\textbf{REF}. Note, the approach becomes REML due to the projection. Following the Monto Carlo REML approach touches on several computational challenges, but one of the most important ones is inverting a large matrix. Notably, they rephrase the problem of estimating the variance components, and it therefore boils down to solving a system of equations that depend on the following values.
+where each SNP's effect has the prior $ \beta_j \sim N(0, \sigma_j^2)$ with $\sigma_j^2 = \sigma_g^2 / M $. The \textit{stochastic} 
+REML then simulates observations under the model in \cref{eq:bolt:infinitesimalModel} and attempts to find a solution to an 
+equivalent problem. With a slight abuse of notation of $ \lVert \varepsilon \rVert^2$ and  $ \lVert \beta \rVert^2$, we can phrase the 
+alternative problem that we will solve as
+
+\begin{equation} \label{eq:bolt:AlternativeMMEProblem}
+E\left[ \sum \hat{\varepsilon}^2_{rand} \right] = \sum \hat{\varepsilon}^2_{data}, \qquad E\left[ \sum \hat{\beta}^2_{rand} \right] = 
+\sum \hat{\beta}^2_{data}.
+\end{equation}
+Here $ \hat{\beta}^2_{data} $ and $ \hat{\varepsilon}^2_{data} $ are the BLUP estimates in \cref{eq:bolt:infinitesimalModel}. The 
+terms in the expectation are $ \hat{\beta}^2_{rand} $ and $ \hat{\varepsilon}^2_{rand} $ and they are simulated values under the same 
+model, but with a known and fixed $ \sigma_g^2 $ and $ \sigma_e^2 $. The simulated values are given by
+
+\begin{equation} \label{eq:bolt:AlternativeMMEobs}
+y_{rand} = Z \beta_{rand} + \varepsilon_{rand}, \qquad \beta_{rand,j} \sim N(0, \sigma_j^2),  \qquad \varepsilon_{rand,j} \sim N(0, 
+\sigma_e^2).
+\end{equation} 
+Hence, the left hand side of \cref{eq:bolt:AlternativeMMEProblem} can be estimated by samples generated from 
+\cref{eq:bolt:AlternativeMMEobs} with fixed and known variance components and the right hand side can be estimated with a BLUP 
+estimator. This setup allows for iteratively calculating the BLUP estimates and estimating the variance components. We will outline 
+how this iterative scheme is performed now. First, we will assume that we have $ \sigma_g^2 $ and $ \sigma_e^2 $ known and fixed. 
+Then, we will define the following 
 
 \begin{align}
-\delta = \dfrac{\sigma_e^2}{\sigma_g^2} & & & H = \dfrac{G^T G}{M} + \delta I_N
+	\delta := \dfrac{\sigma_e^2}{\sigma_g^2}, \qquad H := K + \delta I_N.
 \end{align}
 From here, the BLUP estimates are given by
-\begin{align}
-\hat{\beta} = \dfrac{G^T H^{-1}}{M} y & & & \hat{e} = \delta H^{-1}y
+\begin{align} \label{eq:bolt:iteratativeBLUP}
+	\hat{\beta} = \dfrac{1}{M}Z^T H^{-1} y,  \qquad  \hat{e} = \delta H^{-1}y
 \end{align}
-With a fixed $ \delta $, the BLUP estimates are constant. 
+Note that the BLUP estimates are constant for a fixed $ \delta $. With this, we can calculate the BLUP estimates. Next, we need a way 
+to find estimates of the variance components, $ \sigma_g^2 $ and $ \sigma_e^2 $. We will rephrase \cref{eq:bolt:AlternativeMMEProblem} 
+as a single equation that depends on $ \delta $ with 
+
+\begin{equation}
+\dfrac
+{E\left[ \sum \hat{\beta}^2_{rand} \right]}
+{E\left[ \sum \hat{\varepsilon}^2_{rand} \right]}
+ =
+\dfrac
+{\sum \hat{\beta}^2_{data}}
+{\sum \hat{\varepsilon}^2_{data}}.
+\end{equation}
+where we can scale $ \sigma_g^2 $ such that it matches the observed data. From here, we can get $ 1 $ on the left hand side of the 
+rephrase equation above, and take the logarithm on both sides to get
+
+\begin{equation}\label{eq:bolt:iterativeRatio}
+f_{reml}(\log(\delta)) 
+:= \log 
+\left(
+\dfrac
+{
+E\left[ \sum \hat{\varepsilon}^2_{rand} \right]	
+\sum \hat{\beta}^2_{data}
+}
+{
+\sum \hat{\varepsilon}^2_{data}
+E\left[ \sum \hat{\beta}^2_{rand} \right]
+}
+\right).
+\end{equation}
+As a result, we have to find a value of $ \delta $ which satisfy $ f_{reml}(\log(\delta)) = 0$. We will not elaborate on the details 
+of how this is done, but it involves using the secant method and a sampling strategy similar to the one used above for the BLUP 
+estimate. In summary, estimating the variance components in a mixed model, as presented in BOLT-LMM, means calculating the BLUP 
+estimates in \cref{eq:bolt:iterativeBLUP} and finding $ \delta $ that solves \cref{eq:bolt:iterativeRatio}. However, the calculations 
+needed to perform the iterative scheme require inverting a matrix. Matrix inversion is computationally expensive and has computational 
+complexity of $ O(N^3) $ if calculated naively \textbf{TODO:ref?}. Other strategies have been suggested, which allows for a 
+computational complexity of $ O(NM^2) $ or $ O(N^2M) $ \textbf{TODO:ref}. The strategy employed in BOLT-LMM has a computational 
+complexity of $ O(NM) $. 
+
+The variance of the phenotype, as seen in \cref{eq:MixedModelGWASCovariance} or in the iterative scheme as 
+\cref{eq:bolt:iterativeBLUP} will have to be inverted, if calculated naively. We can efficiently perform calculations of the form $ 
+H^{-1}y $ and circumvent the inversion by not directly forming $ H $, but instead considering its terms, $ ZZ^T / M$ and $ \delta I_N 
+$. If we multiply with some vector, $ q $, from the right, then it is only the GRM term that is computationally expensive. However, we 
+can express it in the following way
+
+\begin{equation}
+ZZ^T q = \sum_i \left( Z_i Z_i^T\right) q = \sum_i  Z_i \left(Z_i^T q\right) 
+\end{equation}
+The first equation expresses $ Z Z^T $ as the sum of the outer products of columns of $ Z $ and the second as a sum of vectors times a 
+scalar, where the scalar is the result of an inner product between the $ i^{th} $ column of $ Z $ and the given vector $ q $. This 
+reformation of the product $ Z Z^T q$ has computational complexity $ O(NM) $.
+
+\textbf{TODO: i am not sure, but it almost seem like it is suggested that $ (A + B)^{-1} = A^{-1} + B^{-1} $, which i do not think 
+holds generally. they specifically say in the suppNotes that they do not form H and only consider the terms individually and multiply 
+from the right with a vector.}
 
 
-In particular, this means calculating $ H^{-1}$, which requires inverting a $ N \times N $ matrix. Naive matrix inversion requires $ O(N^3) $ operations, which can be restrictive for large $ N $. Computational tricks can be applied, which lower the computational complexity to $ O(NM^2) $ or $ O(N^2M) $. The BOLT-LMM solves this with conjugate gradient iteration, which has computational complexity $ O(NM) $.\textbf{REF}
-More precisely, it is possible to calculate expression of the form $ H^{-1}y $ with only products of $ H $ with some vector. \textbf{REF} These calculations only work because $ H $ is positive semidefinite.
+%%%
 
-\textbf{TODO: should I give some details on the conjugate gradient iteration used?}
+%Note, BOLT-LMM utilise several tricks and it is beyond the scope of this dissertation to go over all of them in detail. We will 
+%mainly 
+%consider how the variance components are estimated, as an integral part of using a linear mixed model is estimating the variance 
+%components. The linear mixed model used by BOLT-LMM has a variance given by
 
+%\begin{equation}
+%var(y) = \sigma_g^2 \dfrac{G^TG}{M} + \sigma_e^2 P
+%\end{equation}
+%where $ \sigma_g^2 $ and $ \sigma_e^2 $ are the genetic and environmental variance components respectively. In particular, $ G^TG/M $ 
+%is the GRM and models the covariance structure present in the genotypes, and $ P $ is a projection on a covariance spanned subspace 
+%(See \textbf{TODO: reference the projection section}). The variance components are estimated by a Monte Carlo restricted maximum 
+%likelihood (REML) approach\textbf{REF}. Note, the approach becomes REML due to the projection. Following the Monto Carlo REML 
+%approach 
+%touches on several computational challenges, but one of the most important ones is inverting a large matrix. Notably, they rephrase 
+%the problem of estimating the variance components, and it therefore boils down to solving a system of equations that depend on the 
+%following values.
+%
+%\begin{align}
+%	\delta = \dfrac{\sigma_e^2}{\sigma_g^2} & & & H = \dfrac{G^T G}{M} + \delta I_N
+%\end{align}
+%From here, the BLUP estimates are given by
+%\begin{align}
+%\hat{\beta} = \dfrac{G^T H^{-1}}{M} y & & & \hat{e} = \delta H^{-1}y
+%\end{align}
+%With a fixed $ \delta $, the BLUP estimates are constant. 
+%
+%
+%In particular, this means calculating $ H^{-1}$, which requires inverting a $ N \times N $ matrix. Naive matrix inversion requires $ 
+%O(N^3) $ operations, which can be restrictive for large $ N $. Computational tricks can be applied, which lower the computational 
+%complexity to $ O(NM^2) $ or $ O(N^2M) $. The BOLT-LMM solves this with conjugate gradient iteration, which has computational 
+%complexity $ O(NM) $.\textbf{REF}
+%More precisely, it is possible to calculate expression of the form $ H^{-1}y $ with only products of $ H $ with some vector. 
+%\textbf{REF} These calculations only work because $ H $ is positive semidefinite.
+%
+%\textbf{TODO: should I give some details on the conjugate gradient iteration used?}
+%
+% \cite{legarra2008computing}: conjugate gradient iteraton paper
 
 %BOLT-LMM utilise a mixed linear model with a Gaussian mixture prior, which allows for a non-infinitesimal model. 
 %BOLT steps

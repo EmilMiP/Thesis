@@ -1,13 +1,21 @@
-In this section we will introduce the most common model for analysing time to event phenotypes, such as age of onset of a disorder. The model is based on a hazard rate, which is given by 
-\begin{equation}
-	\lambda(t | x) = \lambda_0(t)\exp(\beta x + G_j\gamma)
-\end{equation}
-where $ \lambda_0(t) $ is the baseline hazard, $ x $ is the covariates, and $ \beta $ is the covariates effect size, and $ G_j $ is the genotype, $ \gamma $ is the SNP effect. We note that the risk of becoming a case in a given time interval depends on the model's covariates. The association test of interest is then $ H_0: \gamma = 0 $ vs $ H_A: \gamma \neq 0 $.
-\textbf{TODO: SHOULD I ELABORATE ON HOW THE TEST IS PERFORMED? E.G WITH SPA AS SPACOX AND GATE USE IT}
-
+%In this section we will introduce the most common model for analysing time to event phenotypes, such as age of onset of a disorder. 
+%The model is based on a hazard rate, which is given by 
+%\begin{equation}
+%	\lambda(t | x) = \lambda_0(t)\exp(\beta x + G_j\gamma)
+%\end{equation}
+%where $ \lambda_0(t) $ is the baseline hazard, $ x $ is the covariates, and $ \beta $ is the covariates effect size, and $ G_j $ is 
+%the genotype, $ \gamma $ is the SNP effect. We note that the risk of becoming a case in a given time interval depends on the model's 
+%covariates. The association test of interest is then $ H_0: \gamma = 0 $ vs $ H_A: \gamma \neq 0 $.
+%\textbf{TODO: SHOULD I ELABORATE ON HOW THE TEST IS PERFORMED? E.G WITH SPA AS SPACOX AND GATE USE IT}
+%
 
 \subsection{LT-FH++ and survival analysis}
-The hazard rate can be approximated by the probability of observing an event in an infinitesimally small jump in time\cite{kragh2021analysis}. We can express such a probability in a liability threshold setup. Let $ T(t) $ be the threshold for an individual to be a case at time $ t $, $ \ell $ is a person's full liability, and $ x $ denotes the covariates, e.g. genotypes and sex. The approximation is given by the following conditional probability
+The proportional hazards model is defined by the hazard function. The connection to a hazard function is not clear under a liability 
+threshold model. However, a rate can be considered the probability of an event happening in an infinitesimally small change in time 
+\textbf{TODO: ref for this ?}. Under the LTM, the hazard rate can therefore be interpreted as the probability of an individual being 
+diagnosed in such an infinitesimally small change in time\cite{kragh2021analysis}. To describe such a probability, we will let $ T(t) 
+$ be the threshold for an individual to be a case at time $ t $, $ \ell $ is a person's full liability, and $ x $ denotes the 
+covariates, e.g. genotypes and sex. The approximation is given by the following conditional probability
 
 \begin{equation}\label{eq:ltm_case_prob_approx}
 	\lambda(t|x) \approx 
@@ -15,12 +23,15 @@ The hazard rate can be approximated by the probability of observing an event in 
 \end{equation}
 Here $ dt $ denotes a small change in time. This means the hazard rate is proportional to the probability of an event occurring in a time interval $ (t, t + dt) $ given no event has occurred before time $ t $.
 
-We will simplify notation slightly and let $ g_i $ denote the genetic liability $ \ell_{g_i} $ of individual $ i $ under the extended liability threshold model used by LT-FH++. The hazard rate conditioned on the genetic liability is given by
-\begin{equation}
-	\lambda(t | g_i) = \lambda_0(t) \exp(g_i).
-\end{equation}
-In layman's terms, this means individuals with a higher than average genetic liability, $ g_i > 0 $, will have a higher risk of becoming a case throughout their lives independent of age. Therefore, we would expect to see the individuals with a higher than average genetic risk will also on average have an earlier age of onset.
-
+%We will simplify notation slightly and let $ g_i $ denote the genetic liability $ \ell_{g_i} $ of individual $ i $ under the extended 
+%liability threshold model used by LT-FH++. The hazard rate conditioned on the genetic liability is given by
+%\begin{equation}
+%	\lambda(t | g_i) = \lambda_0(t) \exp(g_i).
+%\end{equation}
+%In layman's terms, this means individuals with a higher than average genetic liability, $ g_i > 0 $, will have a higher risk of 
+%becoming a case throughout their lives independent of age. Therefore, we would expect to see the individuals with a higher than 
+%average genetic risk will also on average have an earlier age of onset.
+%
 Under the age-dependent liability threshold model, we can derive the probability of becoming a case in an interval $ (t, t+ dt) $ shown in \cref{eq:ltm_case_prob_approx}. Recall that the threshold $ T(t) $ used to determine case status is monotonic decreasing with age, as the cumulative incidence proportion for a given sex and birth year is monotonic increasing with age. The ADuLT model assumes that an individual's full liability is given by the genetic and environmental components, $ \ell_i = g_i + e_i $. Notably, $ g_i $ and $ e_i $ are independent, normally distributed with variances $ h^2 $ and $ 1 - h^2 $, respectively. By using properties of conditional probabilities, we get
 
 
@@ -47,6 +58,5 @@ From the survival function, we can determine the hazard function with a well kno
 \end{equation}
 
 The model is unusual from other survival models in one particular way. Namely the model is unique to each individual, as the genetic component and threshold all depend on the individual. Older individuals will have a lower threshold and individuals with a high genetic risk are more likely to become cases. The thresholds, $ T_i $, do not have to approach negative infinity as the population increases. In fact, the thresholds will have a lower limit that correspond to the life-time prevalence in the population. Put in another way, the thresholds are stopping times has the halting criteria of being diagnosed or dying.
-
 
 At a first glance, the age-dependent liability threshold model may seem deterministic and therefore be incompatible with survival analysis. However, it is important to note that an individual's liabilities are never observed, which means the environment component can be thought of as capturing environmental effects, chance events, and other non-genetic effects. This leads to a model that is non-deterministic, thereby preserving the stochastic nature of survival models.

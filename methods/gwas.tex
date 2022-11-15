@@ -5,13 +5,14 @@
 This section will briefly go over what a genome-wide association study (GWAS) is, some common considerations, and models used. First, we will present some commonly used model, then cover important topic for performing a GWAS, namely controlling type 1 errors, computational efficiency, and power improvement. At the end, we will also provide a non-exhaustive list of methodological advancements that excel in one or more of these topics. 
 
 
-\subsection{Cochran-Armitage GWAS}
-A GWAS is usually performed on a single SNP at a time, rather than all SNPs at the same time, meaning effect sizes are marginal instead of joint. There are several potential models that can be used to analyse genotypes, and in the early days of GWAS the Cochran-Armitage test \cite{cochran1954some,armitageTest} was used \cite{balding2006tutorial}. 
+\subsection{Common GWAS models} \label{sec:GWAS:LinReg}
+A GWAS is usually performed on a single SNP at a time, rather than all SNPs at the same time, meaning effect sizes are marginal instead of joint. There are several potential models that can be used to analyse genotypes, and in the early days of GWAS the Cochran-Armitage test \cite{cochran1954some,armitageTest} was used \cite{balding2006tutorial}. It has since been superseded by linear regression models, and in recent days there have been a push towards linear mixed models. These models will be presented here.
 
-The Cochran-Armitage test tests for independence in a $ 2\times 3 $ contingency table. However, this test is not able to incorporate covariates to account for important covariates such as population stratification (See \cref{sec:controllingType1Errors} for details). Therefore, regression based methods become popular, as they allow for covariates to be included. If a GWAS is performed with a regression, it implicitly assumed that the genetic effect from a given SNP will be additive, which is not the case for a Cochran-Armitage test. The implicit assumption follows from how the genetic data is coded for regression as $ AA = 0 $, $ Aa = 1 $, and $ aa = 2 $, where $ A $ is the major allele and $ a $ is the minor allele\cite{zeng2015statistical}. When restricting to only additive genetic effects, there is no difference between linear regression and the Cochran-Armitage test\textbf{TODO:REF}.
-Since a Cochran-Armitage based GWAS is not able to incorporate covariates, it is no longer commonly used.
 
-\subsection{Linear regression GWAS} \label{sec:GWAS:LinReg}
+\subsubsection{Cochran-Armitage}
+The Cochran-Armitage test tests for independence in a $ 2\times 3 $ contingency table. However, this test is not able to incorporate covariates to account for important covariates such as population stratification (See \cref{sec:controllingType1Errors} for details). Therefore, regression based methods become popular, as they allow for covariates to be included. If a GWAS is performed with a regression, it implicitly assumed that the genetic effect from a given SNP will be additive, which is not the case for a Cochran-Armitage test. The implicit assumption follows from how the genetic data is coded for regression as $ AA = 0 $, $ Aa = 1 $, and $ aa = 2 $, where $ A $ is the major allele and $ a $ is the minor allele\cite{zeng2015statistical}. When restricting to only additive genetic effects, there is no difference between linear regression and the Cochran-Armitage test\cite{prive2019making}. Since a Cochran-Armitage based GWAS is not able to incorporate covariates, it is no longer commonly used.
+
+\subsubsection{Linear regression GWAS}
 A simple and computationally efficient way to test association between a SNP and an outcome, even when the outcome is binary, is with linear regression. If we have $ N $ individuals for whom we observe a set of $ M $ SNPs, then a linear regression GWAS of a single SNP can be described in the following way.
 
 Let $ y $ denote the $ N\times1 $ vector of phenotypes for each individual, either binary or quantitative, $ X $ be the $ N \times (k+1) $ matrix containing $ k $ covariates and the intercept (a column of 1s), $ G_j $ is a $ N\times 1 $ vector containing the $ j^{th} $ SNP, then the model is given by:
@@ -21,7 +22,7 @@ y = \beta G_{j} +  X\gamma + \varepsilon,
 \end{equation}
 where $ \beta $ denotes the genetic effect size, $ \gamma $ denotes a $ (k + 1) \times 1$ vector of coefficients for the intercept and covariates, $ \varepsilon $ is a $ N \times 1 $ vector of independent normally distributed noise. Going forward, we will assume that both $ y $ and $ G_j $ are scaled to have mean $ 0 $ and variance $ 1 $. The hypothesis being tested is $ H_0: \beta = 0 $ against $ H_A: \beta \neq 0 $. One of the most common ways to perform the test is with a Wald test $ Z = \hat{\beta}/\text{se}(\hat{\beta}) \sim N(0,1)$. \textbf{TODO: what is se(beta)}
  
-In short, regression methods are preferred over the Cochran-Armitage test as covariates can be included and linear regression is preferred over logistic regression, since it is more computationally efficient and there is no difference between their power\cite{sikorska2013gwas,prive2019making,balding2006tutorial}.
+In short, regression methods are preferred over the Cochran-Armitage test as covariates can be included and linear regression is preferred over logistic regression, since it is more computationally efficient and there is no difference between their power\cite{sikorska2013gwas,prive2019making,balding2006tutorial,de2015magma}.
 
 
 \subsubsection{Linear mixed model GWAS} 
@@ -38,7 +39,7 @@ vector, and we can define the covariance structure of $ u $ by $ \Sigma $. In a 
 \begin{equation} \label{eq:MixedModelGWASCovariance}
 cov(y) = \sigma_g^2K + \sigma^2_e I_N.
 \end{equation}
-Where $ \sigma^2_e $ is the environmental variance component, $ I_N $ is the $ N \times N $ dimensional identity matrix, $ \sigma_g^2 $ is the genetic variance component, and $ K $ is the GRM on a subset of SNPs. With the choice of $ I_N $ for the environmental covariance structure, an independent environment is implicitly assumed for all individuals. Similarly, $ K $ allows individuals with a high correlation to be accounted for. The mixed model requires estimates of $ \sigma_e^2 $ and $ \sigma_g^2 $. Computationally, linear mixed models are far more intensive than linear regression, but the benefit of these models is their ability to boost power over simple linear regression. See \textbf{TODO: ref computational efficiency section} for details on computational and mathematical tricks that can speed up the computations.
+Where $ \sigma^2_e $ is the environmental variance component, $ I_N $ is the $ N \times N $ dimensional identity matrix, $ \sigma_g^2 $ is the genetic variance component, and $ K $ is the GRM on a subset of SNPs. With the choice of $ I_N $ for the environmental covariance structure, an independent environment is implicitly assumed for all individuals. Similarly, $ K $ allows individuals with a high correlation to be accounted for. The mixed model requires estimates of $ \sigma_e^2 $ and $ \sigma_g^2 $. Computationally, linear mixed models are far more intensive than linear regression, but the benefit of these models is their ability to boost power over simple linear regression. See \cref{sec:computationalEfficiency} for details on computational and mathematical tricks that can speed up the computations.
 
 
 \subsection{Controlling type-1 errors} \label{sec:controllingType1Errors}
@@ -79,25 +80,36 @@ An IBD approach for identifying relatedness is provided by the KING software\cit
 
 
 \subsubsection{Multiple testing correction}
-A GWAS consists of testing each available SNP for an association with the phenotype of interest. This means several million tests are often performed. A classical statical approach to hypothesis testing means a test has a significance threshold denoted by $ \alpha $, which is most commonly $ 5\% $. If the p-value is below $ \alpha $, the null hypothesis is rejected and the alternative hypothesis is accepted. Due to the p-values being uniformly distributed under the null hypothesis, we will expect to have $ (100\times \alpha) \%$ of the tests performed rejects the null hypothesis purely by chance. There are ways to account for this. The most common multiple testing correction method used in GWAS is the Bonferroni correction\textbf{REF}. As a motivation for the Bonferroni correction, let $ n $ independent tests be given, then the family-wide error rate $ \bar{\alpha} $, meaning the probability of seeing at least one false positive across all $ n $ tests, is given by
+A GWAS consists of testing each available SNP for an association with the phenotype of interest. This means several million tests are often performed. A classical statical approach to hypothesis testing means a test has a significance threshold denoted by $ \alpha $, which is most commonly $ 5\% $. If the p-value is below $ \alpha $, the null hypothesis is rejected and the alternative hypothesis is accepted. Due to the p-values being uniformly distributed under the null hypothesis, we will expect to have $ (100\times \alpha) \%$ of the tests performed rejects the null hypothesis purely by chance. There are ways to account for this. The most common multiple testing correction method used in GWAS is the Bonferroni correction\cite{balding2006tutorial,rice2008methods}. As a motivation for the Bonferroni correction, let $ n $ independent tests be given, then the family-wide error rate $ \bar{\alpha} $, meaning the probability of seeing at least one false positive across all $ n $ tests, is given by
 
 \begin{equation} \label{eq:bonferroni}
 \bar{\alpha} = 1 - (1-\alpha)^n 
 \end{equation}
-$ \alpha$ is the per-test significance level. This leads to the Bonferroni correction $ \alpha_{bf} =  \alpha/n $. By comparing the repeated tests against $ \alpha_{bf} $ instead of $ \alpha $, the expected number of false positives will remain $ \alpha $ across all tests performed, thereby controlling the number of type-1 errors. In a GWAS setting, it is common to assume 1 million independent tests are performed \textbf{REF?}, which leads to a genome-wide significance threshold of $ 5 \times 10^{-8} $.
+$ \alpha$ is the per-test significance level. This leads to the Bonferroni correction $ \alpha_{bf} =  \alpha/n $. By comparing the repeated tests against $ \alpha_{bf} $ instead of $ \alpha $, the expected number of false positives will remain $ \alpha $ across all tests performed, thereby controlling the number of type-1 errors. In a GWAS setting, it is common to assume 1 million independent tests are performed\cite{pe2008estimation}, which leads to a genome-wide significance threshold of $ 5 \times 10^{-8} $.
 
 
 
-\subsubsection{Saddle point approximation}
-\textbf{TODO: introduce SPA, as it is used by several methods}
-\textbf{TODO: i do not want to derive anything. mention it can be used to estimate the CDF given a moment generating function is known and that is it ?}
+\subsubsection{Unbalanced case-control phenotypes}
+If a case-control phenotype is used in a GWAS, where the case-control ratio exceeds $ 1{:}80 $, it may have significantly inflated test statistics\cite{zhou2018efficiently,}. Ma et al. frames the same problem in terms of minor allele count(MAC) and suggests a MAC of $ 400 $ or higher for a well-balanced test\cite{ma2013recommended}. The unbalanced case-control phenotypes lead to inflated test statistics because the tests often rely on asymptotic distribution assumptions. These assumptions do not seem to hold if the MAC is low or if the case-control ratio is unbalanced. While BOLT-LMM provided an efficient implementation for linear mixed models, further study of the software have revealed that it suffers from inflated test statistics.
 
-\textbf{TODO: Florian's comment: "You need to say why this is needed: in the case of very unbalanced cc pheno, to avoid inflated stats IIRC"}
+Methods such as SAIGE\cite{zhou2018efficiently}, SPACox\cite{bi2020fast}, GATE\cite{dey2022efficient}, and REGENEIE\cite{mbatchou2021computationally} have been proposed to combat the inflation of test statistics due to deviations from the asymptotic distribution assumptions. A strategy most of these methods utilise is the saddle point approximation (SPA)\cite{daniels1954saddlepoint,kuonen1999miscellanea}. One of the advantages of using SPA is that it provides good control of Type 1 error, even for unbalanced case-control phenotypes and as such do not suffer from inflation of the test statistic in such cases\cite{mbatchou2021computationally}.
 
-Other methods that are based on the saddle point approximation (SPA)\cite{daniels1954saddlepoint,kuonen1999miscellanea} have been proposed by methods such as SAIGE\cite{zhou2018efficiently} and REGENIE\cite{mbatchou2021computationally}. One of the advantages of using SPA is that it provides good control of Type 1 error, even for unbalanced case-control phenotypes. While BOLT-LMM provided an efficient implementation for linear mixed models, further study of the software have revealed that it suffers from inflated test statistics when case-control ratio is $ 1{\,:\,}50 $ or higher. SPA-based methods do not suffer from inflation in such cases\cite{mbatchou2021computationally}.
+SPA can efficiently estimate CDF probabilities from only the cumulant generating function, $ K $. Let $ T $ be the test statistics of a commonly used GWAS association test statistics, then the CDF of $ T $, which is needed to calculate p-values, is approximated by
+
+\begin{equation}
+P(T < x) = \Phi\left( w + w^{-1} \log(v/w)\right)
+\end{equation}
+with $ \Phi $ denotes the standard normal CDF and
+\begin{equation}
+w = \text{sign}(\hat{\zeta})\left[2\left(\hat{\zeta} x - K(\hat{\zeta})\right) \right]^{1/2},
+ \qquad 
+v = \hat{\zeta}\sqrt{K^{''}(\hat{\zeta})}
+\end{equation}
+where $ \hat{\zeta} = \hat{\zeta}(x) $ is the solution to $ K^{'}(\hat{\zeta}) = x $, with $ K^{'} $ and $ K^{''} $ denoting the first and second derivative of the cumulant generating function. If the test statistic is close to the mean, a normal approximation is usually good. As a result, the normal distribution is often used if the test statistic is within two standard deviations of the mean, and the SPA otherwise.
 
 
-\subsection{Computational efficiency}
+
+\subsection{Computational efficiency} \label{sec:computationalEfficiency}
 This section will cover some of the common computational or mathematical tricks used to speed up GWAS. Biobanks have been steadily increasing in size. it is therefore more important than ever to have as efficient methods as possible, since we would otherwise risk having data sets too large to properly analyse. We will briefly describe how one can avoid estimating the effect sizes of covariates that have been included in the model and tricks on how to avoid inverting matrices. 
 
 
@@ -167,10 +179,9 @@ With the projection, the effect of the covariates have been removed from the out
 
 \subsubsection{Avoiding large matrix inversions}
 
-In this section, we will focus on ways of improving the computational efficiency of linear mixed models. First, a short introduction to which calculations are the most computationally intensive will be provided. Secondly, a way to circumvent the direct calculations will be provided. We will use the mixed model implementation in BOLT-LMM as an example. \textbf{TODO: does REGENIE and other methods use similar tricks ? if so, reference and highlight that here}
+In this section, we will focus on ways of improving the computational efficiency of linear mixed models. First, a short introduction to which calculations are the most computationally intensive will be provided. Secondly, a way to circumvent the direct calculations will be provided. We will use the mixed model implementation in BOLT-LMM as an example.
 
-BOLT-LMM utilises a stochastic restricted maximum likelihood (REML) approach to estimate the variance components from 
-\cref{eq:baseMixedModelGWAS}. The approach is called stochastic, since it utilises Monte Carlo sampling. The estimate acquired is a REML estimate, as all covariates have already been projected out of the phenotype vector, $ y $, the genotypes, $ G_j $, and the environment, $ \varepsilon $. This means degrees of freedom been reduced by $ C $, which is the rank of the design matrix $ X $. On top of this, all observations will now belong to an $ N-C $ dimensional subspace of $ \mathbb{R}^{N} $, and the distribution of the environmental term is now changed to $ \varepsilon \sim N(\mathbf{0}, \sigma_e^2 P)$, where $ P $ denotes the projection matrix on the space spanned by $ X $. Recall that a projection is symmetric and idempotent, hence only $ P $ is left in the covariance matrix of $ \varepsilon $. 
+BOLT-LMM utilises a stochastic restricted maximum likelihood (REML) approach to estimate the variance components from \cref{eq:baseMixedModelGWAS}. The approach is called stochastic, since it utilises Monte Carlo sampling. The estimate acquired is a REML estimate, as all covariates have already been projected out of the phenotype vector, $ y $, the genotypes, $ G_j $, and the environment, $ \varepsilon $. This means degrees of freedom been reduced by $ C $, which is the rank of the design matrix $ X $. On top of this, all observations will now belong to an $ N-C $ dimensional subspace of $ \mathbb{R}^{N} $, and the distribution of the environmental term is now changed to $ \varepsilon \sim N(\mathbf{0}, \sigma_e^2 P)$, where $ P $ denotes the projection matrix on the space spanned by $ X $. Recall that a projection is symmetric and idempotent, hence only $ P $ is left in the covariance matrix of $ \varepsilon $. 
 
 In this reduced setup, we will present how the variance components are estimated in an efficient manner under the infinitesimal model. First, we will reframe the problem in terms of a Bayesian setting where all of the covariates have been projected out. In the notation of \cref{eq:baseMixedModelGWAS}, we have
 
@@ -228,7 +239,7 @@ E\left[ \sum \hat{\beta}^2_{rand} \right]
 }
 \right).
 \end{equation}
-As a result, we have to find a value of $ \delta $ which satisfy $ f_{reml}(\log(\delta)) = 0$. We will not elaborate on the details of how this is done, but it involves using the secant method and a sampling strategy similar to the one used above for the BLUP estimate. In summary, estimating the variance components in a mixed model, as presented in BOLT-LMM, means calculating the BLUP estimates in \cref{eq:bolt:iterativeBLUP} and finding $ \delta $ that solves \cref{eq:bolt:iterativeRatio}. However, the calculations needed to perform the iterative scheme require inverting a matrix. Matrix inversion is computationally expensive and has computational complexity of $ O(N^3) $ if calculated naively. Other strategies have been suggested, which allows for a computational complexity of $ O(NM^2) $ or $ O(N^2M) $ \textbf{TODO:ref}. The strategy employed in BOLT-LMM has a computational complexity of $ O(NM) $, which makes it much faster. 
+As a result, we have to find a value of $ \delta $ which satisfy $ f_{reml}(\log(\delta)) = 0$. We will not elaborate on the details of how this is done, but it involves using the secant method and a sampling strategy similar to the one used above for the BLUP estimate. In summary, estimating the variance components in a mixed model, as presented in BOLT-LMM, means calculating the BLUP estimates in \cref{eq:bolt:iterativeBLUP} and finding $ \delta $ that solves \cref{eq:bolt:iterativeRatio}. However, the calculations needed to perform the iterative scheme require inverting a matrix. Matrix inversion is computationally expensive and has computational complexity of $ O(N^3) $ if calculated naively. Other strategies have been suggested, which allows for a computational complexity of $ O(NM^2) $ or $ O(N^2M) $ \cite{svishcheva2012rapid,lippert2011fast}. The strategy employed in BOLT-LMM has a computational complexity of $ O(NM) $, which makes it much faster. 
 
 The variance of the phenotype, as seen in \cref{eq:MixedModelGWASCovariance} or in the iterative scheme as \cref{eq:bolt:iterativeBLUP} will have to be inverted, if calculated naively. We can efficiently perform calculations of the form $ H^{-1}y $ and circumvent the inversion by not directly forming $ H $, but instead considering its terms, $ ZZ^T / M$ and $ \delta I_N$. If we multiply with some vector, $ q $, from the right, then it is only the GRM term that is computationally expensive. However, we can express it in the following way
 
@@ -239,46 +250,6 @@ The first equation expresses $ Z Z^T $ as the sum of the outer products of colum
 
 \textbf{TODO: i am not sure, but it almost seem like it is suggested that $ (A + B)^{-1} = A^{-1} + B^{-1} $, which i do not think holds generally. they specifically say in the suppNotes that they do not form H and only consider the terms individually and multiply from the right with a vector.}
 
-
-%%%
-
-%Note, BOLT-LMM utilise several tricks and it is beyond the scope of this dissertation to go over all of them in detail. We will 
-%mainly 
-%consider how the variance components are estimated, as an integral part of using a linear mixed model is estimating the variance 
-%components. The linear mixed model used by BOLT-LMM has a variance given by
-
-%\begin{equation}
-%var(y) = \sigma_g^2 \dfrac{G^TG}{M} + \sigma_e^2 P
-%\end{equation}
-%where $ \sigma_g^2 $ and $ \sigma_e^2 $ are the genetic and environmental variance components respectively. In particular, $ G^TG/M $ 
-%is the GRM and models the covariance structure present in the genotypes, and $ P $ is a projection on a covariance spanned subspace 
-%(See \textbf{TODO: reference the projection section}). The variance components are estimated by a Monte Carlo restricted maximum 
-%likelihood (REML) approach\textbf{REF}. Note, the approach becomes REML due to the projection. Following the Monto Carlo REML 
-%approach 
-%touches on several computational challenges, but one of the most important ones is inverting a large matrix. Notably, they rephrase 
-%the problem of estimating the variance components, and it therefore boils down to solving a system of equations that depend on the 
-%following values.
-%
-%\begin{align}
-%	\delta = \dfrac{\sigma_e^2}{\sigma_g^2} & & & H = \dfrac{G^T G}{M} + \delta I_N
-%\end{align}
-%From here, the BLUP estimates are given by
-%\begin{align}
-%\hat{\beta} = \dfrac{G^T H^{-1}}{M} y & & & \hat{e} = \delta H^{-1}y
-%\end{align}
-%With a fixed $ \delta $, the BLUP estimates are constant. 
-%
-%
-%In particular, this means calculating $ H^{-1}$, which requires inverting a $ N \times N $ matrix. Naive matrix inversion requires $ 
-%O(N^3) $ operations, which can be restrictive for large $ N $. Computational tricks can be applied, which lower the computational 
-%complexity to $ O(NM^2) $ or $ O(N^2M) $. The BOLT-LMM solves this with conjugate gradient iteration, which has computational 
-%complexity $ O(NM) $.\textbf{REF}
-%More precisely, it is possible to calculate expression of the form $ H^{-1}y $ with only products of $ H $ with some vector. 
-%\textbf{REF} These calculations only work because $ H $ is positive semidefinite.
-%
-%\textbf{TODO: should I give some details on the conjugate gradient iteration used?}
-%
-% \cite{legarra2008computing}: conjugate gradient iteraton paper
 
 %BOLT-LMM utilise a mixed linear model with a Gaussian mixture prior, which allows for a non-infinitesimal model. 
 %BOLT steps
@@ -294,7 +265,7 @@ The first equation expresses $ Z Z^T $ as the sum of the outer products of colum
 
 Increasing power to detect the true associations has been another primary focus of GWAS method developments. The leap from linear regression to a linear mixed model is expected to provide a power increase \cite{loh2015efficient}. The increase comes from modelling the covariance structure present in the data, which is not possible for linear regression. As the covariance structure is modelled, it is no longer necessary to remove individuals due to relatedness or population stratification. This has the additional benefit that the sample size increase, which in turn increases power. 
 
-Another source of power improvement is accounting for the effect of other SNPs. When one accounts for other SNPs in this manner, it essentially means a reduction in the residual variance of the phenotype, which is also why it has been referred to as \textit{denoising} the phenotype\textbf{REF}. Reducing the residual variance of the phenotype has proven to be an effect way to increase power in a GWAS, and we will briefly present how it can be done. Again, we will use BOLT-LMM as an example.
+Another source of power improvement is accounting for the effect of other SNPs. When one accounts for other SNPs in this manner, it essentially means a reduction in the residual variance of the phenotype, which is also why it has been referred to as \textit{denoising} the phenotype\cite{aschard2015adjusting}. Reducing the residual variance of the phenotype has proven to be an effect way to increase power in a GWAS, and we will briefly present how it can be done. Again, we will use BOLT-LMM as an example.
 
 In BOLT-LMM, they utilise an infinitesimal model and a Bayesian model with mixture Gaussian priors. The mixture model allows for a non-infinitesimal model to be used, as some SNPs will be set to $ 0 $ and the variance for groups of SNPs can vary.  In a linear mixed model setup, as seen in \cref{sec:GWAS:LinReg} and with the covariance of $ y $ given as $V = \sigma_g^2G^TG/M + \sigma_e^2I_N $, the test statistic is given by
 
@@ -318,7 +289,7 @@ When introducing the Gaussian mixture prior, they generalise the test statistic 
 \begin{equation}\label{eq:boltMixturePriorTestChisq}
 \chi^2_{BOLT-LMM} = \dfrac{\left( G_j^T y_{residual}\right)^2}{c}
 \end{equation}
-where $ y_{residual} $ is a residual phenotype vector obtained after fitting a Gaussian mixture extension of the standard LMM. The model used to fit the phenotype is still using LOCO, but to ease notation, the notation has been suppressed. The calibration factor $ c $ is chosen such that the intercept of $ \chi^2_{BOLT-LMM} $ with LD score regression model\textbf{REF LDSC} matches the intercept of the properly calibrated $ \chi^2_{BOLT-INF} $.
+where $ y_{residual} $ is a residual phenotype vector obtained after fitting a Gaussian mixture extension of the standard LMM. The model used to fit the phenotype is still using LOCO, but to ease notation, the notation has been suppressed. The calibration factor $ c $ is chosen such that the intercept of $ \chi^2_{BOLT-LMM} $ with LD score regression\cite{bulik2015ld} model matches the intercept of the properly calibrated $ \chi^2_{BOLT-INF} $.
 
 The test statistic for the non-infinitesimal model require calculating the residualised phenotype $ y_{residual} $. Next we will describe how those are obtained. Under a Bayesian framework, the null model associated with \cref{eq:boltLMMchisqLOCO} is given as
 

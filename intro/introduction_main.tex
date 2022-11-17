@@ -1,1 +1,72 @@
-we extended LT-FH \cite{hujoel2020liability} to LT-FH++ \cite{pedersen2022accounting}.
+Proposed structure
+
+{\itshape
+- Understanding disease genetics is important
+
+- GWAS has drastically improved our understanding of disease aetiology}
+
+TBD Text
+
+
+
+{\itshape
+	- How has statistical power been improved in GWAS 
+	
+	- Why is it important to continue to improve statistical power in GWAS?
+}
+The two primary ways statistical power has been increased in a GWAS setting have been through sample size increases and methodological improvements. The sample size increases are straight forward. Either a biobank genotypes more individuals or a meta-analysis is performed where several biobanks contribute summary statistics. The largest meta analysis performed so far are based on more than $ 1 $ million individuals\textbf{TODO:REFs}. Methodological improvements have also been made alongside the sample size increases. The improvements have mainly been in two directions, namely computational efficiency and more complex models. As an example, prior to the publication of the BOLT-LMM\cite{loh2015efficient} software, linear mixed models had a prohibitive computational cost that restricted the number of individuals that could be analysed at a time.% The pursuit of improving GWAS methods continue. 
+
+{\itshape
+- What information is commonly being used else where ? other fields, epidemiology, animal breeding etc.
+}
+
+While the sample sizes and methodological improvements are likely to continue, it is also worthwhile to consider related fields and their common practices. Taking inspiration from related fields and applying it in human genetics have already resulted in significant improvements to human genetics. Animal breeding share many similarities with human genetics and their computational tricks and commonly used models have already had an impact. e.g.\ Some of the computational tricks employed by BOLT-LMM are inspired from animal breeding and the PRS are heavily inspired by the genetic breeding value employed in animal breeding\textbf{TODO:ref}. However, one field that have not received much attention yet is epidemiology. In epidemiology, animal breeding, and human genetics prior to the boom in genotyping, family history have been a strong and valuable predictor of many disorders \textbf{TODO: refs}. One notable way family history has been used in human genetics is in the Framingham heart study\textbf{TODO:ref}, where it has been used to improve the risk of heart disease.
+
+
+{\itshape
+- Is it possible to get the same information included in GWAS? if so, from where?
+
+	- Making use of that information is particularly relevant when genetic data is linked to EHRs
+}
+
+Unfortunately, family history is not commonly available with genetic data in biobanks, which has limited the development of methods that can utilise family history in human genetics. There are a small, but increasing number of biobanks that have some degree of family history linked to their genetic data. Some notable biobanks that have family history are UK biobank (UKBB), deCODE, iPSYCH, and FinnGen\textbf{TODO:refs}. If family history is available, the coverage and source of the information is often not consistent across biobanks. In UKBB, only $ 12 $ disorders have family history information and it is acquired through questionnaires. iPSYCH has been linked to the Danish registers. FinnGen originates from Finland, and they have some very detailed register information, however FinnGen only has limited family history. It is only the parental cause of death that is allowed to be linked to the genetic data so far, but the information is available in the Finnish registers. While the adoption of family history by biobanks has been limited, the family history methods that have been developed so far have shown a tremendous amount of potential. 
+
+{\itshape
+	- Accounting for family history can boost statistical power in GWAS
+	- GWAX, LT-FH, does other methods exist?
+}
+
+One of the first and most well-known family history methods that was developed is called genome-wide association study by proxy (GWAX). It works by redefining the phenotype that is being analysed. Under the GWAX model, cases are individuals that are themselves or have close family members that are affected by a disorder. The researchers that proposed GWAX analysed Alzheimer's disease. Alzheimer's disease have a low prevalence among the UKBB participants, since many are not old enough to have been diagnosed with it, but many of their parents are old enough. As a result, GWAX increased the number of considered cases. For low prevalence disorders, this has been shown to be useful when trying to identify genome-wide significant SNPs.
+
+
+
+{\itshape
+- However, most GWAS to date do not consider age-of-onset information, nor family history.
+
+	- What methods are available that can account for this additional information?
+}
+
+TBD Text
+
+
+{\itshape
+subsection: 
+- Accounting for age-of-onset can boost power (Survival analysis), also in GWAS 
+	- what methods have been published for proportional hazards and frailty models?
+		- COXMEG, SPACox, GATE, ..? Only SPAcox and GATE are relevant / scalable.
+}
+
+
+{\itshape
+- Review existing approaches and discuss limitations
+}
+
+TBD Text
+
+{\itshape
+- Highlight relevance in relation to psychiatric disorders
+}
+
+TBD Text
+
+

@@ -1,7 +1,21 @@
 
-This section deals with how to utilise family history and age-of-onset to increase power in a GWAS\textbf{TODO: Should I talk about cox proportional hazards to some extent in this section too or only LT-FH++ as a survival model?}. All methods that account for family history and have been published, redefine or recalculate the phenotype. This type of improvement is different from the main focus for methodological developments so far, with methods such as BOLT-LMM\cite{loh2015efficient}, REGENIE\cite{mbatchou2021computationally}, and GATE\cite{dey2022efficient} that account for cryptic relatedness in the genotypes. The research into accounting for family history by refining the phenotype has been very limited in comparison. This is likely due to the relatively low occurrence of family history information in conjunction with genotype data. There have been some biobanks, such as UK biobank, deCODE, iPSYCH, and FinnGen,\textbf{TODO:Add refs to these biobanks} where \textit{some} level of family history information have been linked with genotypes. 
+This section deals with how to utilise family history and age-of-onset to increase power in a GWAS\textbf{TODO: Should I talk about 
+cox proportional hazards to some extent in this section too or only LT-FH++ as a survival model?}. All published methods that account 
+for family history redefine or recalculate the phenotype. This type of improvement is different from the main 
+focus for methodological developments so far, with methods such as BOLT-LMM\cite{loh2015efficient}, 
+REGENIE\cite{mbatchou2021computationally}, and GATE\cite{dey2022efficient} that account for cryptic relatedness in the genotypes. The 
+research into accounting for family history by refining the phenotype has been very limited in comparison. This is likely due to the 
+relatively low occurrence of family history information in conjunction with genotype data. There have been some biobanks, such as UK 
+biobank, deCODE, iPSYCH, and FinnGen,\textbf{TODO:Add refs to these biobanks} where \textit{some} level of family history information 
+have been linked with genotypes. 
 
-The first method we will introduce that accounts for family history is genome-wide association study by proxy (GWAX)\cite{gwax}. GWAX is not a model based approach, but rather a heuristic way to account for family history. Next, we will present the liability threshold model originally introduced by Falconer\cite{falconer1965inheritance} and extensions of this model. We will present two extensions, the first is called liability threshold model conditional on family history (LT-FH)\cite{hujoel2020liability} and the second is called LT-FH++. LT-FH++ has been developed and implemented during this PhD. As a result, it is the method this dissertation is focused on. LT-FH++ is an extension of the LT-FH method that is also able to account for age-of-onset or age, sex, and cohort effects in each included individual, while being very computationally efficient. \textbf{TODO: Am I still underselling LT-FH++ here?}
+The first method we will introduce that accounts for family history is genome-wide association study by proxy (GWAX)\cite{gwax}. GWAX 
+is not a model based approach, but rather a heuristic way to account for family history. Next, we will present the liability threshold 
+model originally introduced by Falconer\cite{falconer1965inheritance} and extensions of this model. We will present two extensions, 
+the first is called liability threshold model conditional on family history (LT-FH)\cite{hujoel2020liability} and the second is called 
+LT-FH++. LT-FH++ has been developed and implemented during this PhD. As a result, it is the method this dissertation is focused on. 
+LT-FH++ is an extension of the LT-FH method that is also able to account for age-of-onset or age, sex, and cohort effects in each 
+included individual, while being very computationally efficient. \textbf{TODO: Am I still underselling LT-FH++ here?}
 
 \subsection{GWAX}
 % GWAX

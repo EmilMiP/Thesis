@@ -20,7 +20,10 @@ Let $ y $ denote the $ N\times1 $ vector of phenotypes for each individual, eith
 \begin{equation}\label{eq:baseGWAS}
 y = \beta G_{j} +  X\gamma + \varepsilon,
 \end{equation}
-where $ \beta $ denotes the genetic effect size, $ \gamma $ denotes a $ (k + 1) \times 1$ vector of coefficients for the intercept and covariates, $ \varepsilon $ is a $ N \times 1 $ vector of independent normally distributed noise. Going forward, we will assume that both $ y $ and $ G_j $ are scaled to have mean $ 0 $ and variance $ 1 $. The hypothesis being tested is $ H_0: \beta = 0 $ against $ H_A: \beta \neq 0 $. One of the most common ways to perform the test is with a Wald test $ Z = \hat{\beta}/\text{se}(\hat{\beta}) \sim N(0,1)$. \textbf{TODO: what is se(beta)}
+where $ \beta $ denotes the genetic effect size, $ \gamma $ denotes a $ (k + 1) \times 1$ vector of coefficients for the intercept and 
+covariates, $ \varepsilon $ is a $ N \times 1 $ vector of independent normally distributed noise. Going forward, we will assume that 
+both $ y $ and $ G_j $ are scaled to have mean $ 0 $ and variance $ 1 $. The hypothesis being tested is $ H_0: \beta = 0 $ against $ 
+H_A: \beta \neq 0 $. 
  
 In short, regression methods are preferred over the Cochran-Armitage test as covariates can be included and linear regression is preferred over logistic regression, since it is more computationally efficient and there is no difference between their power\cite{sikorska2013gwas,prive2019making,balding2006tutorial,de2015magma}.
 
@@ -173,7 +176,13 @@ The normal equation for systems of equations of the form $ Ax=b $ say that $ \ha
 \begin{align}\label{eq:univarGWAS}
 	y^\ast = \hat{\beta} G_j^{\ast} + \varepsilon&   &\text{with simplified solution}&  &\hat{\beta} = \dfrac{\left( G_j^{\ast} \right)^T y^{\ast}}{\left( G_j^{\ast} \right)^T G_j^{\ast}}.
 \end{align}
-With the projection, the effect of the covariates have been removed from the outcome and the predictor, i.e. the phenotype and the genotype do \textit{not} depend on $ \gamma $ any more. Therefore, the calculations have been simplified and the calculations for the projection matrix only has to be performed once. Accounting for the covariate's effect in the phenotype also only has to be done once, the removal of the covariate's effect on the SNP has to be done for each SNP separately.
+With the projection, the effect of the covariates have been removed from the outcome and the predictor, i.e. the phenotype and the 
+genotype do \textit{not} depend on $ \gamma $ any more. Therefore, the calculations have been simplified and the calculations for the 
+projection matrix only has to be performed once. Accounting for the covariate's effect in the phenotype also only has to be done once, 
+the removal of the covariate's effect on the SNP has to be done for each SNP separately.
+
+One of the most common ways to perform the test is with a Wald test $ Z = \hat{\beta}/\text{se}(\hat{\beta}) \sim N(0,1)$. 
+\textbf{TODO: what is se(beta)}
 \textbf{TODO: Florian's thesis deals with speeding up computations even further, mention this too?}
 
 

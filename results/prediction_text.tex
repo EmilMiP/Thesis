@@ -1,18 +1,19 @@
-The final paper does not focus on GWAS, but rather focuses on the predictive value of the LT-FH++ phenotype as an alternative 
+The final paper does not focus on GWAS, but rather on the predictive value of the LT-FH++ phenotype as an alternative 
 to the conventional binary family history variable in prediction models. In epidemiology, family history is a well-known and powerful 
 predictor that has been used to improve prediction models of complex phenotypes such as mental disorders and suicide. As the intension 
 is to provide an estimate of an individual's liability for a given disorder, we will not consider the case-control status of the index 
-person, buyt only the family members. In many ways this is similar to the purpose of the PRS and how it is currently being used to 
+person, but only the family members. In many ways this is similar to the purpose of the PRS and how it is currently being used to 
 screen individuals for disorders. However, instead of using the individual's genotypes to acquire an aggregate genetic risk score, we 
 will use the family history to estimate a liability. 
+
+
+\subsubsection{Real-world analysis}
 
 \begin{wrapfigure}{O}{10cm}
 	\includegraphics[width=10cm]{results/adhd_predictive_power.png}
 	\caption[Out of sample prediction performance]{text}
 	\label{fig:paper3:predictionResults}
 \end{wrapfigure}
-
-
 We will consider a base model that contains the index person's sex, age, and $ 20 $ PCs. We will add additional predictors to the base 
 model and assess the additional predictive value of each predictor. From the additional predictors and combinations of them, we can 
 derive the best family history variable and the best overall model. We will consider the PRS for a given disorder, as well as a binary 

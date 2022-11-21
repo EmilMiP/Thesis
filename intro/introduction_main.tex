@@ -3,34 +3,27 @@ Proposed structure
 {\itshape
 - Understanding disease genetics is important
 
-- GWAS has drastically improved our understanding of disease aetiology}
+- GWAS has drastically improved our understanding of disease aetiology
 
-Over the last decade, human genetics has been consumed by the pursuit of SNPs or genes that are associated with some disorder; and 
-for good reason. Identifying these SNPs or genes has the potential to expand our knowledge on diseases and their aetiology. With that
-knowledge, better cures, medicine, or even preventive measures can be developed. The field as a whole is not quite there yet, but many 
-promising discoveries have already been made. Some notable achievements are the development of screening methods for any disorder in 
-the form of a polygenic risk score (PRS), precision medicine, or new genes to target for drug treatment, as well as shining some light 
-on the aetiology of complex and polygenic disorders. In particular, the PRS has the potential to become more than just a screening 
-tool, as much research continue to focus on its diagnostic abilities. One of the driving factors behind the development that has been 
-achieved so far is the genome-wide association study (GWAS). It allows for the identification of SNPs or genes that are associated 
-with a given order. The associated SNPs can then be examined further with downstream analysis or an aggregate of SNPs can be used to 
-construct a PRS. Therefore, it is very important to continue to improve methods and increase the statistical power in a GWAS setting.
+- Why is it important to continue to improve statistical power in GWAS?
+
+}
+
+Over the last decade, human genetics has been consumed by the pursuit of SNPs or genes that are associated with some disorder; and for good reason. Identifying these SNPs or genes has the potential to expand our knowledge on diseases and their aetiology. With that knowledge, better cures, medicine, or even preventive measures can be developed. The field as a whole is not quite there yet, but many promising discoveries have already been made. Some notable achievements are the development of screening methods for any disorder in the form of a polygenic risk score (PRS), precision medicine, or new genes to target for drug treatment, as well as shining some light on the aetiology of complex and polygenic disorders. In particular, the PRS has the potential to become more than just a screening tool, as much research continue to focus on its diagnostic abilities. One of the driving factors behind the development that has been achieved so far is the genome-wide association study (GWAS). It allows for the identification of SNPs or genes that are associated with a given order. The associated SNPs can then be examined further with downstream analysis or an aggregate of SNPs can be used to construct a PRS. Therefore, it is very important to continue to improve methods and increase the statistical power in a GWAS setting, such that the developments can continue.
 
 
 
 {\itshape
 	- How has statistical power been improved in GWAS 
-	
-	- Why is it important to continue to improve statistical power in GWAS?
 }
 
-The two primary ways statistical power has been increased in a GWAS setting have been through sample size increases and methodological improvements. The sample size increases are straight forward. Either a biobank genotypes more individuals or a meta-analysis is performed where several biobanks contribute summary statistics. The largest meta analysis performed so far are based on more than $ 1 $ million individuals\textbf{TODO:REFs}. Methodological improvements have also been made alongside the sample size increases. The improvements have mainly been in two directions, namely computational efficiency and more complex models. As an example, prior to the publication of the BOLT-LMM\cite{loh2015efficient} software, linear mixed models had a prohibitive computational cost that restricted the number of individuals that could be analysed at a time.% The pursuit of improving GWAS methods continue. 
+The two primary ways statistical power has been increased in a GWAS setting have been through sample size increases and methodological improvements. The sample size increases are straight forward. Either a biobank genotypes more individuals or a meta-analysis is performed where several biobanks contribute their GWAS summary statistics. The largest meta analysis performed so far are based on more than $ 5.4 $ million individuals\cite{yengo2022saturated}. Methodological improvements have also been made alongside the sample size increases. The improvements have mainly been in two directions, namely computational efficiency and more complex models. As the field have evolved, knowledge about various complexities of GWAS have been discovered. This involves concepts such as in-sample relatedness (often called cryptic relatedness), different genetic ancestries, and population stratification. Initially, models such as linear regression was used, but it was poorly suited to account for such problems. Therefore models such as linear mixed models were suggested, as they are able to account for these problems. The BOLT-LMM\cite{loh2015efficient} software is an excellent example of an advancement that provided both computational efficiency and a more complex model. Prior to its publication, linear mixed models had a prohibitive computational cost that restricted the number of individuals that could be analysed at a time.% The pursuit of improving GWAS methods continue. 
 
 {\itshape
 - What information is commonly being used else where ? other fields, epidemiology, animal breeding etc.
 }
 
-While the sample sizes and methodological improvements are likely to continue, it is also worthwhile to consider related fields and their common practices. Taking inspiration from related fields and applying it in human genetics have already resulted in significant improvements to human genetics. Animal breeding share many similarities with human genetics and their computational tricks and commonly used models have already had an impact. For instance, some of the computational tricks employed by BOLT-LMM are inspired from animal breeding and the polygenic risk scores are heavily inspired by the genetic breeding value employed in animal breeding\textbf{TODO:ref}. However, one field that have not received much attention yet is epidemiology. In epidemiology, animal breeding, and human genetics prior to the boom in genotyping, family history have been a strong and valuable predictor of many disorders \textbf{TODO: refs}. One notable way family history has been used in human genetics is in the Framingham heart study\textbf{TODO:ref}, where it has been used to improve the risk assessment of heart disease.
+While the sample sizes and methodological improvements are likely to continue, it is also worthwhile to consider related fields and their common practices. Taking inspiration from related fields and applying it in human genetics have already resulted in significant improvements to human genetics. Animal breeding share many similarities with human genetics and their computational tricks and commonly used models have already had an impact. For instance, some of the computational tricks employed by BOLT-LMM are inspired from animal breeding and the PRS are heavily inspired by the genetic breeding value employed in animal breeding\textbf{TODO:ref}. In epidemiology, animal breeding, and human genetics prior to the boom in genotyping, family history have been a strong and valuable predictor of many disorders \textbf{TODO: refs}. One notable way family history has been used in human genetics is in the Framingham heart study\textbf{TODO:ref}, where it has been used to improve the risk assessment of heart disease.
 
 
 {\itshape
@@ -39,34 +32,14 @@ While the sample sizes and methodological improvements are likely to continue, i
 	- Making use of that information is particularly relevant when genetic data is linked to EHRs
 }
 
-Unfortunately, family history is not commonly available with genetic data in biobanks, which has limited the development of methods 
-that can utilise family history in a GWAS setting. There are a small, but increasing number of biobanks that have some degree of 
-family history linked to their genetic data. Some notable biobanks are UK biobank (UKBB), deCODE, iPSYCH, and 
-FinnGen\textbf{TODO:refs}. If family history is available, the coverage and source of the information is often not consistent across 
-biobanks. In UKBB, only $ 12 $ disorders have family history information and it is acquired through questionnaires. iPSYCH has been 
-linked to the Danish registers. FinnGen originates from Finland, who (like Denmark) is known for their detailed registers. However 
-FinnGen only has limited family history linked to the genetic data due to privacy concerns. Only the parental cause of death has been 
-allowed to be linked to the FinnGen data so far, with far more information available in the Finnish registers. While the adoption 
-of family history by biobanks has been limited, the family history methods that have been developed so far have shown a tremendous 
-amount of potential. 
+Unfortunately, family history is not commonly available with genetic data in biobanks, which has limited the development of methods that can utilise family history in a GWAS setting. There are a small, but increasing number of biobanks that have some degree of family history linked to their genetic data. Some notable biobanks are UK biobank (UKBB), deCODE, iPSYCH, and FinnGen\textbf{TODO:refs}. If family history is available, the coverage and source of the information is often not consistent across biobanks. In UKBB, only $ 12 $ disorders have family history information and it is acquired through questionnaires. iPSYCH has been linked to the Danish registers, which allows for the construction of complete family trees from $ 1969 $onwards with phenotypic information for each individual as well. FinnGen originates from Finland, who (like Denmark) is known for their detailed registers. However, FinnGen has limited family history linked to the genetic data due to privacy concerns. Only the parental cause of death has been allowed to be linked to the FinnGen genetic data so far, while far more information available in the Finnish registers. Even though the adoption of family history by biobanks has been limited, the family history methods that have been developed so far have shown a tremendous amount of potential. 
 
 {\itshape
 	- Accounting for family history can boost statistical power in GWAS
 	- GWAX, LT-FH, does other methods exist?
 }
 
-One of the first and most well-known family history methods that was developed is called genome-wide association study by proxy 
-(GWAX). GWAX redefines the phenotype that is being analysed, and cases are individuals that are themselves affected 
-by a disorder or have close family members that are. The researchers that proposed GWAX analysed Alzheimer's disease. Alzheimer's 
-disease has a low prevalence among the UKBB participants, as many of them are not old enough to have been diagnosed with it yet, but 
-many of their parents are. As a result, GWAX increased the number of considered cases. For low prevalence disorders, this 
-has been shown to be useful when trying to identify genome-wide significant SNPs. Therefore, GWAX has been a success, provided a 
-proof-of-concept and paved the way for other family history methods. GWAX itself has a limitation in that it loses power if the 
-in-sample prevalence is high ($ >50\% $) for the GWAX phenotype. On top if this, it is a heuristic method and not based in any model. 
-There have since been proposed a method called liability threshold model conditional on family history (LT-FH), which solves these two 
-main limitations of GWAX. LT-FH is also the method that this dissertation have expanded further to also allow for modelling of age of 
-onset, sex, and cohort effects in the considered family members. The extension we developed is called LT-FH++.
-
+One of the first and most well-known family history methods that was developed is called genome-wide association study by proxy (GWAX). GWAX redefines the phenotype that is being analysed, and cases are individuals that are themselves affected by a disorder or have close family members that are. The researchers that proposed GWAX analysed Alzheimer's disease. Alzheimer's disease has a low prevalence among the UKBB participants, as many of them are not old enough to have been diagnosed with it yet, but many of their parents are. As a result, GWAX increased the number of considered cases. For low prevalence disorders, this has been shown to be useful when trying to identify genome-wide significant SNPs. Therefore, GWAX has been a success, provided a proof-of-concept and paved the way for other family history methods. GWAX itself has a limitation in that it loses power if the in-sample prevalence is high ($ >50\% $) for the GWAX phenotype. On top if this, it is a heuristic method and not based on any model. There have since been proposed a method called liability threshold model conditional on family history (LT-FH), which solves these two main limitations of GWAX. LT-FH is also the method that this dissertation have expanded further on to also allow for modelling of age of onset, sex, and cohort effects in the considered family members. The extension we developed is called LT-FH++.
 
 
 {\itshape
@@ -78,53 +51,20 @@ onset, sex, and cohort effects in the considered family members. The extension w
 	- COXMEG, SPACox, GATE, ..? Only SPAcox and GATE are relevant / scalable.
 }
 
-To the best of our knowledge there is no other method available that is able to account for family history \textit{and} age of onset. 
-All other methods seem to either model family history or age of onset, but never both. In terms of age-of-onset, the common first 
-choice is some version of the Cox proportional hazards models (CoxPH). The time-to-event models that have been used in a GWAS setting 
-so far are the CoxPH and the frailty model. The frailty model is a generalisation of the CoxPH model that also include a random effect 
-that can model the in-sample relatedness (often called cryptic relatedness). Frailty models and mixed models share a lot of the same 
-benefits, as they are both able to account for cryptic relatedness in a biobank. However, the adoption of frailty models have been 
-slow. The slow
-adoption is likely due to several factors, where one of the main limitations is the computational complexity of these methods. Prior 
-to the publication of the CoxPH model called SPACox in $ 2020 $, a CoxPH based GWAS was limited to $ <100.000 $ individuals due to 
-computational cost \textbf{TODO:ref SPACox}. However, other very computationally intensive models such as linear mixed models had been 
-made computationally feasible for more than $ 400.000 $ individuals since $ 2015 $. Frailty models were similarly computationally 
-intractable for more than $ 20.000 $ individuals up until $ 2022 $, where the method GATE was published. A computational trick that 
-both SPACox and GATE utilise is a more efficient way of calculating p-values, such that more computationally intensive tests are no 
-longer needed. SPACox and GATE use a saddle point approximation (SPA) that only require a cumulant generating function to efficiently 
-estimate the p-value.
-
+To the best of our knowledge there is no other method available that is able to account for family history \textit{and} age of onset. All other methods seem to either model family history or age of onset, but never both. In terms of age-of-onset, the common first choice is some version of the Cox proportional hazards models (CoxPH). The time-to-event models that have been used in a GWAS setting so far are the CoxPH and the frailty model. The frailty model is a generalisation of the CoxPH model that also include a random effect that can model the in-sample relatedness (often called cryptic relatedness). Frailty models and mixed models share a lot of the same benefits, as they are both able to account for cryptic relatedness in a biobank. However, the adoption of frailty models has been slow. The slow adoption is likely due to several factors, where one of the main limitations is the computational complexity of these methods. Prior to the publication of the CoxPH model called SPACox in $ 2020 $, a CoxPH based GWAS was limited to $ <100.000 $ individuals due to computational cost \textbf{TODO:ref SPACox}. However, other very computationally intensive models such as linear mixed models had been made computationally feasible for more than $ 400.000 $ individuals since $ 2015 $. Frailty models were similarly computationally intractable for more than $ 20.000 $ individuals up until $ 2022 $, where the method GATE was published. A computational trick that both SPACox and GATE utilise is a more efficient way of calculating p-values, such that more computationally intensive tests are no longer needed. SPACox and GATE use a saddle point approximation (SPA) that only require a cumulant generating function to efficiently estimate the p-value.
 
 {\itshape
 - Review existing approaches and discuss limitations in connection to LT-FH++
 }
 
-The dissertation has been focused on the development and applications of the LT-FH++ method, which is based on the age-dependent liability threshold model (ADuLT). If family history is included we will refer to the method as LT-FH++, and if only the index person is considered, we will refer to it as ADuLT. LT-FH++ combines many of the concepts from survival analysis and the CoxPH methods that have been developed for GWAS. It does this by extending the LT-FH method to also account for age of onset, sex, and cohort effects in the index and any included family members. Details on LT-FH and LT-FH++ are given in \textbf{TODO: reference methods in methods section}. In short, LT-FH extends the classical liability threshold model proposed by Falconer to also incorporate family members, and LT-FH++ extends the model even further, such that age of onset can be modelled too. The LT-FH++ accounts for the age of onset by using a personalised threshold in the LTM, such that each threshold for determining case status depend on the age or age of onset, birth year, and sex. This means LT-FH++ utilises family history and a population representative cumulative incidence proportions (CIP). Through the CIPs it is possible to consider concepts such as censoring and stratification on sex and birth year, in a liability threshold setup.
+The dissertation has been focused on the development and applications of the LT-FH++ method, which is based on the age-dependent liability threshold model (ADuLT). If family history is included we will refer to the method as LT-FH++, and if only the index person is considered, we will refer to it as ADuLT. LT-FH++ combines many of the concepts from survival analysis and the CoxPH methods that have been developed for GWAS. It does this by extending the LT-FH method to also account for age of onset, sex, and cohort effects in the index and any included family members. Details on LT-FH and LT-FH++ are given in \textbf{TODO: reference methods in methods section}. In short, LT-FH extends the classical liability threshold model proposed by Falconer to also incorporate family members, and LT-FH++ extends the model even further, such that age of onset can be modelled too. The LT-FH++ accounts for the age of onset by using a personalised threshold in the LTM, such that each threshold for determining case status depend on the age or age of onset, birth year, and sex. This means LT-FH++ utilises family history and a population representative cumulative incidence proportions (CIP). Through the CIPs it is possible to consider concepts such as censoring and stratification on sex and birth year, but in a liability threshold setup.
 
-In other words, the family history methods have a clear benefit in that they are a drop-in replacement for any phenotype that is 
-currently being used. If you are considering Alzheimer's disease, then a GWAX phenotype will not require any fundamental changes to be 
-made to an analysis plan, as the only change is the case-control status has been replaced by the GWAX phenotype. The same is true if a 
-LT-FH phenotype is used, but with LT-FH there is no worry of any potential power loss, as it will always outperform GWAX and 
-case-control phenotypes. This also holds true for LT-FH++ over LT-FH (and by extension GWAX). Since all of these phenotypes are 
-drop-in replacements, it means that methodological advancements can be used immediately and will not require further implementation or 
-modification to make them compatible with one another. An example of this could be a swap from a linear regression based GWAS to a 
-linear mixed model one. No change would have to be made other than the choice of software to perform the GWAS. This means the family 
-history methods builds on top of the methodological improvements that happen in parallel.
+In other words, the family history methods have a clear benefit in that they are a drop-in replacement for any phenotype that is currently being used. If you consider Alzheimer's disease, then a GWAX phenotype will not require any fundamental changes to be made to an analysis plan, as the only change is the case-control status has been replaced by the GWAX phenotype. The same is true if a LT-FH phenotype is used, but with LT-FH there is no worry of any potential power loss, as it will always outperform GWAX and case-control phenotypes. This also holds true for LT-FH++ over LT-FH (and by extension GWAX). Since all of these phenotypes are drop-in replacements, it means that methodological advancements can be used immediately and will not require further implementation or modification to make them compatible with one another. An example of this could be a GWAS with a linear regression for a family history phenotype, being swapped to a linear mixed model one. No change would have to be made other than the choice of software to perform the GWAS. This means the family history methods builds on top of the methodological improvements that happen in parallel.
 
-This is in contrast to the survival GWAS methods that have been proposed. They are all model specific implementations, such that a new 
-model is will not to be compatible with previous implementations. An example of this is SPACox and GATE. Both implementations 
-invalidated any previously implemented CoxPH or frailty methods in a GWAS setting, as these allow for the analysis of far larger 
-datasets. It also means that if a new, more complex model will be proposed at some point in the future that accounts for something yet 
-to be determined, it will possibly invalidate both of these methods. While for the family history methods, they would immediately be 
-able to utilise the new model and its implementation. LT-FH++ is therefore in a Goldilocks zone, as it is able to immediately utilise 
-new methodological advancements, while preserving the survival analysis aspect.    
-
+This is in contrast to the survival GWAS methods that have been proposed. They are all model specific implementations, such that a new model is will not be compatible with previous implementations. An example of this is SPACox and GATE. Both implementations invalidated any previously implemented CoxPH or frailty methods in a GWAS setting, as these allow for the analysis of far larger datasets. It also means that if a new, more complex model will be proposed at some point in the future that accounts for something yet to be determined, it will possibly invalidate both of these methods. While for the family history methods, they would immediately be able to utilise the new model and its implementation. LT-FH++ is therefore in a Goldilocks zone, as it is able to immediately utilise new methodological advancements, while preserving the survival analysis aspect and its inherent power increase.    
 
 {\itshape
 - Highlight relevance in relation to psychiatric disorders
 }
 
-TBD Text
-
-
-% raise points in the end of the introduction that can then be mentioned in the discussion / conclusion
+TBD Text (raise points in the end of the introduction that can then be mentioned in the discussion / conclusion)

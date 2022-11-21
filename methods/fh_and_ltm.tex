@@ -121,10 +121,10 @@ The CIPs are estimated as the Aalen-Johansen estimator with death and immigratio
 
 \subsubsection{Sampling strategy}
 
-Due to the unlikeliness that two families will consist of the exact same sex, age of onset, etc., and fixing the upper and lower limit for cases, the truncated normal distributions will be unique to each family. The straight-forward sampling approach employed by LT-FH is therefore not computationally tractable any more. Instead LT-FH++ employs a Gibbs sampler to sample directly from a truncated multivariate normal distribution with predefined limits. 
+Due to the unlikeliness that two families will consist of the exact same sex, age of onset, etc., and fixing the upper and lower limit for cases, the truncated normal distributions will be unique to each family. The straight-forward sampling approach employed by LT-FH is therefore not computationally tractable any more. Instead LT-FH++ employs a Gibbs sampler to sample directly from a truncated multivariate normal distribution with predefined limits. To further improve the computational complexity of LT-FH++, we have used a slightly modified version of the Gibbs sampler approach suggested by the \textit{tmvtnorm} R package\cite{wilhelm2015gibbs,wilhelm2010tmvtnorm}. Pseudo code of the Gibbs sampler used by LT-FH++ is presented in \cref{alg:LTFH++}.
 
 % pseudo code for the Gibbs sampler
-\textbf{TODO: reference the paper we took inspiration from. }
+
 \begin{algorithm}
 \begin{algorithmic}[1]
 \INPUT $ h^2,$ $T_{i}^l,$ $T_{i}^u$ and each family member's role 
@@ -151,7 +151,7 @@ Due to the unlikeliness that two families will consist of the exact same sex, ag
 
 
 \subsection{LT-FH++ with correlated traits}
-LT-FH++ can also be extended to include correlated traits. Many disorder pairs have a non-zero genetic correlation, which is often not used. There exist methods that can account for correlated traits, with the most popular method being MTAG\textbf{TODO:REF}. However, MTAG requires a GWAS to be run on two correlated phenotypes and can then account for some of the genetic signal between the two phenotype's summary statistics. Both MTAG and LT-FH++ can account for multiple correlated phenotypes at a time. LT-FH++ deals with correlated traits by using the additional traits to further refine the liability estimate of the primary phenotype, while MTAG uses summary statistics to correct for each other's effect. This means a GWAS with LT-FH++ accounting for correlated phenotypes is performed with a phenotype that accounts for case-control status and family history of the correlated phenotype(s), rather than separate GWASs being run for each phenotype. 
+LT-FH++ can also be extended to include correlated traits. Many disorder pairs have a non-zero genetic correlation, which is often not used. There exist methods that can account for correlated traits, with the most popular method being MTAG\cite{turley2018multi}. However, MTAG requires a GWAS to be run on two correlated phenotypes and can then account for some of the genetic signal between the two phenotype's summary statistics. Both MTAG and LT-FH++ can account for multiple correlated phenotypes at a time. LT-FH++ deals with correlated traits by using the additional traits to further refine the liability estimate of the primary phenotype, while MTAG uses summary statistics to correct for each other's effect. This means a GWAS with LT-FH++ accounting for correlated phenotypes is performed with a phenotype that accounts for case-control status and family history of the correlated phenotype(s), rather than separate GWASs being run for each phenotype. 
 
 If two phenotypes are genetically correlated, the LT-FH++ model can account for the correlated phenotype by extending the covariance matrix. The simplest way to account for correlated phenotypes requires the same information as a single trait analysis, so stratified CIPs and family history for each phenotype, as well as the genetic correlation of the considered phenotypes. The thresholds for each individual will be determined in the exact same way with the disorder specific CIPs.
 

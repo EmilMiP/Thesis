@@ -25,7 +25,7 @@ covariates, $ \varepsilon $ is a $ N \times 1 $ vector of independent normally d
 both $ y $ and $ G_j $ are scaled to have mean $ 0 $ and variance $ 1 $. The hypothesis being tested is $ H_0: \beta = 0 $ against $ 
 H_A: \beta \neq 0 $. 
  
-In short, regression methods are preferred over the Cochran-Armitage test as covariates can be included and linear regression is preferred over logistic regression, since it is more computationally efficient and there is no difference between their power\cite{sikorska2013gwas,prive2019making,balding2006tutorial,de2015magma}.
+In short, regression methods are preferred over the Cochran-Armitage test as covariates can be included and linear regression is sometimes preferred over logistic regression, since it is more computationally efficient and there is no difference between their power\cite{sikorska2013gwas,prive2019making,balding2006tutorial,de2015magma}. Although logistic regression is more suitable when the outcome is binary, the linear regression p-values approximate the logistic-regression p-values well in practice, except when the outcome is rare or when the estimated effect is large (see \cref{sec:controllingType1Errors})\cite{pirinen2013efficient}.
 
 
 \subsubsection{Linear mixed model GWAS} 
@@ -256,6 +256,8 @@ The variance of the phenotype, as seen in \cref{eq:MixedModelGWASCovariance} or 
 ZZ^T q = \sum_i \left( Z_i Z_i^T\right) q = \sum_i  Z_i \left(Z_i^T q\right) 
 \end{equation}
 The first equation expresses $ Z Z^T $ as the sum of the outer products of columns of $ Z $ and the second as a sum of vectors times a scalar, where the scalar is the result of an inner product between the $ i^{th} $ column of $ Z $ and the given vector $ q $. This reformation of the product $ Z Z^T q$ has computational complexity $ O(NM) $.
+
+\textbf{TODO: THEY ACTUALLY JUST SOLVE Vx = b, WHICH IS THE SAME AS DIRECTLY CALCULATING x = INV(V)b}
 
 \textbf{TODO: i am not sure, but it almost seem like it is suggested that $ (A + B)^{-1} = A^{-1} + B^{-1} $, which i do not think holds generally. they specifically say in the suppNotes that they do not form H and only consider the terms individually and multiply from the right with a vector.}
 

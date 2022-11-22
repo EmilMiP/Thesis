@@ -1,21 +1,7 @@
 
-This section deals with how to utilise family history and age-of-onset to increase power in a GWAS\textbf{TODO: Should I talk about 
-cox proportional hazards to some extent in this section too or only LT-FH++ as a survival model?}. All published methods that account 
-for family history redefine or recalculate the phenotype. This type of improvement is different from the main 
-focus for methodological developments so far, with methods such as BOLT-LMM\cite{loh2015efficient}, 
-REGENIE\cite{mbatchou2021computationally}, and GATE\cite{dey2022efficient} that account for cryptic relatedness in the genotypes. The 
-research into accounting for family history by refining the phenotype has been very limited in comparison. This is likely due to the 
-relatively low occurrence of family history information in conjunction with genotype data. There have been some biobanks, such as UK 
-biobank, deCODE, iPSYCH, and FinnGen,\textbf{TODO:Add refs to these biobanks} where \textit{some} level of family history information 
-have been linked with genotypes. 
+This section deals with how to utilise family history and age-of-onset to increase power in a GWAS\textbf{TODO: Should I talk about cox proportional hazards to some extent in this section too or only LT-FH++ as a survival model?}. All published methods that account for family history redefine or recalculate the phenotype. This type of improvement is different from the main focus for methodological developments so far, with methods such as BOLT-LMM\cite{loh2015efficient}, REGENIE\cite{mbatchou2021computationally}, and GATE\cite{dey2022efficient} that account for cryptic relatedness in the genotypes. The research into accounting for family history by refining the phenotype has been very limited in comparison. This is likely due to the relatively low occurrence of family history information in conjunction with genotype data. There have been some biobanks, such as UK biobank, deCODE, iPSYCH, and FinnGen,\textbf{TODO:Add refs to these biobanks} where \textit{some} level of family history information have been linked with genotypes. 
 
-The first method we will introduce that accounts for family history is genome-wide association study by proxy (GWAX)\cite{gwax}. GWAX 
-is not a model based approach, but rather a heuristic way to account for family history. Next, we will present the liability threshold 
-model originally introduced by Falconer\cite{falconer1965inheritance} and extensions of this model. We will present two extensions, 
-the first is called liability threshold model conditional on family history (LT-FH)\cite{hujoel2020liability} and the second is called 
-LT-FH++. LT-FH++ has been developed and implemented during this PhD. As a result, it is the method this dissertation is focused on. 
-LT-FH++ is an extension of the LT-FH method that is also able to account for age-of-onset or age, sex, and cohort effects in each 
-included individual, while being very computationally efficient. \textbf{TODO: Am I still underselling LT-FH++ here?}
+The first method we will introduce that accounts for family history is genome-wide association study by proxy (GWAX)\cite{gwax}. GWAX is not a model based approach, but rather a heuristic way to account for family history. Next, we will present the liability threshold model originally introduced by Falconer\cite{falconer1965inheritance} and extensions of this model. We will present two extensions, the first is called liability threshold model conditional on family history (LT-FH)\cite{hujoel2020liability} and the second is called LT-FH++. LT-FH++ has been developed and implemented during this PhD. As a result, it is the method this dissertation is focused on. LT-FH++ is an extension of the LT-FH method that is also able to account for age-of-onset or age, sex, and cohort effects in each included individual, while being very computationally efficient. 
 
 \subsection{GWAX}
 % GWAX
@@ -104,20 +90,25 @@ The model underlying LT-FH++ is very similar to LT-FH and does not differ in a m
 \begin{align*}
 P\left( \ell_i > T_i \right) = k(t; s_i, y_i) \Rightarrow T_i = \Phi^{-1} \left(1 - k(t; s_i, y_i) \right),
 \end{align*}
-where $ \Phi $ denotes the CDF of the standard normal distribution. An individual's current age for control or age-of-onset for cases, their sex, and birth year will be accounted for through the choice of threshold and denoted by $ T_i $. The threshold are determined through the CIPs, which means the thresholds are also a function of $ t $, but unless it is an important distinction to make that notation will be suppressed. See \textbf{TODO: REQUIRE REFERENCE TO CIPs} for details on the CIPs. If the CIPs are stratified by birth year and sex, a more accurate estimate of an individual's full liability is provided. When age of onset is available for a case, their full liability can be fixed to $ T_i $, rather than spanning the interval $ (T_i, \infty) $. Furthermore, for controls the threshold will decrease as the population ages, which narrows the potential liabilities, since they have lived through a period of risk. This means that older controls will have a lower estimated liability.
- 
+where $ \Phi $ denotes the CDF of the standard normal distribution. An individual's current age for control or age-of-onset for cases, their sex, and birth year will be accounted for through the choice of threshold and denoted by $ T_i $. The threshold are determined through the CIPs, which means the thresholds are also a function of $ t $, but unless it is an important distinction to make that notation will be suppressed. See \cref{sec:CIPs} for details on the CIPs. If the CIPs are stratified by birth year and sex, a more accurate estimate of an individual's full liability is provided. When age of onset is available for a case, their full liability can be fixed to $ T_i $, rather than spanning the interval $ (T_i, \infty) $. Furthermore, for controls the threshold will decrease as the population ages, which narrows the potential liabilities, since they have lived through a period of risk. This means that older controls will have a lower estimated liability. An illustration of how the personalised thresholds can be used in the ADuLT model see \cref{fig:adult_connection_to_CIPs}.
+
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{methods/adult_top.png}
+	\caption[Age-dependent liability threshold model and its relationship to the CIPs]{An illustration of how the population representative CIPs are used by the age-dependent liability threshold model. The CIPs are stratified by sex and birth year (here ADHD for individuals born in Denmark in $ 2000 $) are converted to a threshold for the ADuLT model. Females are represented by the red line, while males are represented by the blue line. The CIPs has been marked at the age of 10 and 15 for both sexes (dotted lines).}
+	\label{fig:adult_connection_to_CIPs}
+\end{figure}
 
 \subsubsection{Input}
 The input for LT-FH++ is similar to the input for LT-FH, but with two notable differences. The first difference is that LT-FH++ relies on CIPs for the threshold for each individual, while LT-FH utilises a general but separate threshold for parents and offspring. The second notable difference is that each family member will have to be included separately, while LT-FH does not distinguish between mother and father and only requires the total number of siblings and whether any siblings are cases. An overview of LT-FH++ and the information it is able to account for is provided in \cref{fig:LTFHppFigure1}. The sex and birth year stratified CIPs are used to assign thresholds to each individual in a family. Each person will therefore have a lower $ T_i^l $ and upper $ T_i^u $ threshold, which leads to an interval of possible liabilities defined as $ I_i = (T_i^l, T_i^u) $. For controls, the interval will be $ I_i = (T_i^l,T_i^u) = (-\infty, T_i) $, while for cases $ I_i = (T_i^l,T_i^u) = [T_i,T_i] $. If a user does not have CIPs that are stratified by sex and birth year, then a case's interval should be given as $ I_i = (T_i, \infty) $. When the thresholds have been assigned, the intervals that the truncated multivariate normal distribution have been defined and the genetic liability can be estimated. 
 
 \begin{wrapfigure}{O}{10cm}
-	\includegraphics[width=10cm]{methods/LTFHpp_Figure1.pdf}
-	\caption[Overview of LT-FH++ and the information it is able to account for]{\textbf{TODO: is it self-plagerism if I use the same caption as in the LTFH++ paper ?}}
+	\includegraphics[width=10cm]{methods/ltfhpp_steps.png}
+%	\includegraphics[width=10cm]{methods/LTFHpp_Figure1.pdf}
+	\caption[Overview of LT-FH++ and what information it can account for in GWAS]{
+		Using LT-FH++ is a two step approach. First, a genetic liability is estimated based on the available family history, where age-of-onset or age for controls, sex, and birth year is accounted for in each included individual. Then a GWAS can be performed with the GWAS software of choice, e.g. BOLT-LMM.
+	} % Esben said it was fine to include this plot as is.
 	\label{fig:LTFHppFigure1}
 \end{wrapfigure}
-
-
-The CIPs are estimated as the Aalen-Johansen estimator with death and immigration as competing risk, and will simply act as a look up table for assigning thresholds. Once the thresholds have been assigned to each individual, the CIPs are no longer needed and as such, LT-FH++ only requires the upper and lower limit and each person's role in the family as well as a family and individual ID to identify families, their members. 
 
 \subsubsection{Sampling strategy}
 

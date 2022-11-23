@@ -10,12 +10,7 @@
 %
 
 \subsection{LT-FH++ and survival analysis}
-The proportional hazards model is defined by the hazard function. The connection to a hazard function is not clear under a liability 
-threshold model. However, a rate can be considered the probability of an event happening in an infinitesimally small change in time 
-\textbf{TODO: ref for this ?}. Under the LTM, the hazard rate can therefore be interpreted as the probability of an individual being 
-diagnosed in such an infinitesimally small change in time\cite{kragh2021analysis}. To describe such a probability, we will let $ T(t) 
-$ be the threshold for an individual to be a case at time $ t $, $ \ell $ is a person's full liability, and $ x $ denotes the 
-covariates, e.g. genotypes and sex. The approximation is given by the following conditional probability
+The proportional hazards model is defined by the hazard function. The connection to a hazard function is not clear under a liability threshold model. However, a rate can be considered the probability of an event happening in an infinitesimally small change in time \textbf{TODO: ref for this ?}. Under the LTM, the hazard rate can therefore be interpreted as the probability of an individual being diagnosed in such an infinitesimally small change in time\cite{kragh2021analysis}. To describe such a probability, we will let $ T(t) $ be the threshold for an individual to be a case at time $ t $, $ \ell $ is a person's full liability, and $ x $ denotes the covariates, e.g.\ genotypes and sex. The approximation is given by the following conditional probability
 
 \begin{equation}\label{eq:ltm_case_prob_approx}
 	\lambda(t|x) \approx 

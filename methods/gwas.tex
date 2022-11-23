@@ -176,11 +176,7 @@ The normal equation for systems of equations of the form $ Ax=b $ say that $ \ha
 \begin{align}\label{eq:univarGWAS}
 	y^\ast = \hat{\beta} G_j^{\ast} + \varepsilon&   &\text{with simplified solution}&  &\hat{\beta} = \dfrac{\left( G_j^{\ast} \right)^T y^{\ast}}{\left( G_j^{\ast} \right)^T G_j^{\ast}}.
 \end{align}
-With the projection, the effect of the covariates have been removed from the outcome and the predictor, i.e. the phenotype and the 
-genotype do \textit{not} depend on $ \gamma $ any more. Therefore, the calculations have been simplified and the calculations for the 
-projection matrix only has to be performed once. Accounting for the covariate's effect in the phenotype also only has to be done once, 
-the removal of the covariate's effect on the SNP has to be done for each SNP separately.
-
+With the projection, the effect of the covariates have been removed from the outcome and the predictor, i.e.\ the phenotype and the genotype do \textit{not} depend on $ \gamma $ any more. Therefore, the calculations have been simplified and the calculations for the projection matrix only has to be performed once. Accounting for the covariate's effect in the phenotype also only has to be done once, the removal of the covariate's effect on the SNP has to be done for each SNP separately.
 One of the most common ways to perform the test is with a Wald test $ Z = \hat{\beta}/\text{se}(\hat{\beta}) \sim N(0,1)$. 
 \textbf{TODO: what is se(beta)}
 \textbf{TODO: Florian's thesis deals with speeding up computations even further, mention this too?}
@@ -250,27 +246,13 @@ E\left[ \sum \hat{\beta}^2_{rand} \right]
 \end{equation}
 As a result, we have to find a value of $ \delta $ which satisfy $ f_{reml}(\log(\delta)) = 0$. We will not elaborate on the details of how this is done, but it involves using the secant method and a sampling strategy similar to the one used above for the BLUP estimate. In summary, estimating the variance components in a mixed model, as presented in BOLT-LMM, means calculating the BLUP estimates in \cref{eq:bolt:iterativeBLUP} and finding $ \delta $ that solves \cref{eq:bolt:iterativeRatio}. However, the calculations needed to perform the iterative scheme require inverting a matrix. Matrix inversion is computationally expensive and has computational complexity of $ O(N^3) $ if calculated naively. Other strategies have been suggested, which allows for a computational complexity of $ O(NM^2) $ or $ O(N^2M) $ \cite{svishcheva2012rapid,lippert2011fast}. The strategy employed in BOLT-LMM has a computational complexity of $ O(NM) $, which makes it much faster. 
 
-The variance of the phenotype, as seen in \cref{eq:MixedModelGWASCovariance} or in the iterative scheme as \cref{eq:bolt:iterativeBLUP} will have to be inverted, if calculated naively. We can efficiently perform calculations of the form $ H^{-1}y $ and circumvent the inversion by not directly forming $ H $, but instead considering its terms, $ ZZ^T / M$ and $ \delta I_N$. If we multiply with some vector, $ q $, from the right, then it is only the GRM term that is computationally expensive. However, we can express it in the following way
+The variance of the phenotype, as seen in \cref{eq:MixedModelGWASCovariance} or in the iterative scheme as \cref{eq:bolt:iterativeBLUP} will have to be inverted, if calculated naively. We can efficiently perform calculations of the form $ H^{-1}y $ and circumvent the inversion by finding solutions to $ Hx=y $, as the solution will be equivalent to $ \hat{x} =  H^{-1}y$. If we do not form $ H $ directly, but instead considering its terms, $ ZZ^T / M$ and $ \delta I_N$. We can multiply with some vector, $ q $, from the right. Theb the only computationally expensive term is the GRM one. However, we can express it in the following way
 
 \begin{equation}
 ZZ^T q = \sum_i \left( Z_i Z_i^T\right) q = \sum_i  Z_i \left(Z_i^T q\right) 
 \end{equation}
-The first equation expresses $ Z Z^T $ as the sum of the outer products of columns of $ Z $ and the second as a sum of vectors times a scalar, where the scalar is the result of an inner product between the $ i^{th} $ column of $ Z $ and the given vector $ q $. This reformation of the product $ Z Z^T q$ has computational complexity $ O(NM) $.
+The first equation expresses $ Z Z^T $ as the sum of the outer products of columns of $ Z $ and the second as a sum of vectors times a scalar, where the scalar is the result of an inner product between the $ i^{th} $ column of $ Z $ and the given vector $ q $. This reformation of the product $ Z Z^T q$ has computational complexity $ O(NM) $. 
 
-\textbf{TODO: THEY ACTUALLY JUST SOLVE Vx = b, WHICH IS THE SAME AS DIRECTLY CALCULATING x = INV(V)b}
-
-\textbf{TODO: i am not sure, but it almost seem like it is suggested that $ (A + B)^{-1} = A^{-1} + B^{-1} $, which i do not think holds generally. they specifically say in the suppNotes that they do not form H and only consider the terms individually and multiply from the right with a vector.}
-
-
-%BOLT-LMM utilise a mixed linear model with a Gaussian mixture prior, which allows for a non-infinitesimal model. 
-%BOLT steps
-%(1a) estimation of variance parameters; 
-%circumvents spectral decomposition with stochastic approximation algorithm instead. it requires finding a solution to a linear systems of mixed-model equations instead, which is done by conjugate gradient iteration.
-%(1b) computation of infinitesimal mixed-model association statistics (BOLT-LMM-inf); 
-%circumvents spectral decomposition by introducing a new retrospective mixed-model association statistic similar to GRAMMAR-Gamma10 and MASTOR23, which we compute—up to a calibration constant—using only the solutions to linear systems of equations. We estimate the calibration constant by computing the new statistic and comparing it to the standard prospective mixed-model statistic at a random subset of SNPs; this step can likewise be accomplished efficiently using conjugate gradient iteration. This procedure is similar in spirit to GRAMMAR-Gamma calibration but requires only O(MN) time iterations.
-%(2a) estimation of Gaussian mixture-model parameters; 
-%
-%(2b) computation of Gaussian mixture-model association statistics (BOLT-LMM)
 
 \subsection{Increasing power in GWAS}
 

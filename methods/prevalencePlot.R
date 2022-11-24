@@ -43,7 +43,8 @@ CIP_Plot = cip %>%
   theme_minimal(base_size = 22) +
   theme(plot.title = element_text(hjust = .5),
         panel.grid.minor = element_blank(),
-        panel.grid.major = element_line(color = col_grid, size = .7)) +
+        panel.grid.major = element_line(color = col_grid, size = .5), 
+        legend.position = "none") +
   ggtitle(title_string) +
   scale_color_manual(labels = c("F", "M"), values = c("red", "blue")) +
   facet_wrap(~ birth_year, ncol = 3) +

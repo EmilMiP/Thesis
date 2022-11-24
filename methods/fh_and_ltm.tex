@@ -1,5 +1,5 @@
 
-This section deals with how to utilise family history and age-of-onset to increase power in a GWAS\textbf{TODO: Should I talk about cox proportional hazards to some extent in this section too or only LT-FH++ as a survival model?}. All published methods that account for family history redefine or recalculate the phenotype. This type of improvement is different from the main focus for methodological developments so far, with methods such as BOLT-LMM\cite{loh2015efficient}, REGENIE\cite{mbatchou2021computationally}, and GATE\cite{dey2022efficient} that account for cryptic relatedness in the genotypes. The research into accounting for family history by refining the phenotype has been very limited in comparison. This is likely due to the relatively low occurrence of family history information in conjunction with genotype data. There have been some biobanks, such as UK biobank, deCODE, iPSYCH, and FinnGen,\textbf{TODO:Add refs to these biobanks} where \textit{some} level of family history information have been linked with genotypes. 
+This section deals with how to utilise family history and age-of-onset to increase power in a GWAS. All published methods that account for family history redefine or recalculate the phenotype. This type of improvement is different from the main focus for methodological developments so far, with methods such as BOLT-LMM\cite{loh2015efficient}, REGENIE\cite{mbatchou2021computationally}, and GATE\cite{dey2022efficient} that account for cryptic relatedness in the genotypes. The research into accounting for family history by refining the phenotype has been very limited in comparison. This is likely due to the relatively low occurrence of family history information in conjunction with genotype data. There have been some biobanks, such as UK biobank\cite{bycroft2018uk}, deCODE\cite{noauthor_2012-jh}, iPSYCH\cite{bybjerg2020ipsych2015,pedersen2018ipsych2012}, and FinnGen\cite{Kurki2022-pt}, where \textit{some} level of family history information have been linked with genotypes. 
 
 The first method we will introduce that accounts for family history is genome-wide association study by proxy (GWAX)\cite{gwax}. GWAX is not a model based approach, but rather a heuristic way to account for family history. Next, we will present the liability threshold model originally introduced by Falconer\cite{falconer1965inheritance} and extensions of this model. We will present two extensions, the first is called liability threshold model conditional on family history (LT-FH)\cite{hujoel2020liability} and the second is called LT-FH++. LT-FH++ has been developed and implemented during this PhD. As a result, it is the method this dissertation is focused on. LT-FH++ is an extension of the LT-FH method that is also able to account for age-of-onset or age, sex, and cohort effects in each included individual, while being very computationally efficient. 
 
@@ -10,7 +10,7 @@ The first method that accounts for family history information is called GWAX. Th
 
 \subsection{The liability threshold model}
 The liability threshold model (LTM) was a way to explain and model why some disorders do not behave as a Mendelian disease. Under the liability threshold model an individual will have a latent variable (\textit{a liability}), $ \ell \sim N(0,1)$. The case-control status $ z $ for a given phenotype is given by 
-\textbf{TODO: Add a plot of the LTM.}
+
 \begin{align*}
 z = 
 \begin{cases}
@@ -18,7 +18,12 @@ z =
 0 & \text{otherwise}
 \end{cases},
 \end{align*}
-i.e.\ an individual is a case when the liability $ \ell $ is above a given threshold $ T $ and the threshold is determined by the prevalence $ k $, such that $ P(\ell > T) = k $ in the population. 
+\begin{wrapfigure}{O}{7cm}
+	\includegraphics[width=7cm]{methods/LTM.png}
+	\oldcaption{Illustration of the classical liability threshold model. Liabilities above the threshold $ T $, correspond to a case diagnosis, while liabilities below $ T $ are controls.}
+	\label{fig:methods:LTMplot}
+\end{wrapfigure}
+i.e.\ an individual is a case when the liability $ \ell $ is above a given threshold $ T $ and the threshold is determined by the prevalence $ k $, such that $ P(\ell > T) = k $ in the population. An illustration of the LTM is provided in \cref{fig:methods:LTMplot}.
 
 The LTM allows for modelling of non-Mendelian diseases, since the latent liability can be the result of more complex mechanisms than Mendelian diseases, which may depend on more than one or two genes \cite{falconer1967inheritance,falconer1965inheritance}. 
 
@@ -142,9 +147,9 @@ Due to the unlikeliness that two families will consist of the exact same sex, ag
 
 
 \subsection{LT-FH++ with correlated traits}
-LT-FH++ can also be extended to include correlated traits. Many disorder pairs have a non-zero genetic correlation, which is often not used. There exist methods that can account for correlated traits, with the most popular method being MTAG\cite{turley2018multi}. However, MTAG requires a GWAS to be run on two correlated phenotypes and can then account for some of the genetic signal between the two phenotype's summary statistics. Both MTAG and LT-FH++ can account for multiple correlated phenotypes at a time. LT-FH++ deals with correlated traits by using the additional traits to further refine the liability estimate of the primary phenotype, while MTAG uses summary statistics to correct for each other's effect. This means a GWAS with LT-FH++ accounting for correlated phenotypes is performed with a phenotype that accounts for case-control status and family history of the correlated phenotype(s), rather than separate GWASs being run for each phenotype. 
+LT-FH++ can also be extended to include correlated traits. Many disorder pairs have a non-zero genetic correlation, which is often not used. There exist methods that can account for correlated traits, with the most popular method being MTAG\cite{turley2018multi}. However, MTAG requires a GWAS to be run on each of the correlated phenotypes and can then account for some of the genetic signal between the phenotype's summary statistics. Both MTAG and LT-FH++ can account for multiple correlated phenotypes at a time. LT-FH++ deals with correlated traits by using the additional traits to further refine the liability estimate of the primary phenotype, while MTAG uses summary statistics to correct for each other's effect. This means a single GWAS is performed with a LT-FH++ phenotype that accounts for case-control status and family history of the correlated phenotype(s), rather than separate GWASs being run for each phenotype. 
 
-If two phenotypes are genetically correlated, the LT-FH++ model can account for the correlated phenotype by extending the covariance matrix. The simplest way to account for correlated phenotypes requires the same information as a single trait analysis, so stratified CIPs and family history for each phenotype, as well as the genetic correlation of the considered phenotypes. The thresholds for each individual will be determined in the exact same way with the disorder specific CIPs.
+If two phenotypes are genetically correlated, the LT-FH++ model can account for the correlated phenotype by extending the covariance matrix. The simplest way to account for correlated phenotypes requires the same information as a single trait analysis, so stratified CIPs and family history for each phenotype, as well as the genetic correlation of the considered phenotypes. The thresholds will be determined within each phenotype with the disorder specific CIPs.
 
 If we consider $ \ell_1 $ and $ \ell_2 $ as the vectors of liabilities for some family for two genetically correlated disorders, each of the vectors can be modelled as seen above for a single trait. However, the interaction between the two disorders would be ignored. Setting $ h_1^2 $ and $ h_2^2 $ to be the liability-scale heritability for the two disorders and setting $ \Sigma^{(1)} $ and $ \Sigma^{(2)} $ to be the covariance matrices for the two genetically correlated disorders, we can model the interaction with the following model
 
@@ -155,10 +160,10 @@ If we consider $ \ell_1 $ and $ \ell_2 $ as the vectors of liabilities for some 
 		\Sigma^{(21)} & \Sigma^{(2)} 
 	\end{pmatrix}, \quad \Sigma^{(12)}_{ij} = K_{ij}\rho_{12}\sqrt{h_1^2 h_2^2},
 \end{equation*}
-where $ \Sigma_{ij}^{(12)} $ is the expected genetic overlap between two individuals and genetic covariance between the disorders, expressed by the genetic correlation $ \rho_{12} $ and the heritabilities. We can generalise the construction of the covariance matrix such that it can be used to create the between disorder covariance as well as the with-in disorder covariance matrix for the considered family. First, let $ K_{ij} $ denote the expected genetic overlap between two individuals $ i $ and $ j $, let $ \rho_{nm} $ be the genetic correlation between phenotype $ n $ and $ m $. If we only consider one phenotype, then $ \rho_{nn} = 1$. Then we can construct the covariance matrix entry-wise with 
+where $ \Sigma_{ij}^{(12)} $ is the expected genetic overlap between two individuals and genetic covariance between the disorders, expressed by the genetic correlation $ \rho_{12} $ and the heritabilities. We can generalise the construction of the covariance matrix such that it can be used to create the between-disorder covariance as well as the with-in disorder covariance matrix for the considered family. First, let $ K_{ij} $ denote the expected genetic overlap between two individuals $ i $ and $ j $, let $ \rho_{nm} $ be the genetic correlation between phenotype $ n $ and $ m $. If we only consider one phenotype, then $ \rho_{nn} = 1$. Then we can construct the covariance matrix entry-wise with 
 
 \begin{equation*}
-	\Sigma^{(nm)}_{ij} = \rho_{nm} \sqrt{h^2_{n}}\sqrt{h^2_{m}}K_{ij}, \qquad K_{ij} = 
+	\Sigma^{(nm)}_{ij} = K_{ij} \rho_{nm}\sqrt{h^2_{n}h^2_{m}}, \qquad K_{ij} = 
 	\begin{cases} 
 		1 		& \text{if } i \text{ and } j \text{ the same} \\
 		0.5 	& \text{if } i \text{ and } j \text{ $1^{st}$ degree} \\

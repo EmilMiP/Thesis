@@ -20,10 +20,7 @@ Let $ y $ denote the $ N\times1 $ vector of phenotypes for each individual, eith
 \begin{equation}\label{eq:baseGWAS}
 y = \beta G_{j} +  X\gamma + \varepsilon,
 \end{equation}
-where $ \beta $ denotes the genetic effect size, $ \gamma $ denotes a $ (k + 1) \times 1$ vector of coefficients for the intercept and 
-covariates, $ \varepsilon $ is a $ N \times 1 $ vector of independent normally distributed noise. Going forward, we will assume that 
-both $ y $ and $ G_j $ are scaled to have mean $ 0 $ and variance $ 1 $. The hypothesis being tested is $ H_0: \beta = 0 $ against $ 
-H_A: \beta \neq 0 $. 
+where $ \beta $ denotes the genetic effect size, $ \gamma $ denotes a $ (k + 1) \times 1$ vector of coefficients for the intercept and covariates, $ \varepsilon $ is a $ N \times 1 $ vector of independent normally distributed noise. Going forward, we will assume that both $ y $ and $ G_j $ are scaled to have mean $ 0 $ and variance $ 1 $. The hypothesis being tested is $ H_0: \beta = 0 $ against $ H_A: \beta \neq 0 $. 
  
 In short, regression methods are preferred over the Cochran-Armitage test as covariates can be included and linear regression is sometimes preferred over logistic regression, since it is more computationally efficient and there is no difference between their power\cite{sikorska2013gwas,prive2019making,balding2006tutorial,de2015magma}. Although logistic regression is more suitable when the outcome is binary, the linear regression p-values approximate the logistic-regression p-values well in practice, except when the outcome is rare or when the estimated effect is large (see \cref{sec:controllingType1Errors})\cite{pirinen2013efficient}.
 
@@ -45,28 +42,31 @@ cov(y) = \sigma_g^2K + \sigma^2_e I_N.
 Where $ \sigma^2_e $ is the environmental variance component, $ I_N $ is the $ N \times N $ dimensional identity matrix, $ \sigma_g^2 $ is the genetic variance component, and $ K $ is the GRM on a subset of SNPs. With the choice of $ I_N $ for the environmental covariance structure, an independent environment is implicitly assumed for all individuals. Similarly, $ K $ allows individuals with a high correlation to be accounted for. The mixed model requires estimates of $ \sigma_e^2 $ and $ \sigma_g^2 $. Computationally, linear mixed models are far more intensive than linear regression, but the benefit of these models is their ability to boost power over simple linear regression. See \cref{sec:computationalEfficiency} for details on computational and mathematical tricks that can speed up the computations.
 
 
+\subsubsection{Proportional Hazards model GWAS}
+A proportional hazards model is one of the simplest way to model time to an event. It models the changes in the hazard function, which can be thought of as the instantaneous chance of experiencing the event at some point in time, $ t $. The model used for GWAS is given by 
+\begin{equation}
+	\lambda(t | X, G_j) = \lambda_0(t)\exp(X\gamma + \beta G_j)
+\end{equation}
+where $ \lambda_0(t) $ is the baseline hazard, $ X $ denotes the covariates, $ \gamma $ is the covariate effects, $ G_j $ is the genotype, and $ \beta $ is the SNP effect. We note that a baseline hazard affects everyone, and the model can then examine the influence of covariates and the SNP in comparison to the baseline. The association test of interest is $ H_0: \beta = 0 $ vs $ H_A: \beta \neq 0 $. The baseline hazard is rarely known, but a common way to perform an association test in a proportional hazards model is with a likelihood ratio test, where the unknown baseline cancel out. A partial likelihood function is commonly used, which only maximizes with respect to the variable of interest, here $ \beta $.
+
+
+
 \subsection{Controlling type-1 errors} \label{sec:controllingType1Errors}
 A common cause of type-1 errors (also called a false positive) is population structure. It is a term that covers several types of potential biases in a GWAS. These biases can result in spurious associations between SNPs and phenotypes, when there is no true association. The most common reasons for population structure in genotype data is due to \textit{population stratification} and \textit{related individuals}. %Population stratification can have many causes. Every population will have some local structure, which may be problematic if not accounted for\textbf{REF?}. However, having two or more \textit{genetic ancestries} in the data in particular could severely bias a GWAS\textbf{REF?} and it is easy to account for. Regardless of the source of bias, they all result in the same underlying problem, namely artificial differences or similarities between a case and control group, which either creates a spurious association or masks a true association. \textbf{RFEFERENCE TO POP STRAT PROBLEMS?}
 %For example, if there is some kind of population structure in the data, common reasons are genetic ancestry or local variations within a population. A spurious association may occur if a subpopulation is particularly enriched with one type of variant and the rest of the population is not. Similarly, if the effect of a SNP in one genetic ancestry increases the risk, while it decreases the risk in a different genetic ancestry, then the effect of the given SNP would be hidden to us.
 
 \subsubsection{Population stratification}
+\begin{wrapfigure}{O}{10cm}
+	\includegraphics[width=10cm]{methods/iPSYCH_PCPlot.png}
+	\caption[Scatter plot of the first two principal components of iPSYCH 
+	participants coloured by parental country of birth]{The plot is provided without modification from the original paper describing iPSYCH \cite{pedersen2018ipsych2012}. The first two principal components have been plotted for the iPSYCH participants and coloured according to the parent's country of birth. The large circles indicate the mean values of a given genetic ancestry group. The circles with a cross represent the individuals where both parents are born in the region indicated by the colour, and no cross means only one parent was.}
+	\label{fig:ipsych_PCPlot}
+\end{wrapfigure}
 Population stratification is an umbrella term, and it can have many causes. We will consider two types of population stratification, namely local subpopulations in an otherwise homogeneous population and different genetic ancestries. 
 
 Within a population of individuals, it has been shown that there can be subpopulations where allele frequencies differ between subpopulations\cite{abdellaoui2013association,genome2014whole}. It can cause artificial differences or similarities between the subpopulations when performing associations tests. One example of a spurious association driven by population stratification is the chopstick gene, which allegedly accounted for half of the variance in being able to eat with chopsticks \cite{marees2018tutorial,hamer2000beware}. A common and simple solution to account for local population stratification is to perform a PCA on the genotypes and including the first PCs as covariates in the association analysis \cite{price2006principal,price2010new,prive2020efficient}. Local population stratification can also be accounted for by modelling the covariance structure of a select subset of SNPs in a linear mixed model GWAS.
 
-\begin{wrapfigure}{O}{10cm}
-	\includegraphics[width=10cm]{methods/iPSYCH_PCPlot.png}
-	\caption[Scatter plot of the first two principal components of iPSYCH 
-	participants coloured by parental country of birth]{The plot is provided without modification from the original paper describing 
-	iPSYCH \cite{pedersen2018ipsych2012} \textbf{TODO:is it okay 
-	to use a plot like this? Florian seems to think so}. The first two principal components have been 
-	plotted for the iPSYCH participants and coloured according to the parent's 
-	country of birth. The large circles indicate the mean values of a given 
-	genetic ancestry group. The circles with a cross represent the individuals 
-	where both parents are born in the region indicated by the colour, and no 
-	cross means only one parent was.}
-	\label{fig:ipsych_PCPlot}
-\end{wrapfigure}
+
 
 
 The above solution works well if only local subpopulations are present in an otherwise homogeneous population. A problem may arise if there are two or more genetic ancestries, as the PCs may not be able to properly account for such stratification. As a results, it seems prudent to highlight this particular cause of population stratification. Analysing different ancestries together in a GWAS is not commonly done. This is because different ancestries may have different minor allele frequencies for certain SNPs, altogether different variants on certain positions, etc.\cite{helgason2005icelandic}. Therefore, the most common way to deal with different genetic ancestries in a genotyped data set is to identify a genetically homogenous subset and perform the association analysis in the homogeneous subpopulation. There have been methods proposed that can account for genetic ancestry such as Tractor\cite{atkinson2021tractor}, but they have not been widely adopted yet. 
@@ -179,7 +179,7 @@ The normal equation for systems of equations of the form $ Ax=b $ say that $ \ha
 With the projection, the effect of the covariates have been removed from the outcome and the predictor, i.e.\ the phenotype and the genotype do \textit{not} depend on $ \gamma $ any more. Therefore, the calculations have been simplified and the calculations for the projection matrix only has to be performed once. Accounting for the covariate's effect in the phenotype also only has to be done once, the removal of the covariate's effect on the SNP has to be done for each SNP separately.
 One of the most common ways to perform the test is with a Wald test $ Z = \hat{\beta}/\text{se}(\hat{\beta}) \sim N(0,1)$. 
 \textbf{TODO: what is se(beta)}
-\textbf{TODO: Florian's thesis deals with speeding up computations even further, mention this too?}
+
 
 
 \subsubsection{Avoiding large matrix inversions}
@@ -332,7 +332,7 @@ This section provides a non-exhaustive list of methodological advances proposed 
 		Frailty model \\
 		\hline
 	\end{tabularx}
-	\caption{Overview of notable GWAS methods}
+	\oldcaption{Overview of notable GWAS methods}
 	\label{table:GWASoverview}
 \end{table}
 

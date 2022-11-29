@@ -110,8 +110,33 @@ v = \hat{\zeta}\sqrt{K^{''}(\hat{\zeta})}
 \end{equation}
 where $ \hat{\zeta} = \hat{\zeta}(x) $ is the solution to $ K^{'}(\hat{\zeta}) = x $, with $ K^{'} $ and $ K^{''} $ denoting the first and second derivative of the cumulant generating function. If the test statistic is close to the mean, a normal approximation is usually good. As a result, the normal distribution is often used if the test statistic is within two standard deviations of the mean, and the SPA otherwise.
 
+\subsection{Censoring}
+%\begin{wrapfigure}{O}{8cm}
 
-\subsection{Bias and Censoring}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{methods/censoring_plot.png}
+	\caption{Illustration of left, interval, and right censoring.}
+	\label{fig:censoring}
+%\end{wrapfigure}
+\end{figure}
+
+\subsection{Bias}
+%\begin{wrapfigure}{O}{8cm}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{methods/liablity_sampling_plot.png}
+	\caption{The effect of case ascertainment in the liability threshold model, where the cases are either under- or oversampled.}
+	\label{fig:bias:ascertainment}
+\end{figure}
+
+Bias is an important concept to consider when performing a statistical analysis. There are many different types of biases that can influence an analysis, such as immortal time bias, attrition bias, and collider bias. All biases has the potential to significantly influence statistical analysis if it is not properly identified and accounted for. Therefore, a catalogue of biases have been compiled, such that identification will be easier \cite{biascatalogue}. Even though there are many biases to consider, this section we will primarily highlight ascertainment bias, as it is prevalent in a GWAS setting. 
+
+Ascertainment bias can be briefly summarised as a systematic difference between the entire population and the sampled population. This can be a significant problem if important subgroups are systematically missing or overrepresented in the sampled population, as spurious associations may arise or mask true associations. The effect under and over representation of cases (case ascertainment) on the liability in a sampled population is shown in \cref{fig:bias:ascertainment}. If the cases are undersampled, it may be difficult to identify the true associations, as observed differences may be variations in the control group. With oversampling, the over representation of cases may result in inflated differences between the cases and controls. Therefore, it is important to be able to account for such sampling situations.
+
+
+
+
 
 \begin{enumerate}
 	\item what is censoring and how is it accounted for ?
@@ -121,8 +146,6 @@ where $ \hat{\zeta} = \hat{\zeta}(x) $ is the solution to $ K^{'}(\hat{\zeta}) =
 
 \subsection{Computational efficiency} \label{sec:computationalEfficiency}
 This section will cover some of the common computational or mathematical tricks used to speed up GWAS. Biobanks have been steadily increasing in size. it is therefore more important than ever to have as efficient methods as possible, since we would otherwise risk having data sets too large to properly analyse. We will briefly describe how one can avoid estimating the effect sizes of covariates that have been included in the model and tricks on how to avoid inverting matrices. 
-
-
 
 \subsubsection{Projecting covariates}
 There is a computational cost involved in estimating the effects of the covariates. Therefore, the most efficient way to account for the covariates without directly calculating their effect in each regression is to project them out of the predictor and the response of interest in \cref{eq:baseGWAS} \cite{sikorska2013gwas}. For the sake of completeness, we will present how to regress out the covariates as they were presented by Sikorska et al.\cite{sikorska2013gwas}. 

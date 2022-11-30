@@ -111,38 +111,32 @@ v = \hat{\zeta}\sqrt{K^{''}(\hat{\zeta})}
 where $ \hat{\zeta} = \hat{\zeta}(x) $ is the solution to $ K^{'}(\hat{\zeta}) = x $, with $ K^{'} $ and $ K^{''} $ denoting the first and second derivative of the cumulant generating function. If the test statistic is close to the mean, a normal approximation is usually good. As a result, the normal distribution is often used if the test statistic is within two standard deviations of the mean, and the SPA otherwise.
 
 \subsection{Censoring}
-%\begin{wrapfigure}{O}{8cm}
 
-\begin{figure}[h]
+Censoring is an important concept to consider when analysing time-to-event phenotypes. Focus is usually on the time to disorder onset, but conceptually it is also important to be able to account for individuals not experiencing the disorder being analysed, but still going through a period of being at-risk. This is the purpose of censoring. If a study is performed and a period of time is considered for a population, then not everyone is expected to experience the disorder. It is in fact very common that a large group of participants will not experience any disorder onset, but they have still lived through a period of being at-risk. Censoring of information is then allowing some individuals to not be fully observed or observable. There can be numerous reasons for why this may happen. For example, if a sample population is followed for a period of time, then some participants may leave the study for unrelated causes. Those causes may be death, moving away such that participation is no longer possible, or no longer satisfying the inclusion criteria for the study. 
+
+Censoring can be grouped into different categories and we will consider three types here. If a survival analysis is performed, then some individuals may have already experienced the disorder of interest prior to the beginning of the study. This is referred to as left-censoring, as the event happened prior to observations and it is often not known when. If an individual in a study is observed for a period of time, but is unavailable for some time, and an event happens in this unobserved period of time, that is called interval-censoring. The participants may be unavailable because they movie away for a period of time, and then come back and resume participation in the study. The last type of censoring that will be considered here is right-censoring. It is similar to left-censoring, but instead of the event happening before the study period, it happens after \cite{andersen2012statistical}.
+
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{methods/censoring_plot.png}
 	\caption{Illustration of left, interval, and right censoring.}
 	\label{fig:censoring}
-%\end{wrapfigure}
 \end{figure}
 
 \subsection{Bias}
+
+Bias is an important concept to consider when performing a statistical analysis. There are many different types of biases that can influence an analysis, such as immortal time bias, attrition bias, and collider bias. All biases has the potential to significantly influence statistical analysis if it is not properly identified and accounted for. Therefore, a catalogue of biases have been compiled, such that identification will be easier \cite{biascatalogue}. Even though there are many biases to consider, this section we will primarily highlight ascertainment bias, as it is prevalent in a GWAS setting. 
+
+Ascertainment bias can be briefly summarised as a systematic difference between the entire population and the sampled population. This can be a significant problem if important subgroups are systematically missing or overrepresented in the sampled population, as spurious associations may arise or mask true associations. The effect of under or over representation of cases (case ascertainment) on the liability in a sampled population is shown in \cref{fig:bias:ascertainment}. If the cases are undersampled, it may be difficult to identify the true associations, as observed differences may be variations in the control group. With oversampling, the over representation of cases may result in inflated differences between the cases and controls. Therefore, it is important to be able to account for such sampling situations. A common way of accounting for case ascertainment is with inverse probability weights(IPW) \cite{koul1981regression}. IPW essentially means weighing each observation with the inverse of the probability of the observation being sampled. It is commonly used in epidemiology, but to a lesser extend in a GWAS setting\cite{seaman2013review}. 
+
 %\begin{wrapfigure}{O}{8cm}
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{methods/liablity_sampling_plot.png}
 	\caption{The effect of case ascertainment in the liability threshold model, where the cases are either under- or oversampled.}
 	\label{fig:bias:ascertainment}
 \end{figure}
 
-Bias is an important concept to consider when performing a statistical analysis. There are many different types of biases that can influence an analysis, such as immortal time bias, attrition bias, and collider bias. All biases has the potential to significantly influence statistical analysis if it is not properly identified and accounted for. Therefore, a catalogue of biases have been compiled, such that identification will be easier \cite{biascatalogue}. Even though there are many biases to consider, this section we will primarily highlight ascertainment bias, as it is prevalent in a GWAS setting. 
-
-Ascertainment bias can be briefly summarised as a systematic difference between the entire population and the sampled population. This can be a significant problem if important subgroups are systematically missing or overrepresented in the sampled population, as spurious associations may arise or mask true associations. The effect under and over representation of cases (case ascertainment) on the liability in a sampled population is shown in \cref{fig:bias:ascertainment}. If the cases are undersampled, it may be difficult to identify the true associations, as observed differences may be variations in the control group. With oversampling, the over representation of cases may result in inflated differences between the cases and controls. Therefore, it is important to be able to account for such sampling situations.
-
-
-
-
-
-\begin{enumerate}
-	\item what is censoring and how is it accounted for ?
-	\item what biases may influence GWAS?
-	\item ascertainment bias should be highlighted
-\end{enumerate}
 
 \subsection{Computational efficiency} \label{sec:computationalEfficiency}
 This section will cover some of the common computational or mathematical tricks used to speed up GWAS. Biobanks have been steadily increasing in size. it is therefore more important than ever to have as efficient methods as possible, since we would otherwise risk having data sets too large to properly analyse. We will briefly describe how one can avoid estimating the effect sizes of covariates that have been included in the model and tricks on how to avoid inverting matrices. 

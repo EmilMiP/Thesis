@@ -20,7 +20,7 @@ The Danish national patient register was established in 1977. It has been expand
 \subsubsection{The psychiatric central research register}
 \begin{wrapfigure}{R}{7cm}
 	\includegraphics[width=7cm]{intro/registers.png}
-	\oldcaption{Illustration of a selected number of Danish registers. They are linked together by the civil registration system. The year denotes the year the register starts.}
+	\oldcaption{\sl Illustration of a selected number of Danish registers. They are linked together by the civil registration system. The year denotes the year the register starts.}
 	\label{fig:registerBubbles}
 \end{wrapfigure}
 
@@ -31,7 +31,7 @@ The psychiatric central research register has valid data from 1970 and onwards. 
 The Danish newborn screening biobank contains dried blood spot samples from nearly every newborn since 1982. The samples are taken from a heel prick a few days after birth and are stored at $ -20 $\textcelsius. Each year about $ 65,000 $ new samples are added, resulting in over $ 1.8 $ million samples in $ 2007 $. The purpose of the biobank is, among other things, to screen for various diseases at birth. The samples are kept frozen for research purposes, and the dried blood spots provide the basis for the iPSYCH cohort.\cite{norgaard2007storage}.
 
 \subsection{Cumulative incidence proportions} \label{sec:CIPs}
-Another important usage for the registers is estimating population representative cumulative incidence proportions(CIPs) that are stratified by sex and birth year. These CIPs will form the basis of how we will account for age of onset. The CIPs have been estimated using the Aalen-Johansen estimator\cite{hansen2017estimating} with death and emigration as competing events. The Aalen-Johansen estimator estimates the survival function when competing events are present. Therefore, it should be used instead of the Kaplan-Meier estimator of the survival function if competing event are present. When stratified by sex and birth year, the CIPs can be interpreted as the proportion of individuals born in a given year and of a given sex who are diagnosed with a phenotype before a point in time $ t $. The data from the registers described above provide the basis for estimating these CIPs and an example of depression CIPs is provided in \cref{fig:CIP_DEP}.
+Another important usage for the registers is estimating population representative cumulative incidence proportions(CIPs) that are stratified by sex and birth year. These CIPs will form the basis of how we will account for age of onset. The CIPs have been estimated using the Aalen-Johansen estimator\cite{hansen2017estimating} with death and emigration as competing events. The Aalen-Johansen estimator estimates the survival function when working with a competing event set-up. Therefore, it should be used instead of the Kaplan-Meier estimator of the survival function if competing event are present. When stratified by sex and birth year, the CIPs can be interpreted as the proportion of individuals born in a given year and of a given sex who are diagnosed with a phenotype before a point in time $ t $. The data from the registers described above provide the basis for estimating these CIPs and an example of depression CIPs is provided in \cref{fig:CIP_DEP}.
 
 
 \subsection{Genotype data}
@@ -42,7 +42,8 @@ This section covers the sources of genotype data used in this dissertation. Ther
 \begin{wrapfigure}{O}{8cm}
 	\includegraphics[width=8cm]{methods/prevalencePlot_DEP.png}
 	\caption[Cumulative incidence proportions from the Danish 
-	Registers]{Depression cumulative incidence proportions estimated from the 
+	Registers]{
+		\sl Depression cumulative incidence proportions estimated from the 
 		Danish registers. The CIPs have been stratified by birth year and sex. The 
 		red colour represent women and the blue represent men. The CIPs are 
 		calculated for each birth year, but are only shown in steps of $ 

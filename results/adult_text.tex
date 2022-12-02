@@ -8,7 +8,7 @@ As for the first paper, we assessed the models in simulations first. We simulate
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=10cm]{results/adult_combined_C250_power}
-	\caption[Power simulation results with $ 250 $ causal SNPs under both generative models and varying prevalences.]{The power is shown for different population prevalence, varying from $ 1\% $ to $ 20\% $. \textbf{A)} The power, i.e.\ the fraction of causal SNPs detected for each method, \textbf{without downsampling}. \textbf{B)} The power \textbf{with downsampling}, i.e.\ the number of individuals is subsampled to 10k cases and 10k controls.}
+	\caption[Power simulation results with $ 250 $ causal SNPs under both generative models and varying prevalences.]{\sl The power is shown for different population prevalence, varying from $ 1\% $ to $ 20\% $. \textbf{A)} The power, i.e.\ the fraction of causal SNPs detected for each method, \textbf{without downsampling}. \textbf{B)} The power \textbf{with downsampling}, i.e.\ the number of individuals is subsampled to 10k cases and 10k controls.}
 	\label{fig:adult_simulations}
 %\end{wrapfigure}
 \end{figure}
@@ -23,7 +23,8 @@ We found that the Cox PH model had a rather large loss of power compared to ADuL
 \begin{figure}[h] 
 	\centering
 	\includegraphics[width=10cm]{results/adult_manhattanPlot_ADHD}
-	\caption[Manhattan plots from GWAS with the ADuLT phenotype, SPACox, and case-control status for ADHD]{Manhattan plots for ADHD for all three methods. Case-control GWAS uses the age of individuals as a covariate, whereas the ADuLT GWAS and SPACox do not. The orange dots indicate suggestive SNPs with a p-value threshold of $ 5 \times 10^{-6} $. The red dots correspond to genome-wide significant SNPs with a p-value threshold of $ 5 \times 10^{-8} $. The diamonds correspond to the lowest p-value LD clumped SNP in a 500k base pair window with an $ r^2 = 0.1 $ threshold.}
+	\caption[Manhattan plots from GWAS with the ADuLT phenotype, SPACox, and case-control status for ADHD]{
+		\sl Manhattan plots for ADHD for all three methods. Case-control GWAS uses the age of individuals as a covariate, whereas the ADuLT GWAS and SPACox do not. The orange dots indicate suggestive SNPs with a p-value threshold of $ 5 \times 10^{-6} $. The red dots correspond to genome-wide significant SNPs with a p-value threshold of $ 5 \times 10^{-8} $. The diamonds correspond to the lowest p-value LD clumped SNP in a 500k base pair window with an $ r^2 = 0.1 $ threshold.}
 	\label{fig:adult_ADHD}
 %\end{wrapfigure}
 \end{figure}

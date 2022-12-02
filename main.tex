@@ -9,6 +9,7 @@
 \usepackage{xfrac}							% nicer fractions
 \usepackage{algorithm, algcompatible}		% algorithm environment for pseudocode examples
 \usepackage{graphicx, wrapfig}				% include pictures 
+%\usepackage{caption}						% Modify caption text of plots
 \usepackage{hyperref}						% active links in pdf
 \usepackage{cleveref}						% automatic type of ref \cref{label}
 \usepackage{tabularx}
@@ -27,6 +28,11 @@
 % redefinition of caption. Bold highlight and regular text
 \let\oldcaption\caption
 \renewcommand\caption[2][]{\oldcaption[#1]{\textbf{#1:} #2}}
+
+% defining math P for probs
+\newcommand{\p}{\mathbb{P}}
+% defining math E for expectations
+\newcommand{\e}{\mathbb{E}}
 
 
 % import bib file

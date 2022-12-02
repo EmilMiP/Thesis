@@ -20,10 +20,10 @@ z =
 \end{align*}
 \begin{wrapfigure}{O}{7cm}
 	\includegraphics[width=7cm]{methods/LTM.png}
-	\oldcaption{Illustration of the classical liability threshold model. Liabilities above the threshold $ T $, correspond to a case diagnosis, while liabilities below $ T $ are controls.}
+	\oldcaption{\sl Illustration of the classical liability threshold model. Liabilities above the threshold $ T $, correspond to a case diagnosis, while liabilities below $ T $ are controls.}
 	\label{fig:methods:LTMplot}
 \end{wrapfigure}
-i.e.\ an individual is a case when the liability $ \ell $ is above a given threshold $ T $ and the threshold is determined by the prevalence $ k $, such that $ P(\ell > T) = k $ in the population. An illustration of the LTM is provided in \cref{fig:methods:LTMplot}.
+i.e.\ an individual is a case when the liability $ \ell $ is above a given threshold $ T $ and the threshold is determined by the prevalence $ k $, such that $ \p(\ell > T) = k $ in the population. An illustration of the LTM is provided in \cref{fig:methods:LTMplot}.
 
 The LTM allows for modelling of non-Mendelian diseases, since the latent liability can be the result of more complex mechanisms than Mendelian diseases, which may depend on more than one or two genes \cite{falconer1967inheritance,falconer1965inheritance}. 
 
@@ -51,7 +51,7 @@ LT-FH does not distinguish between mother and father and the parents are coded a
 With this framework, the expected genetic liability can be estimated given the family member's case-control status. Estimating the expected genetic liability $ \hat{\ell_g} $ means estimating 
 
 \begin{align*}
-\hat{\ell_g} = E\left[ \ell_g | \mathbf{Z} \right] & & & \mathbf{Z} = \left(z_o, z_{p_1}, z_{p_2} \right)^T
+\hat{\ell_g} = \e \left[ \ell_g | \mathbf{Z} \right] & & & \mathbf{Z} = \left(z_o, z_{p_1}, z_{p_2} \right)^T
 \end{align*}
 where $ \mathbf{Z} $ is the vector of the considered family member's case-control status. The condition on $ \mathbf{Z} $ in the LTM means the liabilities for each family member is restricted to an interval. For a case, the full liability would be restricted to $ (T, \infty) $, while a control's full liability would be restricted to $ (-\infty, T) $. If we let $ i $ indicate a given family member, e.g.\ $ o, p_1, p_2 $ and $ n $ denotes the size of the family under consideration, then the possible liabilities for a family of all cases can be described as $ \{ \ell \in \mathbb{R}^n | \ell_i \geq T_i \text{ for all } i\} $. If instead a family of all controls was considered, it would be $ \{ \ell \in \mathbb{R}^n | \ell_i < T_i \text{ for all } i\} $. The genetic liability of the index person is always unrestricted. Commonly, the area of interest would be some combination of the two sets. The restrictions on the liabilities leads to a truncated multivariate normal distribution, and calculating the expected genetic liability $ \hat{\ell_g} $ does not have an analytical solution. See \textbf{Sampling strategy} for details on how LT-FH estimates the genetic liabilities. 
 
@@ -61,7 +61,7 @@ A practical consideration for LT-FH is the choice of thresholds. LT-FH considers
 
 The sampling strategy used in the original implementation of LT-FH consists in sampling a large number of observations from the multivariate normal distribution, then splitting the samples into each of the possible configurations of $ \mathbf{Z} $, and calculate the $ \hat{\ell_g} $ by averaging within each group. More observations are sampled if the standard error of mean (sem) is larger than $ 0.1 $ in any of the configurations of $ \mathbf{Z} $. If we consider only the index person, then we will have only $ 2 $ configurations to estimate the genetic liability in and it will essentially be a rescaled case-control phenotype. If we consider the index person and one parent, we will have $ 4 $ configurations, and with two parents, there are $ 6 $ configurations, since the sex of the parent is not considered. Once siblings are considered, the max number of siblings will be considered as well as status. For up to $ 10 $ siblings and no parents, there will be $ 40 $ unique configurations. From here it scales by counting the number of siblings present, if any siblings are cases, and the parental status. A pseudocode overview of the sampling strategy can be found in Algorithm \ref{alg:LTFH}.
 
-If a given configuration does not have an estimate of $ \hat{\ell_g} $ with sem$(\hat{\ell_g}) < 0.1 $, some resampling will be performed. This resampling is slightly more targeted than the initial sampling. For illustrative purposes, let the configuration that needs to be sampled from be one where one or two parents are a case, i.e.\ $ z_{p_1}  = 1$ and/or $ z_{p_2} = 1$, then univariate samples will be drawn from a truncated normal distribution on $ (T_p, \infty) $ for a case and $ (-\infty, T_p) $ for a control. Then the full model given in \cref{eq:LTFH_model} is conditioned on the targeted parental liabilities and the mean and covariance matrix in a conditional normal distribution are calculated and denoted by $ \mu^{\ast} $ and $ \Sigma^{\ast} $, respectively. Notably, not all observations from the lower dimensional conditional normal distribution are guaranteed to be observations for the desired configuration. The resampling strategy is applied until $ \hat{\ell_g} $ has a sem below $ 0.1 $ in all configurations.
+If a given configuration does not have an estimate of $ \hat{\ell_g} $ with sem$(\hat{\ell_g}) < 0.1 $, some resampling will be performed. This resampling is slightly more targeted than the initial sampling. For illustrative purposes, consider resampling from the configuration where one or two parents are a case, i.e.\ $ z_{p_1}  = 1$ and/or $ z_{p_2} = 1$, then univariate samples will be drawn from a truncated normal distribution on $ (T_p, \infty) $ for a case and $ (-\infty, T_p) $ for a control. Then the full model given in \cref{eq:LTFH_model} is conditioned on the targeted parental liabilities and the mean and covariance matrix in a conditional normal distribution are calculated and denoted by $ \mu^{\ast} $ and $ \Sigma^{\ast} $, respectively. Notably, not all observations from the lower dimensional conditional normal distribution are guaranteed to be observations for the desired configuration. The resampling strategy is applied until $ \hat{\ell_g} $ has a sem below $ 0.1 $ in all configurations.
 
 \begin{algorithm}[h] 
 \begin{algorithmic}[1] 
@@ -93,13 +93,14 @@ The model underlying LT-FH and LT-FH++ is fundamentally the same, however LT-FH+
 The model underlying LT-FH++ is very similar to LT-FH and does not differ in a major way from what is shown in eq. \ref{eq:LTFH_model}. The model used by LT-FH++ deviates from the one used in LT-FH in the family members that can be accounted for, and what information is used for each family member. In short, LT-FH considers the index person and siblings the same, since the same threshold, $ T_c $, is used for each of the children in LT-FH, and the parents are also treated the same and share the threshold $ T_p $. LT-FH++ allows for each individual to have their own personalised threshold $ T_i $, for all $ i $ in the family. The individual thresholds are based on population representative cumulative incidence proportions (CIPs). The CIPs have the interpretation of \textit{"being the proportion of individuals born in year $ y $ that have experienced a phenotype before age $ t $"}. We let $ s_i $ denote the sex of individual $ i $, which means $ k(t; s_i, b_i) $ is the CIP for individual $ i $'s sex born in year $ b_i $ at time $ t $.
 
 \begin{align*}
-P\left( \ell_i > T_i \right) = k(t; s_i, b_i) \Rightarrow T_i = \Phi^{-1} \left(1 - k(t; s_i, b_i) \right),
+\p\left( \ell_i > T_i \right) = k(t; s_i, b_i) \Rightarrow T_i = \Phi^{-1} \left(1 - k(t; s_i, b_i) \right),
 \end{align*}
 where $ \Phi $ denotes the CDF of the standard normal distribution. An individual's current age for control or age-of-onset for cases, their sex, and birth year will be accounted for through the choice of threshold and denoted by $ T_i $. The threshold are determined through the CIPs, which means the thresholds are also a function of $ t $, but unless it is an important distinction to make that notation will be suppressed. See \cref{sec:CIPs} for details on the CIPs. If the CIPs are stratified by birth year and sex, a more accurate estimate of an individual's full liability is provided. When age of onset is available for a case, their full liability can be fixed to $ T_i $, rather than spanning the interval $ (T_i, \infty) $. Furthermore, for controls the threshold will decrease as the population ages, which narrows the potential liabilities, since they have lived through a period of risk. This means that older controls will have a lower estimated liability. An illustration of how the personalised thresholds can be used in the ADuLT model see \cref{fig:adult_connection_to_CIPs}.
 
 \begin{figure}[h]
 	\includegraphics[width=\textwidth]{methods/adult_top.png}
-	\caption[Age-dependent liability threshold model and its relationship to the CIPs]{An illustration of how the population representative CIPs are used by the age-dependent liability threshold model. The CIPs are stratified by sex and birth year (here ADHD for individuals born in Denmark in $ 2000 $) are converted to a threshold for the ADuLT model. Females are represented by the red line, while males are represented by the blue line. The CIPs has been marked at the age of 10 and 15 for both sexes (dotted lines).}
+	\caption[Age-dependent liability threshold model and its relationship to the CIPs]{
+		\sl An illustration of how the population representative CIPs are used by the age-dependent liability threshold model. The CIPs are stratified by sex and birth year (here ADHD for individuals born in Denmark in $ 2000 $) are converted to a threshold for the ADuLT model. Females are represented by the red line, while males are represented by the blue line. The CIPs has been marked at the age of 10 and 15 for both sexes (dotted lines).}
 	\label{fig:adult_connection_to_CIPs}
 \end{figure}
 
@@ -110,7 +111,7 @@ The input for LT-FH++ is similar to the input for LT-FH, but with two notable di
 	\includegraphics[width=10cm]{methods/ltfhpp_steps.png}
 %	\includegraphics[width=10cm]{methods/LTFHpp_Figure1.pdf}
 	\caption[Overview of LT-FH++ and what information it can account for in GWAS]{
-		Using LT-FH++ is a two step approach. First, a genetic liability is estimated based on the available family history, where age-of-onset or age for controls, sex, and birth year is accounted for in each included individual. Then a GWAS can be performed with the GWAS software of choice, e.g.\ BOLT-LMM.
+		\sl Using LT-FH++ is a two step approach. First, a genetic liability is estimated based on the available family history, where age-of-onset or age for controls, sex, and birth year is accounted for in each included individual. Then a GWAS can be performed with the GWAS software of choice, e.g.\ BOLT-LMM.
 	} % Esben said it was fine to include this plot as is.
 	\label{fig:LTFHppFigure1}
 \end{wrapfigure}
@@ -160,7 +161,7 @@ If we consider $ \ell_1 $ and $ \ell_2 $ as the vectors of liabilities for some 
 		\Sigma^{(21)} & \Sigma^{(2)} 
 	\end{pmatrix}, \quad \Sigma^{(12)}_{ij} = K_{ij}\rho_{12}\sqrt{h_1^2 h_2^2},
 \end{equation*}
-where $ \Sigma_{ij}^{(12)} $ is the expected genetic overlap between two individuals and genetic covariance between the disorders, expressed by the genetic correlation $ \rho_{12} $ and the heritabilities. We can generalise the construction of the covariance matrix such that it can be used to create the between-disorder covariance as well as the with-in disorder covariance matrix for the considered family. First, let $ K_{ij} $ denote the expected genetic overlap between two individuals $ i $ and $ j $, let $ \rho_{nm} $ be the genetic correlation between phenotype $ n $ and $ m $. If we only consider one phenotype, then $ \rho_{nn} = 1$. Then we can construct the covariance matrix entry-wise with 
+where $ \Sigma_{ij}^{(12)} $ is the expected genetic overlap between two individuals and genetic covariance between the disorders, expressed by the genetic correlation $ \rho_{12} $ and the heritabilities. We can generalise the construction of the covariance matrix such that it can be used to create the between-disorder covariance as well as the with-in disorder covariance matrix for the considered family. First, let $ K_{ij} $ denote the expected genetic overlap between individuals $ i $ and $ j $, let $ \rho_{nm} $ be the genetic correlation between phenotype $ n $ and $ m $. If we only consider one phenotype, then $ \rho_{nn} = 1$. Then we can construct the covariance matrix entry-wise with 
 
 \begin{equation*}
 	\Sigma^{(nm)}_{ij} = K_{ij} \rho_{nm}\sqrt{h^2_{n}h^2_{m}}, \qquad K_{ij} = 

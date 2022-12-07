@@ -13,8 +13,9 @@ p1 <- ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
   ylab("") +
   scale_y_continuous(breaks = NULL,expand = c(0,0)) +
   scale_x_continuous(breaks = c(-2, 0, qnorm(0.05, lower.tail = F), 2), labels = c("-2","0", "T", "2")) +
-  theme_classic() +
-  theme(plot.title = element_text(hjust = 0.5)) +
+  theme_classic(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(size = 17)) +
   labs(x = "Liability", title = "Liability threshold model") +
   geom_segment(x = qnorm(0.05, lower.tail = F),
                xend = qnorm(0.05, lower.tail = F),

@@ -1,5 +1,5 @@
 
-\subsection{LT-FH++ and survival analysis}
+\subsection{LT-FH++ and Survival Analysis}
 The proportional hazards model is defined by the hazard function. The connection to a hazard function is not clear under a liability threshold model. However, a rate can be considered the probability of an event happening in an infinitesimally small change in time. Under the LTM, the hazard rate can therefore be interpreted as the probability of an individual being diagnosed in such an infinitesimally small change in time\cite{kragh2021analysis}. To describe such a probability, we will let $ T(t) $ be the threshold for an individual to be a case at time $ t $, $ \ell $ is a person's full liability, and $ x $ denotes the covariates, e.g.\ genotypes and sex. The approximation is given by the following conditional probability
 
 \begin{equation}\label{eq:ltm_case_prob_approx}
@@ -15,7 +15,7 @@ Here $ dt $ denotes a small change in time. This means the hazard rate is propor
 %\end{equation}
 %In layman's terms, this means individuals with a higher than average genetic liability, $ g_i > 0 $, will have a higher risk of 
 %becoming a case throughout their lives independent of age. Therefore, we would expect to see the individuals with a higher than 
-%average genetic risk will also on average have an earlier age of onset.
+%average genetic risk will also on average have an earlier age-of-onset.
 %
 Under the age-dependent liability threshold model, we can derive the probability of becoming a case in an interval $ (t, t+ dt) $ shown in \cref{eq:ltm_case_prob_approx}. Recall that the threshold $ T(t) $ used to determine case status is monotonic decreasing with age, as the cumulative incidence proportion for a given sex and birth year is monotonic increasing with age. The ADuLT model assumes that an individual's full liability is given by the genetic and environmental components, $ \ell_i = g_i + e_i $. Notably, $ g_i $ and $ e_i $ are independent, normally distributed with variances $ h^2 $ and $ 1 - h^2 $, respectively. By using properties of conditional probabilities, we get
 
@@ -30,7 +30,7 @@ Under the age-dependent liability threshold model, we can derive the probability
 	1 - \Phi\left( \dfrac{T(t + dt) - g_i}{\sqrt{1 - h^2}}\right) \times \Phi\left( \dfrac{T(t) - g_i}{\sqrt{1 - h^2}}\right)^{-1} \label{eq:derived_adult_case_prob}.
 \end{align}
 
-With \cref{eq:derived_adult_case_prob} note the fraction will always be less than $ 1 $ due to the monotonic decreasing property of the threshold. Furthermore, if we consider an individual $ i $, where $ t_i $ denote the current age or age of onset, then we can calculate the survival function under the ADuLT model. Recall that if $ t_i $ is larger than the currently considered point in time, $ t $, no event has occurred, and is equivalent to a liability under the threshold. We get
+With \cref{eq:derived_adult_case_prob} note the fraction will always be less than $ 1 $ due to the monotonic decreasing property of the threshold. Furthermore, if we consider an individual $ i $, where $ t_i $ denote the current age or age-of-onset, then we can calculate the survival function under the ADuLT model. Recall that if $ t_i $ is larger than the currently considered point in time, $ t $, no event has occurred, and is equivalent to a liability under the threshold. We get
 
 
 \begin{equation}
@@ -41,7 +41,6 @@ From the survival function, we can determine the hazard function with a well kno
 \begin{equation}
 \lambda_i(t) = \dfrac{-S_i^{'}(t)}{S_i(t)}.
 \end{equation}
-
 The model is unusual compared to other survival models in the particular way that it is unique to each individual, as the genetic component and threshold all depend on the individual. Older individuals will have a lower threshold and individuals with a high genetic risk are more likely to become cases. The thresholds, $ T_i $, do not have to approach negative infinity as the population increases. In fact, the thresholds will have a lower limit that correspond to the life-time prevalence in the population. Put in another way, the thresholds are stopping times that has the halting criteria of being diagnosed or dying.
 
 At a first glance, the ADuLT model may seem deterministic and therefore be incompatible with survival analysis. However, it is important to note that an individual's liabilities are never observed, which means the environment component can be thought of as capturing environmental effects, chance events, and other non-genetic effects. This leads to a model that is non-deterministic, thereby preserving the stochastic nature of survival models.

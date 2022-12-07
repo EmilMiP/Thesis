@@ -11,7 +11,7 @@
 \usepackage{graphicx, wrapfig}				% include pictures 
 %\usepackage{caption}						% Modify caption text of plots
 \usepackage{hyperref}						% active links in pdf
-\usepackage{cleveref}						% automatic type of ref \cref{label}
+\usepackage[capitalise,noabbrev]{cleveref}	% automatic type of ref \cref{label}
 \usepackage{tabularx}
 \usepackage{csquotes}						% \enquote{text}
 
@@ -36,58 +36,37 @@
 
 
 % import bib file
-\usepackage[backend=bibtex8]{biblatex}		% bibliography package (bibtex)
+\usepackage[sorting=none, style=nature, backend=bibtex8]{biblatex}		% bibliography package (bibtex)
 \addbibresource{references.bib}
 
-
+\pagenumbering{roman}									% roman numerals for front matter
 
 \begin{document}
 
 
 \chapter*{Acknowledgements}
-Tak alle sammen.
-Også Ole
+\input{acknowledgements.tex}
 
-\chapter*{List of papers}
- 
-The dissertation is based on the following papers. They are presented in the order of publication.
-\subsubsection{Paper 1}
-EM Pedersen, E Agerbo, O Plana-Ripoll, J Grove, JW Dreier, KL Musliner, M Bækvad-Hansen, G Athanasiadis, A Schork, D Demontis, J Bybjerg-Grauholm, DM Hougaard, T Werge, M Nordentoft, O Mors, S Dalsgaard, J Christensen,  AD Børglum, PB Mortensen, JJ McGrath, F Privé, BJ Vilhjálmsson. Accounting for age-of-onset and family history improves power in genome-wide association studies. American Journal of Human Genetics, 109: 417-432.
+\newpage
+\chapter*{Abbreviations}
+\input{abbreviations.tex}
+\newpage
 
-\subsubsection{Paper 2}
-EM Pedersen, E Agerbo, O Plana-Ripoll, J Steinbach, MD Krebs, DM Hougaard, T Werge, M Nordentoft, A Børglum,  KL Musliner, A Ganna, AJ Schork, PB Mortensen,  JJ McGrath,  F Privé, BJ Vilhjálmsson. ADuLT: An efficient and robust time-to-event GWAS. medRxiv, doi: https://doi.org/10.1101/2022.08.11.22278618 [Under review]
+\chapter*{List of Papers}
+\input{list_of_papers.tex}
 
-\subsubsection{Paper 3}
-\textbf{\textit{Study 3:}} fGRS and fGRS multi trait [TBD - Under construction]
-\mbox{}
-\\
-
-Besides these I have contributed to several other manuscripts that are not included in this dissertation. This includes the three published studies and one pre-print.
-
-\begin{enumerate}
-	\item MJ Witteveen, EM Pedersen, J Meijsen, MR Andersen, F Privé, D Speed, and BJ Vilhjálmsson. Publicly Available Privacy-preserving Benchmarks for Polygenic Prediction. bioRxiv, \url{https://doi.org/10.1101/2022.10.10.510645}
-	\item T Wimberley, I Brikell, EM Pedersen, E Agerbo, BJ Vilhjálmsson, C Albiñana, F Privé, A Thapar, K Langley, L Riglin, M Simonsen, HS Nielsen, AD Børglum, M Nordentoft, PB Mortensen, S Dalsgaard. Early life injuries and the development of attention-deficit hyperactivity disorder.  Journal of Clinical Psychiatry, doi:\url{https://doi.org/10.4088/JCP.21m14033}.
-	\item I Brikell, T Wimberley, C Albiñana, EM Pedersen, BJ Vilhjálmsson, E Agerbo, D Demontis, AD Børglum, A Schork, S LaBianca, T Werge, M Nordentoft, O Mors, D Hougaard, A Thapar, PB Mortensen, S Dalsgaard. Genetic, Clinical, and Sociodemographic Factors Associated With Stimulant Treatment Outcomes in ADHD.  American Journal of Psychiatry, doi:\url{https://doi.org/10.1176/appi.ajp.2020.20121686}.
-	\item X Liu, T Munk-Olsen, C Albiñana, BJ Vilhjálmsson, E Pedersen, V Schlünssen, M Bækvad-Hansen, J Bybjerg-Grauholm, M Nordentoft, A Børglum, T Werge, D Hougaard, PB Mortensen, E Agerbo. Genetic liability to major depression and risk of childhood asthma. Brain Behavior and Immunity, doi: \url{https://doi.org/10.1016/j.bbi.2020.07.030}.
-	
-\end{enumerate}
-
-
-
-% do I need a section with abbreviations ?
 \tableofcontents
 \newpage
 
 \chapter{Introduction}
+\pagenumbering{arabic}
 \input{intro/introduction_main.tex}
 
-%\chapter{Background}
-%\input{background/background_main.tex}
 
-\chapter{Study aims}
+\chapter{Study Aims}
 \input{aims.tex}
 
-\chapter{Materials and methods}
+\chapter{Materials and Methods}
 \input{methods/materials_and_methods_main.tex}
 
 
@@ -101,13 +80,13 @@ Besides these I have contributed to several other manuscripts that are not inclu
 \chapter{Conclusion}
 \input{conclusion/conclusion_main.tex}
 
-\chapter{Future directions}
+\chapter{Future Directions}
 \input{future_directions.tex}
 
-\chapter{English abstract}
+\chapter{English Abstract}
 \input{english_summary.tex}
 
-\chapter{Danish abstract}
+\chapter{Danish Abstract}
 \input{danish_summary.tex}
 
 

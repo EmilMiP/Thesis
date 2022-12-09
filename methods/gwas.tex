@@ -122,7 +122,7 @@ Censoring can be grouped into different categories and we will consider three ty
 If an age-of-onset analysis is performed in a GWAS setting, it is usually done with a Cox PH model (see \cref{sec:GWAS:LinReg} for details). However, these models are not as widespread as variations of linear or logistic regression for GWAS. This means most GWAS does not account for, e.g.\ right-censoring, which can be very common for some phenotypes. As an example, late-onset disorders such as Alzheimer's disease or some types of heart diseases are likely to suffer from censoring in most GWAS analysis, because participants will not have lived long enough to experience these. In this dissertation, we will present a method, LT-FH++, that is able to account for censoring, while also accounting for family history at the same time (see \cref{sec:methods:LTMs} for details).
 
 
-\subsection{Bias}
+\subsection{Bias} \label{sec:bias}
 
 Bias is an important concept to consider when performing a statistical analysis. There are many different types of biases that can influence an analysis, such as immortal time bias, attrition bias, collider bias, and confounding. A catalogue of potential biases has been compiled\cite{biascatalogue}. Each of these biases have the potential to significantly influence statistical analysis if it is not properly identified and accounted for. Even though there are many biases to consider, this section we will primarily highlight ascertainment bias, as it is prevalent in a GWAS setting. 
 

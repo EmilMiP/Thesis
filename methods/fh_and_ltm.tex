@@ -88,6 +88,14 @@ If a given configuration does not have an estimate of $ \hat{\ell_g} $ with sem$
 
 The model underlying LT-FH and LT-FH++ is fundamentally the same, however LT-FH++ does make a few modifications to account for age-of-onset or, sex, and cohort effects. The addition of this extra information allows for a more fine-tuned estimate of the genetic liability $ \hat{\ell_g} $, further improving the genetic liability estimates. The modifications that allow for the additional information has an impact on the input and choice of sampling strategy. Therefore, this section will primarily focus on how these key points differ from LT-FH, since the fundamental model is the same, it will not be repeated. 
 
+
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{methods/adult_top.png}
+	\caption[Age-dependent liability threshold model and its relationship to the CIPs]{
+		\sl An illustration of how the population representative CIPs are used by the age-dependent liability threshold model. The CIPs are stratified by sex and birth year (here ADHD for individuals born in Denmark in $ 2000 $) are converted to a threshold for the ADuLT model. Females are represented by the red line, while males are represented by the blue line. The CIPs has been marked at the age of 10 and 15 for both sexes (dotted lines).}
+	\label{fig:adult_connection_to_CIPs}
+\end{figure}
+
 \subsubsection{The Model}
 
 The model underlying LT-FH++ is very similar to LT-FH and does not differ in a major way from what is shown in eq. \ref{eq:LTFH_model}. The model used by LT-FH++ deviates from the one used in LT-FH in the family members that can be accounted for, and what information is used for each family member. In short, LT-FH considers the index person and siblings the same, since the same threshold, $ T_c $, is used for each of the children in LT-FH, and the parents are also treated the same and share the threshold $ T_p $. LT-FH++ allows for each individual to have their own personalised threshold $ T_i $, for all $ i $ in the family. The individual thresholds are based on population representative cumulative incidence proportions (CIPs). The CIPs have the interpretation of \textit{"being the proportion of individuals born in year $ y $ that have experienced a phenotype before age $ t $"}. We let $ s_i $ denote the sex of individual $ i $, which means $ k(t; s_i, b_i) $ is the CIP for individual $ i $'s sex born in year $ b_i $ at time $ t $.
@@ -97,16 +105,7 @@ The model underlying LT-FH++ is very similar to LT-FH and does not differ in a m
 \end{align*}
 where $ \Phi $ denotes the CDF of the standard normal distribution. An individual's current age for control or age-of-onset for cases, their sex, and birth year will be accounted for through the choice of threshold and denoted by $ T_i $. The threshold are determined through the CIPs, which means the thresholds are also a function of $ t $, but unless it is an important distinction to make that notation will be suppressed. See \cref{sec:CIPs} for details on the CIPs. If the CIPs are stratified by birth year and sex, a more accurate estimate of an individual's full liability is provided. When age-of-onset is available for a case, their full liability can be fixed to $ T_i $, rather than spanning the interval $ (T_i, \infty) $. Furthermore, for controls the threshold will decrease as the population ages, which narrows the potential liabilities, since they have lived through a period of risk. This means that older controls will have a lower estimated liability. An illustration of how the personalised thresholds can be used in the ADuLT model see \cref{fig:adult_connection_to_CIPs}.
 
-\begin{figure}[h]
-	\includegraphics[width=\textwidth]{methods/adult_top.png}
-	\caption[Age-dependent liability threshold model and its relationship to the CIPs]{
-		\sl An illustration of how the population representative CIPs are used by the age-dependent liability threshold model. The CIPs are stratified by sex and birth year (here ADHD for individuals born in Denmark in $ 2000 $) are converted to a threshold for the ADuLT model. Females are represented by the red line, while males are represented by the blue line. The CIPs has been marked at the age of 10 and 15 for both sexes (dotted lines).}
-	\label{fig:adult_connection_to_CIPs}
-\end{figure}
-
 \subsubsection{Input}
-The input for LT-FH++ is similar to the input for LT-FH, but with two notable differences. The first difference is that LT-FH++ relies on CIPs for the threshold for each individual, while LT-FH utilises a general but separate threshold for parents and offspring. The second notable difference is that each family member will have to be included separately, while LT-FH does not distinguish between mother and father and only requires the total number of siblings and whether any siblings are cases. An overview of LT-FH++ and the information it is able to account for is provided in \cref{fig:LTFHppFigure1}. The sex and birth year stratified CIPs are used to assign thresholds to each individual in a family. Each person will therefore have a lower $ T_i^l $ and upper $ T_i^u $ threshold, which leads to an interval of possible liabilities defined as $ I_i = (T_i^l, T_i^u) $. For controls, the interval will be $ I_i = (T_i^l,T_i^u) = (-\infty, T_i) $, while for cases $ I_i = (T_i^l,T_i^u) = [T_i,T_i] $. If a user does not have CIPs that are stratified by sex and birth year, then a case's interval should be given as $ I_i = (T_i, \infty) $. When the thresholds have been assigned, the intervals that the truncated multivariate normal distribution have been defined and the genetic liability can be estimated. 
-
 \begin{wrapfigure}{O}{10cm}
 	\includegraphics[width=10cm]{methods/ltfhpp_steps.png}
 	%	\includegraphics[width=10cm]{methods/LTFHpp_Figure1.pdf}
@@ -115,6 +114,9 @@ The input for LT-FH++ is similar to the input for LT-FH, but with two notable di
 	} % Esben said it was fine to include this plot as is.
 	\label{fig:LTFHppFigure1}
 \end{wrapfigure}
+
+The input for LT-FH++ is similar to the input for LT-FH, but with two notable differences. The first difference is that LT-FH++ relies on CIPs for the threshold for each individual, while LT-FH utilises a general but separate threshold for parents and offspring. The second notable difference is that each family member will have to be included separately, while LT-FH does not distinguish between mother and father and only requires the total number of siblings and whether any siblings are cases. An overview of LT-FH++ and the information it is able to account for is provided in \cref{fig:LTFHppFigure1}. The sex and birth year stratified CIPs are used to assign thresholds to each individual in a family. Each person will therefore have a lower $ T_i^l $ and upper $ T_i^u $ threshold, which leads to an interval of possible liabilities defined as $ I_i = (T_i^l, T_i^u) $. For controls, the interval will be $ I_i = (T_i^l,T_i^u) = (-\infty, T_i) $, while for cases $ I_i = (T_i^l,T_i^u) = [T_i,T_i] $. If a user does not have CIPs that are stratified by sex and birth year, then a case's interval should be given as $ I_i = (T_i, \infty) $. When the thresholds have been assigned, the intervals that the truncated multivariate normal distribution have been defined and the genetic liability can be estimated. 
+
 
 \subsubsection{Sampling Strategy}
 

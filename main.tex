@@ -14,7 +14,7 @@
 \usepackage[capitalise,noabbrev]{cleveref}	% automatic type of ref \cref{label}
 \usepackage{tabularx}
 \usepackage{csquotes}						% \enquote{text}
-
+\usepackage[final]{pdfpages}				% can include pdfs with \includepdf{filename} option: draft or final
 % 
 % algorithm commands
 \algnewcommand\INPUT{\item[\textbf{Input:}]}% 			% renames require to input
@@ -39,10 +39,18 @@
 \usepackage[sorting=none, style=nature, backend=bibtex8]{biblatex}		% bibliography package (bibtex)
 \addbibresource{references.bib}
 
-\pagenumbering{roman}									% roman numerals for front matter
 
 \begin{document}
 
+\includepdf{cover.pdf}
+\newpage
+\
+\pagestyle{empty}
+\newpage
+\includepdf{Page_1.pdf}
+\newpage
+
+\pagenumbering{roman}									% roman numerals for front matter
 
 \chapter*{Acknowledgements}
 \input{acknowledgements.tex}
@@ -90,29 +98,32 @@
 \input{danish_summary.tex}
 
 
-
-
-
-%\begin{appendices}
-
-%\chapter{Study 1}
-%study 1 goes here. \cite{pedersen2022accounting}
-%\include{�}
-
-%\chapter{Study 2}
-%study 2 goes here.
-%\include{�}
-
-%\chapter{Study 3}
-%study 3 goes here.
-%\include{�}
-
-%\end{appendices}
-
-%\nocite{*}
+\nocite{*}
 \newpage
 \printbibliography[heading=bibintoc,
 title={References}]
 \newpage
+
+
+\pagenumbering{gobble}
+
+\begin{appendices}
+%%%%%%%%%%%% MAKE SURE ALL PAGES ARE LOADED %%%%%%%%%%%%%%%%
+%%%%%%%%%%%% SET pages=- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Study 1 - LT-FH++}
+EM Pedersen, E Agerbo, O Plana-Ripoll, J Grove, JW Dreier, KL Musliner, M Bækvad-Hansen, G Athanasiadis, A Schork, D Demontis, J Bybjerg-Grauholm, DM Hougaard, T Werge, M Nordentoft, O Mors, S Dalsgaard, J Christensen,  AD Børglum, PB Mortensen, JJ McGrath, F Privé, BJ Vilhjálmsson. Accounting for age-of-onset and family history improves power in genome-wide association studies. American Journal of Human Genetics, 109: 417-432.
+
+\includepdf[page=1]{ltfhpp_with_suppNotes.pdf}
+
+\chapter{Study 2 - ADuLT}
+EM Pedersen, E Agerbo, O Plana-Ripoll, J Steinbach, MD Krebs, DM Hougaard, T Werge, M Nordentoft, A Børglum,  KL Musliner, A Ganna, AJ Schork, PB Mortensen,  JJ McGrath,  F Privé, BJ Vilhjálmsson. ADuLT: An efficient and robust time-to-event GWAS. medRxiv, doi: https://doi.org/10.1101/2022.08.11.22278618 [Under review]
+
+\includepdf[page=1]{ADuLT.pdf}
+%
+%\chapter{Study 3}
+%study 3 goes here.
+%\include{�}
+
+\end{appendices}
 
 \end{document}

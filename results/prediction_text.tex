@@ -7,23 +7,24 @@ We will consider a base model that contains the index person's sex, age, and $ 2
 %\begin{wrapfigure}{O}{10cm}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.8\textwidth]{results/avg_partial_prediciton_accuracies_noED.png}
+%	\includegraphics[width=0.8\textwidth]{results/avg_partial_prediciton_accuracies_noED.png}
+	\includegraphics[width=0.8\textwidth]{results/Average_out-of-sample_partial_correlations_without_eating_disorders.jpeg}
 	\caption[Average out-of-sample prediction across $ 8 $ disorders]{
 		\sl Average partial $ R^2 $ across $ 8 $ disorders with various prediction models. We excluded eating disorders from the average, as hardly any family history was present for these disorders. The base model includes age, sex, and $ 20 $ PCs. \textit{PRS} refers to the base model with the PRS included as well. \textit{FH} refers to the base model with the binary family history, and \textit{FL} refers to the LT-FH++ variable. Combinations of these variables are presented as \textit{PRS} \& \textit{FH} for the model with PRS and the binary family history variable etc..}
 	\label{fig:paper3:predictionResults}
 %\end{wrapfigure}
 \end{figure}
 
-\subsubsection{Multi-Trait Prediction}
 
+\subsubsection{Multi-Trait Prediction}
 
 On top of this, we will also considered correlated phenotypes. Mental disorders are notoriously difficult to diagnose and many mental disorders have a high genetic correlation \cite{schork2019genome,hyman2010diagnosis}. Accounting for correlated phenotypes is therefore an attempt at utilising the information from the highly correlated phenotypes to improve prediction. For correlated trait, we restricted to the iPSYCH disorders. This was done due to the requirement of genetic correlations, which has already been calculated by Schork et al.\cite{schork2019genome}. In order to have as fair of a comparison as possible, we also created multi trait models for the other predictors. For instance, we considered a multi trait PRS model, which is a model with the PRS of all the considered correlated phenotypes. Similarly, the binary family history variable for all the correlated phenotypes was also included. For LT-FH++, we considered two scenarios. The first is the correlated phenotype extension as presented in \cref{sec:methods:ltfhpp:correlatedTraits}. It resulted in a single liability estimate that represents the family history for all of the considered disorders. We also considered a simpler approach, where the single trait LT-FH++ phenotype was included for each of the considered phenotypes. The first approach for LT-FH++ did not perform as well as the other methods, and will not be presented here. Therefore, we used the single trait LT-FH++ phenotype for each of the considered phenotypes. The multi trait results are presented in \cref{fig:paper3:predictionResultsMultiTrait}. 
 
 %\begin{wrapfigure}{O}{10cm}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.8\textwidth]{results/avg_partial_prediciton_accuracies_multi_trait.png}
-	\caption[Average out-of-sample prediction for multi trait]{
+%	\includegraphics[width=0.8\textwidth]{results/avg_partial_prediciton_accuracies_multi_trait.png}
+	\includegraphics[width=0.8\textwidth]{results/Average_out-of-sample_partial_correlations_multi_trait.jpeg}	\caption[Average out-of-sample prediction for multi trait]{
 		\sl Average partial $ R^2 $ across $ 5 $ disorders with various prediction models. The base model includes age, sex, and $ 20 $ PCs. As the prediction is based on multi trait, \textit{PRS} refers to the base model with the PRS of all considered phenotypes included. \textit{FH} refers to the base model with all binary family history variables included, and \textit{FL} refers to the model with all LT-FH++ variables included. Combinations of these variables are presented as \textit{PRS} \& \textit{FH} for the model with all PRSs and all binary family history variables etc..}
 	\label{fig:paper3:predictionResultsMultiTrait}
 %\end{wrapfigure}

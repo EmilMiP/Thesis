@@ -92,7 +92,7 @@ The model underlying LT-FH and LT-FH++ is fundamentally the same, however LT-FH+
 \begin{figure}[h]
 	\includegraphics[width=\textwidth]{methods/adult_top.png}
 	\caption[Age-dependent liability threshold model and its relationship to the CIPs]{
-		\sl An illustration of how the population representative CIPs are used by the age-dependent liability threshold model. The CIPs are stratified by sex and birth year (here ADHD for individuals born in Denmark in $ 2000 $) are converted to a threshold for the ADuLT model. Females are represented by the red line, while males are represented by the blue line. The CIPs has been marked at the age of 10 and 15 for both sexes (dotted lines).}
+		\sl An illustration of how the population representative CIPs are used by the age-dependent liability threshold model. The plot is a modified version of Figure $ 1 $ from Paper $ 2 $\cite{pedersen2022adult} (also \cref{app:adult} Figure $ 1 $). The CIPs are stratified by sex and birth year (here ADHD for individuals born in Denmark in $ 2000 $) are converted to a threshold for the ADuLT model. Females are represented by the red line, while males are represented by the blue line. The CIPs has been marked at the age of 10 and 15 for both sexes (dotted lines).}
 	\label{fig:adult_connection_to_CIPs}
 \end{figure}
 
@@ -106,11 +106,11 @@ The model underlying LT-FH++ is very similar to LT-FH and does not differ in a m
 where $ \Phi $ denotes the CDF of the standard normal distribution. An individual's current age for control or age-of-onset for cases, their sex, and birth year will be accounted for through the choice of threshold and denoted by $ T_i $. The threshold are determined through the CIPs, which means the thresholds are also a function of $ t $, but unless it is an important distinction to make that notation will be suppressed. See \cref{sec:CIPs} for details on the CIPs. If the CIPs are stratified by birth year and sex, a more accurate estimate of an individual's full liability is provided. When age-of-onset is available for a case, their full liability can be fixed to $ T_i $, rather than spanning the interval $ (T_i, \infty) $. Furthermore, for controls the threshold will decrease as the population ages, which narrows the potential liabilities, since they have lived through a period of risk. This means that older controls will have a lower estimated liability. An illustration of how the personalised thresholds can be used in the ADuLT model see \cref{fig:adult_connection_to_CIPs}.
 
 \subsubsection{Input}
-\begin{wrapfigure}{O}{10cm}
+\begin{wrapfigure}{R}{10cm}
 	\includegraphics[width=10cm]{methods/ltfhpp_steps.png}
 	%	\includegraphics[width=10cm]{methods/LTFHpp_Figure1.pdf}
 	\caption[Overview of LT-FH++ and what information it can account for in GWAS]{
-		\sl This plot is taken as-is from the original LT-FH++ paper\cite{pedersen2022accounting}. Using LT-FH++ is a two step approach. First, a genetic liability is estimated based on the available family history, where age-of-onset or age for controls, sex, and birth year is accounted for in each included individual. Then a GWAS can be performed with the GWAS software of choice, e.g.\ BOLT-LMM.
+		\sl This plot is a modified version of the original Figure $ 1 $ from LT-FH++ paper\cite{pedersen2022accounting} (also \cref{app:ltfhpp}, Figure $ 1 $). Using LT-FH++ is a two step approach. First, a genetic liability is estimated based on the available family history, where age-of-onset or age for controls, sex, and birth year is accounted for in each included individual. Then a GWAS can be performed with the GWAS software of choice, e.g.\ BOLT-LMM.
 	} % Esben said it was fine to include this plot as is.
 	\label{fig:LTFHppFigure1}
 \end{wrapfigure}

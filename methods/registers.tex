@@ -30,21 +30,18 @@ The Aalen-Johansen estimator of the survival function was used instead of the Ka
 
 
 \subsection{Genotype Data}
-This section covers the sources of genotype data used in this dissertation. There are two main sources, namely iPSYCH and UKBB. Here, we provide a brief overview for both of them. Notably, the iPSYCH cohort is a Danish biobank and has been linked to the previously mentioned registers, as shown in \cref{fig:registerBubbles}. 
-
-
-\subsubsection{iPSYCH}
 \begin{wrapfigure}{O}{8cm}
 	\includegraphics[width=8cm]{methods/prevalencePlot_DEP.png}
 	\caption[Cumulative incidence proportions from the Danish 
 	Registers]{
-		\sl Depression cumulative incidence proportions estimated from the 
-		Danish registers. The CIPs have been stratified by birth year and sex. The 
-		red colour represent women and the blue represent men. The CIPs are 
-		calculated for each birth year, but are only shown in steps of $ 
-		5 $ years.}
+		\sl Depression cumulative incidence proportions estimated from the Danish registers. Originally from Paper $ 1 $\cite{pedersen2022accounting} (\cref{app:ltfhpp}, Figure S38) and provided as-is. The CIPs have been stratified by birth year and sex. The red colour represent women and the blue represent men. The CIPs are calculated for each birth year, but are only shown in steps of $ 5 $ years.}
 	\label{fig:CIP_DEP}
 \end{wrapfigure}
+This section covers the sources of genotype data used in this dissertation. There are two main sources, namely iPSYCH and UKBB. Here, we provide a brief overview for both of them. Notably, the iPSYCH cohort is a Danish biobank and has been linked to the previously mentioned registers, as shown in \cref{fig:registerBubbles}. 
+
+
+\subsubsection{iPSYCH}
+
 iPSYCH is a key source of genotype data used in this dissertation. The benefit of a biobank such as iPSYCH is not the number of genotypes, instead its strength is due to the richness of the register information that it is linked to. All of the previously mentioned Danish registers have been linked to the genotypes, allowing for a very detailed set of phenotypes, as well as multiple information on each individual and their family members. The iPSYCH cohort focuses on psychiatric disorders, namely Attention Deficit Hyperactivity Disorder (ADHD), Autism Spectrum Disorder, Anorexia Nervosa, Bipolar disorder, Depression, and Schizophrenia\cite{pedersen2018ipsych2012}. Ethical approval was given by the Danish Scientific Ethics Committee, the Danish Health Data Authority, the Danish data protection agency, and the Danish Neonatal Screening Biobank Steering Committee.
 
 The iPSYCH cohort has been sampled in two rounds. The first round is called iPSYCH2012 and has $ 86,189 $ samples, while the second round, iPSYCH2015i, has $ 56,233 $ samples. The combined cohort is called iPSYCH2015 and has $ 141,265 $ unique samples. The population that iPSYCH2012 is nested within is defined as all singletons born in Denmark between the $ 1^{st} $ of May $ 1981 $ and the $ 31^{st} $ of December $ 2005 $, where the mother is known and the child is alive and living in Denmark by their first birthday. iPSYCH2015i extended the study population to individuals born between $ 1^{st} $ of May $ 1981 $ and $ 31^{st} $ of December $ 2008 $ with the same conditions. In total, $ 1,657,449 $ individuals satisfy this condition. For the first round of sampling, $ 30,000 $ samples were chosen at random, creating a population representative control group. For iPSYCH2015i another $ 21,000 $ were sampled for the control group. From the study population, all individuals with at least one of the focus disorders were sampled for iPSYCH2015 resulting in $ 93,608 $ samples, and $ 50,615 $ population controls. However, due to the random sampling $ 385 $ were chosen as controls for both iPSYCH2012 and iPSYCH2015i and another $ 2,958 $ individuals had at least one of the disorders iPSYCH focuses on, and would have been sampled either way\cite{pedersen2018ipsych2012,bybjerg2020ipsych2015}.

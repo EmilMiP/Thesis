@@ -13,6 +13,7 @@
 \usepackage{hyperref}						% active links in pdf
 \usepackage[capitalise,noabbrev]{cleveref}	% automatic type of ref \cref{label}
 \usepackage{tabularx}
+\usepackage{xpatch}
 \usepackage{csquotes}						% \enquote{text}
 \usepackage[final]{pdfpages}				% can include pdfs with \includepdf{filename} option: draft or final
 % 
@@ -34,6 +35,9 @@
 % defining math E for expectations
 \newcommand{\e}{\mathbb{E}}
 
+\xapptocmd\appendices{%
+	\crefalias{chapter}{appendix}%
+}{}{\PatchFailed}
 
 % import bib file
 \usepackage[sorting=none, style=nature, backend=bibtex8]{biblatex}		% bibliography package (bibtex)
@@ -51,7 +55,8 @@
 \newpage
 
 \pagenumbering{roman}									% roman numerals for front matter
-
+\input{supervisors_committee.tex}
+\newpage
 \chapter*{Acknowledgements}
 \input{acknowledgements.tex}
 
@@ -110,30 +115,27 @@ title={References}]
 \begin{appendices}
 %%%%%%%%%%%% MAKE SURE ALL PAGES ARE LOADED %%%%%%%%%%%%%%%%
 %%%%%%%%%%%% SET pages=- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Paper 1 - LT-FH++}
+\chapter{Paper 1 - LT-FH++} \label{app:ltfhpp}
 \thispagestyle{empty}
 EM Pedersen, E Agerbo, O Plana-Ripoll, J Grove, JW Dreier, KL Musliner, M Bækvad-Hansen, G Athanasiadis, A Schork, D Demontis, J Bybjerg-Grauholm, DM Hougaard, T Werge, M Nordentoft, O Mors, S Dalsgaard, J Christensen,  AD Børglum, PB Mortensen, JJ McGrath, F Privé, BJ Vilhjálmsson. Accounting for age-of-onset and family history improves power in genome-wide association studies. American Journal of Human Genetics, 109: 417-432.
 
-\includepdf[page=1]{ltfhpp_with_suppNotes.pdf}
-%\includepdf[page=-]{declaration_ltfhpp.pdf}
+\includepdf[page=-]{ltfhpp_with_suppNotes.pdf}
+\includepdf[page=-]{declaration_ltfhpp.pdf}
 
-\chapter{Paper 2 - ADuLT}
+\chapter{Paper 2 - ADuLT}\label{app:adult}
 \thispagestyle{empty}
 EM Pedersen, E Agerbo, O Plana-Ripoll, J Steinbach, MD Krebs, DM Hougaard, T Werge, M Nordentoft, A Børglum,  KL Musliner, A Ganna, AJ Schork, PB Mortensen,  JJ McGrath,  F Privé, BJ Vilhjálmsson. ADuLT: An efficient and robust time-to-event GWAS. medRxiv, doi: https://doi.org/10.1101/2022.08.11.22278618 [Under review]
 
-\includepdf[page=1]{ADuLT.pdf}
-%\includepdf[page=-]{declaration_adult.pdf}
+\includepdf[page=-]{ADuLT.pdf}
+\includepdf[page=-]{declaration_adult.pdf}
 
-\chapter{Paper 3 - Family Liabilities}
+\chapter{Paper 3 - Family Liabilities}\label{app:fl}
 \thispagestyle{empty}
 Emil M Pedersen, Jette Steinbach, Florian Privé, Clara Albiñana, Oleguer Plana-Ripoll, Zeynep Yilmaz, Liselotte V Petersen, Cynthia M Bulik, John J. McGrath, Preben B Mortensen, Katherine L Musliner, Esben Agerbo, Bjarni J Vilhjálmsson. Improving the predictive value of family history for psychiatric disorders. [In preparation]
 
-%\includepdf[page=1]{FL_draft.pdf}
-%\includepdf[page=-]{declaration_adult.pdf}
-%
-%\chapter{Study 3}
-%study 3 goes here.
-%\include{�}
+\includepdf[page=-]{Draft_family_liabilities.pdf}
+\includepdf[page=-]{declaration_adult.pdf}
+
 
 \end{appendices}
 

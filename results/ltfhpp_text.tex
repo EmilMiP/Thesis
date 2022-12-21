@@ -7,7 +7,7 @@ We performed simulations to assess the power and false discovery rate of LT-FH++
 \begin{figure}[h]
 	\includegraphics[width=\textwidth]{results/boxplot_05prev_both.png}
 	\caption[Simulation results for a $ 5\% $ prevalence, with and without downsampling of controls]{
-		\sl Linear regression was used to perform the GWAS for LT-FH and LT-FH++, while a 1-df chi-squared test was used for case-control status. We assessed the power of each method by considering the fraction of causal SNPs with a p-value below $ 5 \times 10^{-8} $. Here, GWAS refers to case-control status and LT-FH and LT-FH++ are both without siblings. Downsampling refers to downsampling the controls such that we have the same number of cases and controls, i.e.\, we have $ 10,000 $ individuals in total for a $ 5\% $ prevalence and $ 20,000 $ individuals for a $ 10\% $ prevalence.}
+		\sl A slightly modified version of Figure 2 from Paper $ 1 $\cite{pedersen2022accounting} (also \cref{app:ltfhpp}, Figure $ 2 $). Linear regression was used to perform the GWAS for LT-FH and LT-FH++, while a 1-df chi-squared test was used for case-control status. We assessed the power of each method by considering the fraction of causal SNPs with a p-value below $ 5 \times 10^{-8} $. Here, GWAS refers to case-control status and LT-FH and LT-FH++ are both without siblings. Downsampling refers to downsampling the controls such that we have the same number of cases and controls, i.e.\, we have $ 10,000 $ individuals in total for a $ 5\% $ prevalence and $ 20,000 $ individuals for a $ 10\% $ prevalence.}
 	\label{fig:LTFHppSimulationResults}
 \end{figure}
 
@@ -16,22 +16,16 @@ The simulations show a modest power increase in favour of LT-FH++ over LT-FH in 
 \newpage
 
 \subsection{Real-World Analysis}
-\begin{wrapfigure}{O}{10cm}
+\begin{wrapfigure}{R}{10cm}
 	%	\includegraphics[width=0.7\textwidth]{results/manhattanPlot_mortality.pdf} % adds a lot of loading 
 	\includegraphics[width=10cm]{results/manhattanPlot_mortality.png}
 	\caption[Manhattan plots for LT-FH++, LT-FH, and case-control GWAS of mortality	in the UK Biobank]{
-		\sl The Manhattan plots display a Bonferroni corrected significance level of $ 5\times 10^{-8} $ and a suggestive threshold of $ 5\times 10^{-6} $. The genome-wide significant SNPs are coloured in red. The diamonds correspond to top	SNPs in a window of size $ 300,000 $ base pairs.}
+		\sl The Manhattan plots display a Bonferroni corrected significance level of $ 5\times 10^{-8} $ and a suggestive threshold of $ 5\times 10^{-6} $. The genome-wide significant SNPs are coloured in red. The diamonds correspond to top	SNPs in a window of size $ 300,000 $ base pairs. The plot is originally Figure $ 3 $ from Paper $ 1 $\cite{pedersen2022accounting} (also \cref{app:ltfhpp}, Figure $ 3 $).}
 	\label{fig:LTFH++_manhattanMortality}
 \end{wrapfigure}
 
 LT-FH++ was also applied to four of the main psychiatric disorders in iPSYCH and to mortality in UKBB. The mortality GWAS in UKBB resulted in $ 0 $ genome-wide significant SNP for simple linear regression, $ 2 $ for LT-FH, and $ 10 $ for LT-FH++. The Manhattan plot for mortality can be found in \cref{fig:LTFH++_manhattanMortality}.
 
 The GWAS in iPSYCH did not provide nearly as large of an increase in power for LT-FH++ or LT-FH over simple linear regression. In fact, we did not see any notable improvement over simple linear regression of the case-control status. The Manhattan plot for ADHD in iPSYCH can be found in \cref{fig:LTFH++_manhattanADHD}. We did find $ 7 $ genome-wide significant SNPs for ADHD using LT-FH++ and $ 5 $ for LT-FH and case-control status, but the two additional associations for LT-FH++ were very close to genome-wide significance for the other two outcomes as well.
-\begin{wrapfigure}{R}{10cm}
-	%	\includegraphics[width=0.7\textwidth]{results/manhattanPlot_ADHD.pdf} % adds a lot of loading 
-	\includegraphics[width=10cm]{results/manhattanPlot_ADHD.png}
-	\caption[Manhattan plots for LT-FH++, LT-FH, and case-control GWAS of ADHD in the iPSYCH data]{
-		\sl The dashed line indicates a suggestive p-value of $ 5\times 10^{-6} $ and the fully drawn line at $ 5\times 10^{-8} $ indicates genome-wide significance threshold. The genome-wide significant SNPs are coloured in red. The diamonds correspond to top SNPs in a window of size $ 300,000 $ base pairs.}	
-	\label{fig:LTFH++_manhattanADHD}
-\end{wrapfigure}
+
 Through additional simulations we found that one can expect the most \textit{relative} power gain with LT-FH++ over LT-FH if the in-sample prevalence is high in either family members or the index persons. This is because LT-FH++ is best able to utilise information for cases, since the CIPs provide a very accurate estimate for the full liability of an individual.
